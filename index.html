@@ -19,7 +19,7 @@
   header {
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 16px;
-    margin-bottom: 24px; padding-bottom: 20px;
+    margin-bottom: 20px; padding-bottom: 20px;
     border-bottom: 1px solid #e2e8f0;
   }
   .brand h1 {
@@ -46,6 +46,68 @@
   }
   .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.4; transform:scale(1.3)} }
+
+  /* RUNNING TEXT */
+  .marquee-wrap {
+    background: linear-gradient(90deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
+    border: 1px solid #fcd34d;
+    border-left: 5px solid #f59e0b;
+    border-radius: 12px;
+    padding: 12px 0;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.12);
+  }
+  .marquee-wrap::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 60px;
+    background: linear-gradient(90deg, rgba(254,243,199,1) 0%, rgba(254,243,199,0) 100%);
+    z-index: 2; pointer-events: none;
+  }
+  .marquee-wrap::after {
+    content: '';
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 60px;
+    background: linear-gradient(270deg, rgba(254,243,199,1) 0%, rgba(254,243,199,0) 100%);
+    z-index: 2; pointer-events: none;
+  }
+  .marquee-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; z-index: 3;
+    background: #f59e0b;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(245,158,11,0.4);
+    animation: wiggle 1.5s infinite;
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: translateY(-50%) rotate(0deg); }
+    25% { transform: translateY(-50%) rotate(-10deg); }
+    75% { transform: translateY(-50%) rotate(10deg); }
+  }
+  .marquee {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 60px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #78350f;
+    animation: scroll-left 40s linear infinite;
+  }
+  .marquee:hover { animation-play-state: paused; }
+  @keyframes scroll-left {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee .sep {
+    color: #f59e0b;
+    margin: 0 16px;
+    font-size: 16px;
+  }
+
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
@@ -188,7 +250,6 @@
   .kegiatan-item.upcoming-item .k-date { color: #d97706; }
   .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
 
-  /* WI SECTION (di luar lock) */
   .wi-section-wrap {
     display: grid; gap: 14px;
     grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
@@ -316,7 +377,6 @@
     font-weight:500;
   }
 
-  /* LOCK SCREEN */
   .lock-box {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 2px dashed #cbd5e1;
@@ -356,35 +416,19 @@
     transition: transform 0.2s;
   }
   .lock-btn:hover { transform: translateY(-1px); }
-  .lock-btn:disabled {
-    opacity: 0.6; cursor: not-allowed;
-    transform: none;
-  }
-  .lock-error {
-    color: #dc2626; font-size: 12px;
-    min-height: 16px; font-weight: 600;
-  }
-  .lock-note {
-    font-size: 11px; color: #94a3b8; margin-top: 16px;
-  }
-  .lock-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 14px;
-  }
+  .lock-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .lock-error { color: #dc2626; font-size: 12px; min-height: 16px; font-weight: 600; }
+  .lock-note { font-size: 11px; color: #94a3b8; margin-top: 16px; }
+  .lock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
   .lock-logout {
     background: #f1f5f9; border: 1px solid #e2e8f0;
     color: #64748b; padding: 6px 12px;
     border-radius: 8px; font-size: 12px; font-weight: 600;
     cursor: pointer; font-family: inherit;
   }
-  .lock-logout:hover {
-    background: #fee2e2; color: #dc2626; border-color: #fecaca;
-  }
-  .lock-status {
-    font-size:12px; color:#22c55e; font-weight:700;
-  }
+  .lock-logout:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+  .lock-status { font-size:12px; color:#22c55e; font-weight:700; }
 
-  /* MODAL */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(15,23,42,0.6);
@@ -395,155 +439,53 @@
     opacity: 0; pointer-events: none;
     transition: opacity 0.2s;
   }
-  .modal-overlay.active {
-    opacity: 1; pointer-events: auto;
-  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
   .modal-box {
-    background: #ffffff;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 720px;
-    max-height: 88vh;
-    overflow: hidden;
-    display: flex; flex-direction: column;
+    background: #ffffff; border-radius: 16px;
+    width: 100%; max-width: 720px; max-height: 88vh;
+    overflow: hidden; display: flex; flex-direction: column;
     box-shadow: 0 24px 60px rgba(15,23,42,0.3);
-    transform: scale(0.95);
-    transition: transform 0.2s;
+    transform: scale(0.95); transition: transform 0.2s;
   }
-  .modal-overlay.active .modal-box {
-    transform: scale(1);
-  }
-  .modal-box.modal-wide {
-    max-width: 1100px;
-    max-height: 92vh;
-  }
+  .modal-overlay.active .modal-box { transform: scale(1); }
+  .modal-box.modal-wide { max-width: 1100px; max-height: 92vh; }
   .modal-header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 18px 22px;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 18px 22px; border-bottom: 1px solid #e2e8f0;
     background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
     gap: 8px;
   }
   .modal-header h3 {
     font-size: 16px; font-weight: 800; color: #0f172a;
     display: flex; align-items: center; gap: 8px;
-    flex: 1;
-    min-width: 0;
+    flex: 1; min-width: 0;
   }
   .modal-header h3 span {
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .modal-close {
     background: #f1f5f9; border: none;
-    width: 34px; height: 34px;
-    border-radius: 10px;
+    width: 34px; height: 34px; border-radius: 10px;
     cursor: pointer; font-size: 18px;
     color: #64748b; font-weight: 700;
-    transition: all 0.2s;
-    flex-shrink: 0;
+    transition: all 0.2s; flex-shrink: 0;
   }
-  .modal-close:hover {
-    background: #fee2e2; color: #dc2626;
-  }
+  .modal-close:hover { background: #fee2e2; color: #dc2626; }
   .modal-open-btn {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    color: #0284c7;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-    font-family: inherit;
-    white-space: nowrap;
-    flex-shrink: 0;
+    background: #ffffff; border: 1px solid #e2e8f0;
+    color: #0284c7; padding: 8px 14px; border-radius: 8px;
+    font-size: 12px; font-weight: 700; text-decoration: none;
+    transition: all 0.2s; font-family: inherit;
+    white-space: nowrap; flex-shrink: 0;
   }
-  .modal-open-btn:hover {
-    background: #f0f9ff;
-    border-color: #38bdf8;
-  }
-  .modal-body {
-    padding: 18px 22px 24px;
-    overflow-y: auto;
-    flex: 1;
-  }
-  .modal-search {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 13px;
-    font-family: inherit;
-    outline: none;
-    margin-bottom: 16px;
-    transition: all 0.2s;
-  }
-  .modal-search:focus {
-    border-color: #0284c7;
-    box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
-  }
-  .wi-group { margin-bottom: 20px; }
-  .wi-group-title {
-    font-size: 12px; font-weight: 800;
-    color: #475569; text-transform: uppercase;
-    letter-spacing: .8px;
-    margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .wi-group-title .wi-count {
-    background: #e0f2fe; color: #0369a1;
-    padding: 2px 8px; border-radius: 10px;
-    font-size: 11px;
-  }
-  .wi-list { display: grid; gap: 8px; }
-  .wi-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 4px solid #6366f1;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .wi-item:hover {
-    transform: translateX(4px);
-    border-left-color: #9333ea;
-    box-shadow: 0 6px 16px rgba(99,102,241,0.15);
-  }
-  .wi-item .wi-icon { font-size: 18px; }
-  .wi-item .wi-name {
-    flex: 1; font-size: 13.5px; font-weight: 600;
-    color: #1e293b;
-  }
-  .wi-item .wi-arrow {
-    color: #94a3b8; font-weight: 700;
-    transition: all 0.2s;
-  }
-  .wi-item:hover .wi-arrow {
-    color: #0284c7; transform: translateX(3px);
-  }
+  .modal-open-btn:hover { background: #f0f9ff; border-color: #38bdf8; }
   .modal-pdf-body {
-    padding: 0;
-    background: #525659;
-    flex: 1; min-height: 0;
-    display: flex;
+    padding: 0; background: #525659;
+    flex: 1; min-height: 0; display: flex;
   }
   .modal-pdf-body iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-    min-height: 70vh;
-  }
-  .modal-footer-note {
-    text-align: center;
-    font-size: 11px;
-    color: #94a3b8;
-    padding: 12px;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    width: 100%; height: 100%; border: none;
+    display: block; min-height: 70vh;
   }
 
   @media (max-width: 600px) {
@@ -554,6 +496,8 @@
     .modal-box { max-height: 95vh; }
     .modal-pdf-body iframe { min-height: 60vh; }
     .modal-open-btn { padding: 6px 10px; font-size: 11px; }
+    .marquee { font-size: 12px; }
+    .marquee-icon { width: 26px; height: 26px; font-size: 14px; left: 10px; }
   }
 </style>
 </head>
@@ -575,6 +519,12 @@
     </div>
   </div>
 </header>
+
+<!-- RUNNING TEXT PENGUMUMAN -->
+<div class="marquee-wrap" id="marqueeWrap" style="display:none;">
+  <div class="marquee-icon">📢</div>
+  <div class="marquee" id="marqueeText"></div>
+</div>
 
 <div class="cards">
   <div class="card blue">
@@ -675,21 +625,18 @@
   <div id="wrapUpcoming"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<!-- WI SECTION — DI LUAR LOCK, DITARUH DI ATAS LINK PENTING -->
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
   <div id="wrapWISection"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<!-- LINK PENTING — DI LOCK PASSWORD -->
 <section>
   <h2>🔗 Link Penting & Akses</h2>
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-IT • realtime • by acg </footer>
+<footer>SIKAT-IT • realtime • by acg</footer>
 
-<!-- MODAL VIEWER (dipakai buat WI) -->
 <div class="modal-overlay" id="modalPDF">
   <div class="modal-box modal-wide">
     <div class="modal-header">
@@ -715,6 +662,7 @@ let rawKegiatan = [];
 let rawUpcoming = [];
 let rawLinks = [];
 let rawWI = [];
+let rawPengumuman = [];
 let linksUnlocked = false;
 let rawLinksCache = [];
 let lockRealValue = '';
@@ -789,6 +737,41 @@ function isToday(dateStr){
   return matchHari || matchTgl;
 }
 
+/* ============================================================
+   RUNNING TEXT PENGUMUMAN
+   ============================================================ */
+function renderPengumuman(rows){
+  const wrap = document.getElementById('marqueeWrap');
+  const txt = document.getElementById('marqueeText');
+  
+  // Ambil semua teks, filter kosong
+  const items = rows
+    .map(r => (r['teks'] || r['text'] || r['pengumuman'] || '').trim())
+    .filter(t => t);
+  
+  if(!items.length){
+    wrap.style.display = 'none';
+    return;
+  }
+  
+  // Gabung dengan separator
+  const sep = ' <span class="sep">•</span> ';
+  const combined = items.join(sep);
+  
+  // Duplikat 2x biar seamless loop (animasi translateX -50%)
+  txt.innerHTML = combined + sep + combined + sep;
+  
+  // Set durasi animasi dinamis berdasarkan panjang teks
+  // Biar kalau teks panjang, gerak lebih cepat
+  const duration = Math.max(20, Math.min(80, items.length * 8));
+  txt.style.animationDuration = duration + 's';
+  
+  wrap.style.display = 'block';
+}
+
+/* ============================================================
+   RENDER LOKASI
+   ============================================================ */
 function renderLokasi(rows){
   const wrap = document.getElementById('wrapLokasi');
   const keyword = (document.getElementById('searchInput').value || '').toLowerCase();
@@ -870,9 +853,6 @@ function renderUpcoming(rows){
   wrap.innerHTML = html + '</div>';
 }
 
-/* ============================================================
-   WI SECTION (di luar lock)
-   ============================================================ */
 function renderWISection(rows){
   const wrap = document.getElementById('wrapWISection');
   document.getElementById('cntWI').textContent = rows.length;
@@ -910,9 +890,6 @@ function renderWISection(rows){
   wrap.innerHTML = html;
 }
 
-/* ============================================================
-   LINKS dengan PASSWORD LOCK
-   ============================================================ */
 function renderLinks(rows){
   rawLinksCache = rows;
   const wrap = document.getElementById('wrapLinks');
@@ -1091,20 +1068,14 @@ function renderLinksContent(rows){
   wrap.innerHTML = html;
 }
 
-/* ============================================================
-   MODAL VIEWER PDF
-   ============================================================ */
 function openWIPDF(nama, url){
   document.getElementById('pdfTitle').textContent = nama || 'Dokumen';
   document.getElementById('pdfFrame').src = url || 'about:blank';
   
-  // Set link "Buka di tab baru" — konversi /preview jadi /view biar bisa copy
   const btnOpen = document.getElementById('btnOpenOriginal');
   let openUrl = url;
   if(url.includes('/preview')){
     openUrl = url.replace('/preview', '/view');
-  } else if(url.includes('/pubhtml')){
-    // biarin
   } else if(url.includes('docs.google.com/document')){
     openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
   }
@@ -1132,9 +1103,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ============================================================
-   UPDATE CARDS
-   ============================================================ */
 function updateCards(rows){
   const today = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal'])));
   const total = today.length;
@@ -1177,23 +1145,26 @@ function updateCards(rows){
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4, r5] = await Promise.all([
+    const [r1, r2, r3, r4, r5, r6] = await Promise.all([
       fetch(apiUrl('Lokasi')).then(r => r.json()),
       fetch(apiUrl('Kegiatan')).then(r => r.json()),
       fetch(apiUrl('Upcoming')).then(r => r.json()),
       fetch(apiUrl('Links')).then(r => r.json()),
-      fetch(apiUrl('WI')).then(r => r.json())
+      fetch(apiUrl('WI')).then(r => r.json()),
+      fetch(apiUrl('Pengumuman')).then(r => r.json())
     ]);
     rawLokasi = Array.isArray(r1) ? r1 : [];
     rawKegiatan = Array.isArray(r2) ? r2 : [];
     rawUpcoming = Array.isArray(r3) ? r3 : [];
     rawLinks = Array.isArray(r4) ? r4 : [];
     rawWI = Array.isArray(r5) ? r5 : [];
+    rawPengumuman = Array.isArray(r6) ? r6 : [];
     renderLokasi(rawLokasi);
     renderKegiatan(rawKegiatan);
     renderUpcoming(rawUpcoming);
     renderWISection(rawWI);
     renderLinks(rawLinks);
+    renderPengumuman(rawPengumuman);
     updateCards(rawLokasi);
     document.getElementById('lastUpdate').textContent =
       'Sync: ' + now.toLocaleTimeString('id-ID');
