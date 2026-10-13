@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIKAT-IT — Sistem Koordinasi Aktivitas Teknisi</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f1f5f9;
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(56,189,248,0.10), transparent 35%),
+      radial-gradient(circle at 90% 90%, rgba(129,140,248,0.10), transparent 35%);
+    color: #1e293b;
+    padding: 24px;
+    min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    margin-bottom: 24px; padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .brand h1 {
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(90deg,#0284c7,#4f46e5,#9333ea);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .subtitle { font-size: 13px; color:#64748b; margin-top:4px; font-weight:500; }
+  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .clock {
+    background: #ffffff; padding: 10px 16px; border-radius: 12px;
+    font-size: 14px; font-weight: 700; color:#0284c7;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04); text-align: right;
+  }
+  .clock .date { display:block; font-size:11px; color:#64748b; font-weight:500; margin-top:2px; }
+  .refresh-info {
+    font-size: 12px; color:#475569;
+    background:#ffffff; padding:10px 14px; border-radius:12px;
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+  }
+  .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.4; transform:scale(1.3)} }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap: 14px; margin-bottom: 20px;
+  }
+  .card {
+    background: #ffffff; border-radius: 14px; padding: 18px;
+    position: relative; overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,23,42,0.08); }
+  .card::before {
+    content: ''; position: absolute; top:0; left:0; right:0; height:4px;
+    background: var(--accent);
+  }
+  .card.blue   { --accent: linear-gradient(90deg,#0ea5e9,#38bdf8); }
+  .card.green  { --accent: linear-gradient(90deg,#16a34a,#4ade80); }
+  .card.indigo { --accent: linear-gradient(90deg,#4f46e5,#818cf8); }
+  .card.purple { --accent: linear-gradient(90deg,#9333ea,#c084fc); }
+  .card.orange { --accent: linear-gradient(90deg,#ea580c,#fb923c); }
+  .card.cyan   { --accent: linear-gradient(90deg,#0891b2,#22d3ee); }
+  .card.gray   { --accent: linear-gradient(90deg,#64748b,#94a3b8); }
+  .card .label { font-size: 11px; color:#64748b; text-transform:uppercase; letter-spacing:.8px; font-weight:700; }
+  .card .value { font-size: 30px; font-weight: 800; margin-top: 6px; color:#0f172a; line-height:1; }
+  .card .pct   { font-size: 11px; color:#94a3b8; margin-top: 6px; font-weight:500; }
+  .card .icon  { position:absolute; top:14px; right:14px; font-size:20px; opacity:.35; }
+  .progress-wrap {
+    background: #ffffff; border: 1px solid #e2e8f0;
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+  }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .progress-header .title { font-size: 13px; color:#334155; font-weight:700; }
+  .progress-header .val   { font-size: 13px; font-weight:800; }
+  .progress-bar { height: 12px; background:#f1f5f9; border-radius: 8px; overflow: hidden; display: flex; }
+  .progress-bar .seg { height:100%; transition: width 0.5s ease; }
+  .seg.on        { background: linear-gradient(90deg,#16a34a,#4ade80); }
+  .seg.wfh       { background: linear-gradient(90deg,#0891b2,#22d3ee); }
+  .seg.permitted { background: linear-gradient(90deg,#2563eb,#60a5fa); }
+  .seg.sick      { background: linear-gradient(90deg,#9333ea,#c084fc); }
+  .seg.leave     { background: linear-gradient(90deg,#4f46e5,#a5b4fc); }
+  .seg.other     { background: linear-gradient(90deg,#64748b,#94a3b8); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; color:#475569; font-weight:500; }
+  .legend span::before {
+    content:''; display:inline-block; width:8px; height:8px;
+    border-radius:50%; margin-right:6px; vertical-align:middle;
+  }
+  .legend .l-on::before     { background:#16a34a; }
+  .legend .l-wfh::before    { background:#0891b2; }
+  .legend .l-permit::before { background:#2563eb; }
+  .legend .l-sick::before   { background:#9333ea; }
+  .legend .l-leave::before  { background:#4f46e5; }
+  .legend .l-other::before  { background:#64748b; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+  .toolbar input[type=text], .toolbar select {
+    background: #ffffff; border:1px solid #e2e8f0; color:#1e293b;
+    padding: 10px 14px; border-radius: 10px; font-size:13px;
+    font-family: inherit; outline: none; transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  }
+  .toolbar input[type=text]:focus, .toolbar select:focus {
+    border-color:#38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  }
+  .toolbar input[type=text] { flex: 1; min-width: 180px; }
+  .toolbar input[type=text]::placeholder { color:#94a3b8; }
+  .toggle-label {
+    display:flex; align-items:center; gap:6px; font-size:13px;
+    color:#334155; cursor:pointer; padding: 10px 14px;
+    background:#ffffff; border:1px solid #e2e8f0; border-radius:10px;
+    font-weight:500; transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  }
+  .toggle-label:hover { border-color:#38bdf8; }
+  .toggle-label input { cursor:pointer; accent-color:#0284c7; }
+  section { margin-bottom: 32px; }
+  h2 {
+    font-size: 16px; margin-bottom: 14px; color:#0f172a;
+    display: flex; align-items: center; gap: 8px; font-weight:700;
+  }
+  h2::before {
+    content:''; width:4px; height:18px; border-radius:2px;
+    background: linear-gradient(180deg,#0284c7,#4f46e5);
+  }
+  h2 .count {
+    font-size:11px; background:#e0f2fe; color:#0369a1;
+    padding:3px 10px; border-radius:10px; font-weight:700;
+  }
+  .table-wrap {
+    overflow-x:auto; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    border: 1px solid #e2e8f0;
+  }
+  table { width: 100%; border-collapse: collapse; background: #ffffff; font-size: 13.5px; min-width: 600px; }
+  th {
+    background: #f8fafc; color: #475569; text-align: left;
+    padding: 13px 16px; font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .8px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  td { padding: 13px 16px; border-top: 1px solid #f1f5f9; color:#334155; }
+  tr:hover td { background: #f8fafc; }
+  .badge {
+    display:inline-block; padding: 4px 12px;
+    border-radius: 20px; font-size: 11.5px; font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge.onduty    { background:#dcfce7; color:#15803d; }
+  .badge.wfh       { background:#cffafe; color:#0e7490; }
+  .badge.permitted { background:#dbeafe; color:#1d4ed8; }
+  .badge.sick      { background:#f3e8ff; color:#7e22ce; }
+  .badge.onleave   { background:#e0e7ff; color:#4338ca; }
+  .badge.unknown   { background:#f1f5f9; color:#475569; }
+  .kegiatan-list { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); }
+  .kegiatan-item {
+    background: #ffffff; border: 1px solid #e2e8f0;
+    border-left: 4px solid #6366f1;
+    border-radius: 12px; padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .kegiatan-item:hover {
+    transform: translateX(4px);
+    border-left-color:#9333ea;
+    box-shadow: 0 6px 16px rgba(99,102,241,0.12);
+  }
+  .kegiatan-item .k-date { font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; font-weight:700; }
+  .kegiatan-item .k-name { font-size:14px; color:#0f172a; font-weight:700; margin: 6px 0 8px; }
+  .kegiatan-item .k-tech { font-size:12px; color:#0284c7; display:flex; align-items:center; gap:6px; font-weight:600; }
+  .kegiatan-item .k-tech::before { content:'👤'; font-size:12px; }
+  .kegiatan-item.upcoming-item {
+    border-left-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbf0 0%, #ffffff 100%);
+  }
+  .kegiatan-item.upcoming-item:hover {
+    border-left-color: #ea580c;
+    box-shadow: 0 6px 16px rgba(245,158,11,0.18);
+  }
+  .kegiatan-item.upcoming-item .k-date { color: #d97706; }
+  .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
+
+  /* WI SECTION (di luar lock) */
+  .wi-section-wrap {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  }
+  .wi-cat-block {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #6366f1;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .wi-cat-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99,102,241,0.12);
+  }
+  .wi-cat-title {
+    font-size: 12px; font-weight: 800; color: #475569;
+    text-transform: uppercase; letter-spacing: .8px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wi-cat-count {
+    background: #e0f2fe; color: #0369a1;
+    padding: 2px 8px; border-radius: 10px; font-size: 11px;
+  }
+  .wi-cat-list { display: grid; gap: 6px; }
+  .wi-cat-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 11px;
+    background: #f8fafc;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+    transition: all 0.2s;
+    border-left: 3px solid #6366f1;
+  }
+  .wi-cat-item:hover {
+    background: #eff6ff;
+    border-left-color: #9333ea;
+    transform: translateX(3px);
+  }
+  .wi-cat-item::before { content: '📄'; font-size: 12px; flex-shrink:0; }
+  .wi-cat-item .wi-cat-name { flex: 1; }
+
+  .link-group { margin-bottom: 18px; }
+  .link-group-title {
+    font-size: 13px; font-weight: 700; color:#334155;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .link-group-items {
+    display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .link-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: #ffffff; border: 1px solid #e2e8f0;
+    border-left: 4px solid #0284c7;
+    border-radius: 10px; padding: 12px 14px;
+    text-decoration: none; color: #1e293b;
+    font-weight: 600; font-size: 13px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    cursor: pointer;
+  }
+  .link-btn:hover {
+    transform: translateY(-2px);
+    border-left-color: #9333ea;
+    box-shadow: 0 6px 16px rgba(2,132,199,0.15);
+  }
+  .link-icon { font-size: 18px; }
+  .link-label { flex: 1; }
+  .link-arrow {
+    color: #94a3b8; font-weight: 700;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .link-btn:hover .link-arrow {
+    color: #0284c7; transform: translateX(3px);
+  }
+  .link-text {
+    display: flex; align-items: center; gap: 10px;
+    background: #f8fafc; border: 1px dashed #cbd5e1;
+    border-radius: 10px; padding: 12px 14px;
+    color: #475569; font-size: 13px; font-weight: 500;
+  }
+  .reminder-box {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px solid #fcd34d;
+    border-left: 4px solid #f59e0b;
+    border-radius: 12px; padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .reminder-title {
+    font-size: 14px; font-weight: 800; color: #92400e;
+    margin-bottom: 10px;
+  }
+  .reminder-list { list-style: none; padding: 0; margin: 0; }
+  .reminder-list li {
+    font-size: 13px; color: #78350f;
+    padding: 6px 0 6px 22px; position: relative;
+    line-height: 1.5;
+  }
+  .reminder-list li::before {
+    content: '•'; position: absolute; left: 8px;
+    color: #f59e0b; font-weight: 800; font-size: 16px;
+  }
+  .footer-note {
+    text-align: center; font-size: 14px; font-weight: 600;
+    color: #0284c7; padding: 16px;
+    background: #f0f9ff; border-radius: 12px;
+    border: 1px solid #bae6fd;
+  }
+  .empty, .loading {
+    text-align:center; padding: 40px; color:#94a3b8;
+    background:#ffffff; border-radius:12px; font-size:14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+  }
+  footer {
+    text-align:center; color:#94a3b8; font-size:12px;
+    margin-top:40px; padding-top:20px; border-top:1px solid #e2e8f0;
+    font-weight:500;
+  }
+
+  /* LOCK SCREEN */
+  .lock-box {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 40px 20px;
+    text-align: center;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .lock-icon { font-size: 48px; margin-bottom: 12px; }
+  .lock-title {
+    font-size: 16px; font-weight: 800; color: #0f172a;
+    margin-bottom: 6px;
+  }
+  .lock-desc { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+  .lock-input-wrap {
+    display: flex; gap: 8px;
+    max-width: 340px; margin: 0 auto 12px;
+  }
+  .lock-input {
+    flex: 1; padding: 12px 14px;
+    border: 1px solid #e2e8f0; border-radius: 10px;
+    font-size: 14px; outline: none; font-family: inherit;
+    transition: border 0.2s;
+    letter-spacing: 2px;
+  }
+  .lock-input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
+  }
+  .lock-btn {
+    background: linear-gradient(90deg,#0284c7,#4f46e5);
+    color: white; border: none;
+    padding: 12px 20px; border-radius: 10px;
+    font-weight: 700; cursor: pointer;
+    font-size: 14px; font-family: inherit;
+    transition: transform 0.2s;
+  }
+  .lock-btn:hover { transform: translateY(-1px); }
+  .lock-btn:disabled {
+    opacity: 0.6; cursor: not-allowed;
+    transform: none;
+  }
+  .lock-error {
+    color: #dc2626; font-size: 12px;
+    min-height: 16px; font-weight: 600;
+  }
+  .lock-note {
+    font-size: 11px; color: #94a3b8; margin-top: 16px;
+  }
+  .lock-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .lock-logout {
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    color: #64748b; padding: 6px 12px;
+    border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .lock-logout:hover {
+    background: #fee2e2; color: #dc2626; border-color: #fecaca;
+  }
+  .lock-status {
+    font-size:12px; color:#22c55e; font-weight:700;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.active {
+    opacity: 1; pointer-events: auto;
+  }
+  .modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 720px;
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 24px 60px rgba(15,23,42,0.3);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.active .modal-box {
+    transform: scale(1);
+  }
+  .modal-box.modal-wide {
+    max-width: 1100px;
+    max-height: 92vh;
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 22px;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    gap: 8px;
+  }
+  .modal-header h3 {
+    font-size: 16px; font-weight: 800; color: #0f172a;
+    display: flex; align-items: center; gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+  .modal-header h3 span {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .modal-close {
+    background: #f1f5f9; border: none;
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    cursor: pointer; font-size: 18px;
+    color: #64748b; font-weight: 700;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover {
+    background: #fee2e2; color: #dc2626;
+  }
+  .modal-open-btn {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0284c7;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-open-btn:hover {
+    background: #f0f9ff;
+    border-color: #38bdf8;
+  }
+  .modal-body {
+    padding: 18px 22px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .modal-search {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+  }
+  .modal-search:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
+  }
+  .wi-group { margin-bottom: 20px; }
+  .wi-group-title {
+    font-size: 12px; font-weight: 800;
+    color: #475569; text-transform: uppercase;
+    letter-spacing: .8px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wi-group-title .wi-count {
+    background: #e0f2fe; color: #0369a1;
+    padding: 2px 8px; border-radius: 10px;
+    font-size: 11px;
+  }
+  .wi-list { display: grid; gap: 8px; }
+  .wi-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #6366f1;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .wi-item:hover {
+    transform: translateX(4px);
+    border-left-color: #9333ea;
+    box-shadow: 0 6px 16px rgba(99,102,241,0.15);
+  }
+  .wi-item .wi-icon { font-size: 18px; }
+  .wi-item .wi-name {
+    flex: 1; font-size: 13.5px; font-weight: 600;
+    color: #1e293b;
+  }
+  .wi-item .wi-arrow {
+    color: #94a3b8; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .wi-item:hover .wi-arrow {
+    color: #0284c7; transform: translateX(3px);
+  }
+  .modal-pdf-body {
+    padding: 0;
+    background: #525659;
+    flex: 1; min-height: 0;
+    display: flex;
+  }
+  .modal-pdf-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    min-height: 70vh;
+  }
+  .modal-footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+    padding: 12px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 14px; }
+    .brand h1 { font-size: 22px; }
+    .card .value { font-size: 24px; }
+    .clock { font-size: 12px; padding: 8px 12px; }
+    .modal-box { max-height: 95vh; }
+    .modal-pdf-body iframe { min-height: 60vh; }
+    .modal-open-btn { padding: 6px 10px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>SIKAT-IT</h1>
+    <div class="subtitle">Sistem Koordinasi Aktivitas Teknisi</div>
+  </div>
+  <div class="header-right">
+    <div class="clock">
+      <span id="clock">--:--:--</span>
+      <span class="date" id="today">-</span>
+    </div>
+    <div class="refresh-info">
+      <span class="dot"></span>
+      <span id="lastUpdate">Memuat...</span>
+    </div>
+  </div>
+</header>
+
+<div class="cards">
+  <div class="card blue">
+    <div class="icon">👥</div>
+    <div class="label">Total</div>
+    <div class="value" id="cTotal">0</div>
+    <div class="pct" id="pTotal">hari ini</div>
+  </div>
+  <div class="card green">
+    <div class="icon">✅</div>
+    <div class="label">Onsite</div>
+    <div class="value" id="cOn">0</div>
+    <div class="pct" id="pOn">0%</div>
+  </div>
+  <div class="card cyan">
+    <div class="icon">🏠</div>
+    <div class="label">WFH</div>
+    <div class="value" id="cWfh">0</div>
+    <div class="pct" id="pWfh">0%</div>
+  </div>
+  <div class="card indigo">
+    <div class="icon">📝</div>
+    <div class="label">Izin</div>
+    <div class="value" id="cPermit">0</div>
+    <div class="pct" id="pPermit">0%</div>
+  </div>
+  <div class="card purple">
+    <div class="icon">🤒</div>
+    <div class="label">Sakit</div>
+    <div class="value" id="cSick">0</div>
+    <div class="pct" id="pSick">0%</div>
+  </div>
+  <div class="card orange">
+    <div class="icon">🏖️</div>
+    <div class="label">Cuti</div>
+    <div class="value" id="cLeave">0</div>
+    <div class="pct" id="pLeave">0%</div>
+  </div>
+  <div class="card gray">
+    <div class="icon">❓</div>
+    <div class="label">Lainnya</div>
+    <div class="value" id="cOther">0</div>
+    <div class="pct" id="pOther">0%</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-header">
+    <span class="title">📊 Distribusi Status Personil</span>
+    <span class="val" id="pTitle">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="seg on"        id="segOn"     style="width:0%"></div>
+    <div class="seg wfh"       id="segWfh"    style="width:0%"></div>
+    <div class="seg permitted" id="segPermit" style="width:0%"></div>
+    <div class="seg sick"      id="segSick"   style="width:0%"></div>
+    <div class="seg leave"     id="segLeave"  style="width:0%"></div>
+    <div class="seg other"     id="segOther"  style="width:0%"></div>
+  </div>
+  <div class="legend">
+    <span class="l-on">Onsite</span>
+    <span class="l-wfh">WFH</span>
+    <span class="l-permit">Izin</span>
+    <span class="l-sick">Sakit</span>
+    <span class="l-leave">Cuti</span>
+    <span class="l-other">Lainnya</span>
+  </div>
+</div>
+
+<section>
+  <h2>📍 Lokasi Standby Harian <span class="count" id="cntLokasi">0</span></h2>
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="🔍 Cari nama teknisi atau lokasi...">
+    <select id="statusFilter">
+      <option value="">Semua Status</option>
+      <option value="onduty">Onsite</option>
+      <option value="wfh">WFH</option>
+      <option value="permitted">Izin</option>
+      <option value="sick">Sakit</option>
+      <option value="onleave">Cuti</option>
+      <option value="unknown">Lainnya</option>
+    </select>
+    <label class="toggle-label">
+      <input type="checkbox" id="onlyToday" checked>
+      Hanya hari ini
+    </label>
+  </div>
+  <div id="wrapLokasi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+</section>
+
+<section>
+  <h2>📋 Kegiatan Standby Meeting <span class="count" id="cntKegiatan">0</span></h2>
+  <div id="wrapKegiatan"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+</section>
+
+<section>
+  <h2>🚀 Upcoming Event <span class="count" id="cntUpcoming">0</span></h2>
+  <div id="wrapUpcoming"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+</section>
+
+<!-- WI SECTION — DI LUAR LOCK, DITARUH DI ATAS LINK PENTING -->
+<section>
+  <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
+  <div id="wrapWISection"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+</section>
+
+<!-- LINK PENTING — DI LOCK PASSWORD -->
+<section>
+  <h2>🔗 Link Penting & Akses</h2>
+  <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+</section>
+
+<footer>SIKAT-IT • realtime • by acg </footer>
+
+<!-- MODAL VIEWER (dipakai buat WI) -->
+<div class="modal-overlay" id="modalPDF">
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <h3>📄 <span id="pdfTitle">Dokumen</span></h3>
+      <a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a>
+      <button class="modal-close" onclick="closeModal('modalPDF')">✕</button>
+    </div>
+    <div class="modal-pdf-body">
+      <iframe id="pdfFrame" src="about:blank"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURASI
+   ============================================================ */
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
+/* ============================================================ */
+
+let rawLokasi = [];
+let rawKegiatan = [];
+let rawUpcoming = [];
+let rawLinks = [];
+let rawWI = [];
+let linksUnlocked = false;
+let rawLinksCache = [];
+let lockRealValue = '';
+
+function apiUrl(sheetName){
+  return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`;
+}
+
+const STATUS_RULES = {
+  wfh:       ['wfh'],
+  permitted: ['ijin', 'izin', 'permitted'],
+  sick:      ['sakit', 'sick', 'mmr'],
+  onleave:   ['cuti', 'on leave', 'onleave', 'libur'],
+  onduty:    ['onsite', 'on site', 'on-site', 'hadir', 'masuk', 'onduty', 'on duty']
+};
+
+function statusClass(s){
+  const t = (s||'').toLowerCase().trim();
+  if(!t) return 'unknown';
+  const order = ['wfh', 'permitted', 'sick', 'onleave', 'onduty'];
+  for(const cat of order){
+    for(const kw of STATUS_RULES[cat]){
+      if(t.includes(kw)) return cat;
+    }
+  }
+  return 'unknown';
+}
+
+function statusLabel(s){
+  const c = statusClass(s);
+  if(c === 'onduty')    return 'Onsite';
+  if(c === 'wfh')       return 'WFH';
+  if(c === 'permitted') return 'Izin';
+  if(c === 'sick')      return 'Sakit';
+  if(c === 'onleave')   return 'Cuti';
+  if(c === 'unknown')   return s ? s : 'Lainnya';
+  return s || '-';
+}
+
+function getFlex(obj, keys){
+  if(!obj) return '-';
+  for(const k of keys){
+    if(obj[k] !== undefined && obj[k] !== '' && obj[k] !== null) return obj[k];
+  }
+  const objKeys = Object.keys(obj);
+  for(const k of keys){
+    const target = k.toLowerCase().replace(/[\s\/\[\]]/g,'');
+    for(const ok of objKeys){
+      const normalized = ok.toLowerCase().replace(/[\s\/\[\]]/g,'');
+      if(normalized === target || normalized.includes(target) || target.includes(normalized)){
+        if(obj[ok] !== undefined && obj[ok] !== '' && obj[ok] !== null) return obj[ok];
+      }
+    }
+  }
+  return '-';
+}
+
+function isToday(dateStr){
+  if(!dateStr || dateStr === '-' || dateStr === 'null') return false;
+  const today = new Date();
+  const hariIndo = ['minggu','senin','selasa','rabu','kamis','jumat','sabtu'][today.getDay()];
+  const tgl = today.getDate().toString().padStart(2,'0');
+  const bln = (today.getMonth()+1).toString().padStart(2,'0');
+  const thn = today.getFullYear();
+  const s = dateStr.toString().toLowerCase();
+  const matchHari = s.includes(hariIndo);
+  const matchTgl  = s.includes(`${tgl}/${bln}/${thn}`)
+                 || s.includes(`${tgl}-${bln}-${thn}`)
+                 || s.includes(`${tgl}/${bln}`)
+                 || s.includes(`${tgl}-${bln}`)
+                 || s.includes(`${thn}-${bln}-${tgl}`);
+  return matchHari || matchTgl;
+}
+
+function renderLokasi(rows){
+  const wrap = document.getElementById('wrapLokasi');
+  const keyword = (document.getElementById('searchInput').value || '').toLowerCase();
+  const filter = document.getElementById('statusFilter').value;
+  const onlyToday = document.getElementById('onlyToday').checked;
+
+  let filtered = rows.filter(r => !onlyToday || isToday(getFlex(r,['hari/tanggal','tanggal'])));
+  filtered = filtered.filter(r => {
+    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase();
+    const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase();
+    const cocok = !keyword || nama.includes(keyword) || lokasi.includes(keyword);
+    const status = statusClass(getFlex(r,['status','keterangan']));
+    const statusCocok = !filter || status === filter;
+    return cocok && statusCocok;
+  });
+
+  document.getElementById('cntLokasi').textContent = filtered.length;
+
+  if(!filtered.length){
+    wrap.innerHTML = '<div class="empty">Tidak ada data yang cocok</div>';
+    return;
+  }
+
+  let html = '<div class="table-wrap"><table><thead><tr><th>Hari/Tanggal</th><th>Nama Teknisi</th><th>Lokasi Standby</th><th>Status</th></tr></thead><tbody>';
+  filtered.forEach(r=>{
+    const raw = getFlex(r,['status','keterangan']);
+    const cls = statusClass(raw);
+    html += `<tr>
+      <td>${getFlex(r,['hari/tanggal','tanggal'])}</td>
+      <td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td>
+      <td>${getFlex(r,['lokasi standby','lokasi'])}</td>
+      <td><span class="badge ${cls}">${statusLabel(raw)}</span></td>
+    </tr>`;
+  });
+  wrap.innerHTML = html + '</tbody></table></div>';
+}
+
+function renderKegiatan(rows){
+  const wrap = document.getElementById('wrapKegiatan');
+  document.getElementById('cntKegiatan').textContent = rows.length;
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Belum ada kegiatan</div>';
+    return;
+  }
+  let html = '<div class="kegiatan-list">';
+  rows.forEach(r=>{
+    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan standby meeting','kegiatan [standby] meeting']);
+    const tech = getFlex(r,['teknisi','nama teknisi','nama']);
+    if(date === '-' && name === '-' && tech === '-') return;
+    html += `<div class="kegiatan-item">
+      <div class="k-date">${date}</div>
+      <div class="k-name">${name}</div>
+      <div class="k-tech">${tech}</div>
+    </div>`;
+  });
+  wrap.innerHTML = html + '</div>';
+}
+
+function renderUpcoming(rows){
+  const wrap = document.getElementById('wrapUpcoming');
+  document.getElementById('cntUpcoming').textContent = rows.length;
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>';
+    return;
+  }
+  let html = '<div class="kegiatan-list">';
+  rows.forEach(r=>{
+    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','upcoming event']);
+    const tech = getFlex(r,['teknisi','nama teknisi','nama']);
+    if(date === '-' && name === '-' && tech === '-') return;
+    html += `<div class="kegiatan-item upcoming-item">
+      <div class="k-date">📅 ${date}</div>
+      <div class="k-name">${name}</div>
+      <div class="k-tech">${tech}</div>
+    </div>`;
+  });
+  wrap.innerHTML = html + '</div>';
+}
+
+/* ============================================================
+   WI SECTION (di luar lock)
+   ============================================================ */
+function renderWISection(rows){
+  const wrap = document.getElementById('wrapWISection');
+  document.getElementById('cntWI').textContent = rows.length;
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Belum ada WI. Tambah data di tab "WI" Google Sheets.</div>';
+    return;
+  }
+
+  const grouped = {};
+  rows.forEach(r => {
+    const kat = (r['kategori'] || 'Umum').trim();
+    if(!grouped[kat]) grouped[kat] = [];
+    grouped[kat].push(r);
+  });
+
+  let html = '<div class="wi-section-wrap">';
+  Object.keys(grouped).forEach(kat => {
+    html += `<div class="wi-cat-block">
+      <div class="wi-cat-title">📂 ${kat} <span class="wi-cat-count">${grouped[kat].length}</span></div>
+      <div class="wi-cat-list">`;
+    grouped[kat].forEach(r => {
+      const nama = (r['nama'] || '').trim();
+      const url = (r['url_pdf'] || '').trim();
+      const escapedNama = nama.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      const escapedUrl = url.replace(/'/g, "\\'");
+      if(!nama || !url) return;
+      html += `<div class="wi-cat-item" onclick="openWIPDF('${escapedNama}', '${escapedUrl}')">
+        <span class="wi-cat-name">${nama}</span>
+        <span class="link-arrow">→</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+/* ============================================================
+   LINKS dengan PASSWORD LOCK
+   ============================================================ */
+function renderLinks(rows){
+  rawLinksCache = rows;
+  const wrap = document.getElementById('wrapLinks');
+
+  if(!linksUnlocked){
+    if(document.getElementById('lockInput')){
+      return;
+    }
+    wrap.innerHTML = `
+      <div class="lock-box">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-title">Konten Terkunci</div>
+        <div class="lock-desc">Masukkan password untuk membuka akses</div>
+        <div class="lock-input-wrap">
+          <input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button>
+        </div>
+        <div class="lock-error" id="lockError"></div>
+        <div class="lock-note">🔐 Akses hanya untuk Teknisi</div>
+      </div>`;
+
+    lockRealValue = '';
+
+    setTimeout(() => {
+      const inp = document.getElementById('lockInput');
+      if(!inp) return;
+      inp.focus();
+
+      inp.addEventListener('input', () => {
+        const val = inp.value;
+        const realLen = lockRealValue.length;
+        const currentLen = val.length;
+
+        if(currentLen > realLen){
+          const diff = currentLen - realLen;
+          const newChars = val.slice(-diff);
+          lockRealValue += newChars;
+        } else if(currentLen < realLen){
+          lockRealValue = lockRealValue.slice(0, currentLen);
+        }
+
+        inp.value = '•'.repeat(lockRealValue.length);
+      });
+
+      inp.addEventListener('keypress', e => {
+        if(e.key === 'Enter') unlockLinks();
+      });
+    }, 50);
+    return;
+  }
+
+  renderLinksContent(rows);
+}
+
+async function unlockLinks(){
+  const input = document.getElementById('lockInput');
+  const err = document.getElementById('lockError');
+  const btn = document.getElementById('lockBtn');
+  const val = (lockRealValue || '').trim();
+
+  if(!val){
+    err.textContent = '❌ Password kosong';
+    return;
+  }
+
+  err.textContent = '⏳ Memeriksa...';
+  err.style.color = '#0284c7';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ password: val })
+    });
+    const data = await res.json();
+
+    if(data.ok === true){
+      linksUnlocked = true;
+      lockRealValue = '';
+      renderLinksContent(rawLinksCache);
+    } else {
+      err.textContent = '❌ Password salah';
+      err.style.color = '#dc2626';
+      input.value = '';
+      lockRealValue = '';
+      input.focus();
+      btn.disabled = false;
+    }
+  } catch(e){
+    err.textContent = '❌ Gagal terhubung. Coba lagi.';
+    err.style.color = '#dc2626';
+    btn.disabled = false;
+    console.error(e);
+  }
+}
+
+function lockLinks(){
+  linksUnlocked = false;
+  lockRealValue = '';
+  const wrap = document.getElementById('wrapLinks');
+  wrap.innerHTML = '';
+  renderLinks(rawLinksCache);
+}
+
+function renderLinksContent(rows){
+  const wrap = document.getElementById('wrapLinks');
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Belum ada link. Tambah tab "Links" di Google Sheets.</div>';
+    return;
+  }
+
+  const grouped = {};
+  rows.forEach(r => {
+    const kat = (r['kategori'] || 'Lainnya').trim();
+    if(!grouped[kat]) grouped[kat] = [];
+    grouped[kat].push(r);
+  });
+
+  let html = `<div class="lock-header">
+    <span class="lock-status">🔓 Terbuka</span>
+    <button class="lock-logout" onclick="lockLinks()">🔒 Kunci Lagi</button>
+  </div>`;
+
+  const specialCats = ['reminder', 'footer', 'password', 'config'];
+
+  Object.keys(grouped).forEach(kat => {
+    const katLower = kat.toLowerCase();
+    if(specialCats.includes(katLower)) return;
+
+    html += `<div class="link-group">
+      <div class="link-group-title">📂 ${kat}</div>
+      <div class="link-group-items">`;
+
+    grouped[kat].forEach(r => {
+      const label = (r['label'] || '').trim();
+      const url = (r['url'] || '').trim();
+      const icon = (r['icon'] || '').trim();
+      const hasValidUrl = url && url !== '-' && url.startsWith('http');
+
+      if(hasValidUrl){
+        html += `<a href="${url}" target="_blank" rel="noopener" class="link-btn">
+          ${icon ? `<span class="link-icon">${icon}</span>` : ''}
+          <span class="link-label">${label}</span>
+          <span class="link-arrow">→</span>
+        </a>`;
+      } else {
+        html += `<div class="link-text">
+          ${icon ? `<span class="link-icon">${icon}</span>` : ''}
+          <span>${label}</span>
+        </div>`;
+      }
+    });
+
+    html += `</div></div>`;
+  });
+
+  if(grouped['Reminder'] || grouped['reminder']){
+    const rem = grouped['Reminder'] || grouped['reminder'];
+    html += `<div class="reminder-box">
+      <div class="reminder-title">🛠️ Reminder Penting</div>
+      <ul class="reminder-list">`;
+    rem.forEach(r => {
+      const label = (r['label'] || '').trim();
+      html += `<li>${label}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  if(grouped['Footer'] || grouped['footer']){
+    const foot = grouped['Footer'] || grouped['footer'];
+    foot.forEach(r => {
+      html += `<div class="footer-note">${(r['label']||'').trim()}</div>`;
+    });
+  }
+
+  wrap.innerHTML = html;
+}
+
+/* ============================================================
+   MODAL VIEWER PDF
+   ============================================================ */
+function openWIPDF(nama, url){
+  document.getElementById('pdfTitle').textContent = nama || 'Dokumen';
+  document.getElementById('pdfFrame').src = url || 'about:blank';
+  
+  // Set link "Buka di tab baru" — konversi /preview jadi /view biar bisa copy
+  const btnOpen = document.getElementById('btnOpenOriginal');
+  let openUrl = url;
+  if(url.includes('/preview')){
+    openUrl = url.replace('/preview', '/view');
+  } else if(url.includes('/pubhtml')){
+    // biarin
+  } else if(url.includes('docs.google.com/document')){
+    openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
+  }
+  btnOpen.href = openUrl;
+  
+  document.getElementById('modalPDF').classList.add('active');
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove('active');
+  if(id === 'modalPDF'){
+    document.getElementById('pdfFrame').src = 'about:blank';
+  }
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if(e.target === el) closeModal(el.id);
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    closeModal('modalPDF');
+  }
+});
+
+/* ============================================================
+   UPDATE CARDS
+   ============================================================ */
+function updateCards(rows){
+  const today = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal'])));
+  const total = today.length;
+  const count = k => today.filter(r => statusClass(getFlex(r,['status','keterangan']))===k).length;
+  const on = count('onduty'), permit = count('permitted'),
+        sick = count('sick'), leave = count('onleave'),
+        wfh = count('wfh'),
+        other = count('unknown');
+
+  document.getElementById('cTotal').textContent  = total;
+  document.getElementById('cOn').textContent     = on;
+  document.getElementById('cWfh').textContent    = wfh;
+  document.getElementById('cPermit').textContent = permit;
+  document.getElementById('cSick').textContent   = sick;
+  document.getElementById('cLeave').textContent  = leave;
+  document.getElementById('cOther').textContent  = other;
+
+  const pct = n => total ? Math.round(n/total*100) : 0;
+  document.getElementById('pTotal').textContent  = `hari ini (${total} baris)`;
+  document.getElementById('pOn').textContent     = pct(on) + '%';
+  document.getElementById('pWfh').textContent    = pct(wfh) + '%';
+  document.getElementById('pPermit').textContent = pct(permit) + '%';
+  document.getElementById('pSick').textContent   = pct(sick) + '%';
+  document.getElementById('pLeave').textContent  = pct(leave) + '%';
+  document.getElementById('pOther').textContent  = pct(other) + '%';
+
+  document.getElementById('segOn').style.width     = pct(on) + '%';
+  document.getElementById('segWfh').style.width    = pct(wfh) + '%';
+  document.getElementById('segPermit').style.width = pct(permit) + '%';
+  document.getElementById('segSick').style.width   = pct(sick) + '%';
+  document.getElementById('segLeave').style.width  = pct(leave) + '%';
+  document.getElementById('segOther').style.width  = pct(other) + '%';
+
+  const onPct = pct(on);
+  document.getElementById('pTitle').textContent = onPct + '% Onsite';
+  document.getElementById('pTitle').style.color =
+    onPct >= 70 ? '#16a34a' : onPct >= 40 ? '#ea580c' : '#dc2626';
+}
+
+async function loadAll(){
+  const now = new Date();
+  try {
+    const [r1, r2, r3, r4, r5] = await Promise.all([
+      fetch(apiUrl('Lokasi')).then(r => r.json()),
+      fetch(apiUrl('Kegiatan')).then(r => r.json()),
+      fetch(apiUrl('Upcoming')).then(r => r.json()),
+      fetch(apiUrl('Links')).then(r => r.json()),
+      fetch(apiUrl('WI')).then(r => r.json())
+    ]);
+    rawLokasi = Array.isArray(r1) ? r1 : [];
+    rawKegiatan = Array.isArray(r2) ? r2 : [];
+    rawUpcoming = Array.isArray(r3) ? r3 : [];
+    rawLinks = Array.isArray(r4) ? r4 : [];
+    rawWI = Array.isArray(r5) ? r5 : [];
+    renderLokasi(rawLokasi);
+    renderKegiatan(rawKegiatan);
+    renderUpcoming(rawUpcoming);
+    renderWISection(rawWI);
+    renderLinks(rawLinks);
+    updateCards(rawLokasi);
+    document.getElementById('lastUpdate').textContent =
+      'Sync: ' + now.toLocaleTimeString('id-ID');
+  } catch(err) {
+    console.error(err);
+    document.getElementById('wrapLokasi').innerHTML =
+      '<div class="empty">❌ Gagal memuat. Cek URL Apps Script & nama sheet.</div>';
+  }
+}
+
+function tickClock(){
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID');
+  document.getElementById('today').textContent = now.toLocaleDateString('id-ID', {
+    weekday:'long', day:'numeric', month:'long', year:'numeric'
+  });
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi));
+document.getElementById('statusFilter').addEventListener('change', () => renderLokasi(rawLokasi));
+document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
+
+loadAll();
+setInterval(loadAll, 5000);
+</script>
+</body>
+</html>
