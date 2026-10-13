@@ -95,7 +95,7 @@
     font-size: 14px;
     font-weight: 700;
     color: #78350f;
-    animation: scroll-left 40s linear infinite;
+    animation: scroll-left linear infinite;
   }
   .marquee:hover { animation-play-state: paused; }
   @keyframes scroll-left {
@@ -520,8 +520,8 @@
   </div>
 </header>
 
-<!-- RUNNING TEXT PENGUMUMAN -->
-<div class="marquee-wrap" id="marqueeWrap" style="display:none;">
+<!-- RUNNING TEXT -->
+<div class="marquee-wrap" id="marqueeWrap">
   <div class="marquee-icon">📢</div>
   <div class="marquee" id="marqueeText"></div>
 </div>
@@ -655,6 +655,15 @@
    KONFIGURASI
    ============================================================ */
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
+
+/* ============================================================
+   RUNNING TEXT — EDIT DI SINI BUAT GANTI PENGUMUMAN
+   ============================================================ */
+const PENGUMUMAN = [
+  'Jangan lupa isi absensi hari ini',
+  'Close tiket SDP kalau udah selesai',
+  'Input Lembur Gausah di Tahan tahan - Keluarin aja'
+];
 /* ============================================================ */
 
 let rawLokasi = [];
@@ -662,7 +671,6 @@ let rawKegiatan = [];
 let rawUpcoming = [];
 let rawLinks = [];
 let rawWI = [];
-let rawPengumuman = [];
 let linksUnlocked = false;
 let rawLinksCache = [];
 let lockRealValue = '';
@@ -738,34 +746,27 @@ function isToday(dateStr){
 }
 
 /* ============================================================
-   RUNNING TEXT PENGUMUMAN
+   RUNNING TEXT
    ============================================================ */
-function renderPengumuman(rows){
-  const wrap = document.getElementById('marqueeWrap');
+function renderMarquee(){
   const txt = document.getElementById('marqueeText');
-  
-  // Ambil semua teks, filter kosong
-  const items = rows
-    .map(r => (r['teks'] || r['text'] || r['pengumuman'] || '').trim())
-    .filter(t => t);
-  
-  if(!items.length){
+  const wrap = document.getElementById('marqueeWrap');
+
+  if(!PENGUMUMAN.length){
     wrap.style.display = 'none';
     return;
   }
-  
-  // Gabung dengan separator
+
   const sep = ' <span class="sep">•</span> ';
-  const combined = items.join(sep);
-  
-  // Duplikat 2x biar seamless loop (animasi translateX -50%)
+  const combined = PENGUMUMAN.join(sep);
+
+  // Duplikat 2x biar looping seamless
   txt.innerHTML = combined + sep + combined + sep;
-  
-  // Set durasi animasi dinamis berdasarkan panjang teks
-  // Biar kalau teks panjang, gerak lebih cepat
-  const duration = Math.max(20, Math.min(80, items.length * 8));
+
+  // Durasi animasi auto-adjust berdasarkan panjang teks
+  const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8));
   txt.style.animationDuration = duration + 's';
-  
+
   wrap.style.display = 'block';
 }
 
@@ -1145,26 +1146,23 @@ function updateCards(rows){
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4, r5, r6] = await Promise.all([
+    const [r1, r2, r3, r4, r5] = await Promise.all([
       fetch(apiUrl('Lokasi')).then(r => r.json()),
       fetch(apiUrl('Kegiatan')).then(r => r.json()),
       fetch(apiUrl('Upcoming')).then(r => r.json()),
       fetch(apiUrl('Links')).then(r => r.json()),
-      fetch(apiUrl('WI')).then(r => r.json()),
-      fetch(apiUrl('Pengumuman')).then(r => r.json())
+      fetch(apiUrl('WI')).then(r => r.json())
     ]);
     rawLokasi = Array.isArray(r1) ? r1 : [];
     rawKegiatan = Array.isArray(r2) ? r2 : [];
     rawUpcoming = Array.isArray(r3) ? r3 : [];
     rawLinks = Array.isArray(r4) ? r4 : [];
     rawWI = Array.isArray(r5) ? r5 : [];
-    rawPengumuman = Array.isArray(r6) ? r6 : [];
     renderLokasi(rawLokasi);
     renderKegiatan(rawKegiatan);
     renderUpcoming(rawUpcoming);
     renderWISection(rawWI);
     renderLinks(rawLinks);
-    renderPengumuman(rawPengumuman);
     updateCards(rawLokasi);
     document.getElementById('lastUpdate').textContent =
       'Sync: ' + now.toLocaleTimeString('id-ID');
@@ -1189,6 +1187,7 @@ document.getElementById('searchInput').addEventListener('input', () => renderLok
 document.getElementById('statusFilter').addEventListener('change', () => renderLokasi(rawLokasi));
 document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
 
+renderMarquee();
 loadAll();
 setInterval(loadAll, 5000);
 </script>
