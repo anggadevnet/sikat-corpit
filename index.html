@@ -234,7 +234,7 @@
     border-left-color:#9333ea;
     box-shadow: 0 6px 16px rgba(99,102,241,0.12);
   }
-  .kegiatan-item .k-date { font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; font-weight:700; }
+  .kegiatan-item .k-date { font-size:11.5px; color:#6366f1; text-transform:capitalize; letter-spacing:.3px; font-weight:700; }
   .kegiatan-item .k-name { font-size:14px; color:#0f172a; font-weight:700; margin: 6px 0 8px; }
   .kegiatan-item .k-lokasi { font-size:12px; color:#7c3aed; font-weight:600; margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
   .kegiatan-item .k-lokasi::before { content:'📍'; font-size:12px; }
@@ -724,14 +724,7 @@ function getFlex(obj, keys){
 }
 
 /* ============================================================
-   PARSER TANGGAL INDONESIA (fleksibel)
-   ============================================================
-   Support format:
-   - "Rabu, 15/10/2026"
-   - "Rabu, 15-10-2026"
-   - "Rabu, 15 Oktober 2026"
-   - "15 Oktober 2026"
-   - "15/10/2026"
+   PARSER TANGGAL + VALIDASI HARI
    ============================================================ */
 const NAMA_BULAN_ID = {
   'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5,
@@ -739,6 +732,8 @@ const NAMA_BULAN_ID = {
   'jan':0, 'feb':1, 'mar':2, 'apr':3, 'jun':5, 'jul':6, 'agu':7, 'ags':7,
   'sep':8, 'okt':9, 'nov':10, 'des':11
 };
+
+const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
 function parseTanggalID(str){
   if(!str || str === '-') return null;
@@ -750,13 +745,13 @@ function parseTanggalID(str){
     const tgl = parseInt(matchAngka[1]);
     const bln = parseInt(matchAngka[2]) - 1;
     let thn = matchAngka[3] ? parseInt(matchAngka[3]) : new Date().getFullYear();
-    if(thn < 100) thn += 2000; // 26 → 2026
+    if(thn < 100) thn += 2000;
     if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11){
       return new Date(thn, bln, tgl);
     }
   }
 
-  // Coba format nama bulan: "15 Oktober 2026" atau "15 Okt 2026"
+  // Coba format nama bulan: "15 Oktober 2026"
   const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/);
   if(matchNama){
     const tgl = parseInt(matchNama[1]);
@@ -770,9 +765,46 @@ function parseTanggalID(str){
   return null;
 }
 
+/* Deteksi nama hari yang ditulis user (kalau ada) */
+function detectHariDitulis(str){
+  if(!str) return null;
+  const s = str.toString().toLowerCase();
+  for(const h of HARI_ID){
+    if(s.includes(h.toLowerCase())) return h;
+  }
+  return null;
+}
+
+/* Format tampilan: "Rabu, 15/10/2026" */
+function formatTanggalLengkap(date){
+  if(!date) return '-';
+  const hari = HARI_ID[date.getDay()];
+  const tgl = date.getDate().toString().padStart(2,'0');
+  const bln = (date.getMonth()+1).toString().padStart(2,'0');
+  const thn = date.getFullYear();
+  return `${hari}, ${tgl}/${bln}/${thn}`;
+}
+
+/* Cek valid: parse + nama hari cocok */
+function parseTanggalValid(str){
+  const date = parseTanggalID(str);
+  if(!date) return null;
+
+  const hariDitulis = detectHariDitulis(str);
+  if(hariDitulis){
+    const hariAsli = HARI_ID[date.getDay()];
+    if(hariDitulis.toLowerCase() !== hariAsli.toLowerCase()){
+      // Hari salah → return null (skip)
+      return null;
+    }
+  }
+
+  return date;
+}
+
 /* Cek apakah tanggal = hari ini */
 function isToday(dateStr){
-  const date = parseTanggalID(dateStr);
+  const date = parseTanggalValid(dateStr);
   if(!date) return false;
 
   const today = new Date();
@@ -784,7 +816,7 @@ function isToday(dateStr){
 
 /* Cek apakah tanggal > hari ini */
 function isFuture(dateStr){
-  const date = parseTanggalID(dateStr);
+  const date = parseTanggalValid(dateStr);
   if(!date) return false;
 
   const today = new Date();
@@ -842,8 +874,11 @@ function renderLokasi(rows){
   filtered.forEach(r=>{
     const raw = getFlex(r,['status','keterangan']);
     const cls = statusClass(raw);
+    const dateRaw = getFlex(r,['hari/tanggal','tanggal']);
+    const dateObj = parseTanggalValid(dateRaw);
+    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw;
     html += `<tr>
-      <td>${getFlex(r,['hari/tanggal','tanggal'])}</td>
+      <td>${dateDisplay}</td>
       <td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td>
       <td>${getFlex(r,['lokasi standby','lokasi'])}</td>
       <td><span class="badge ${cls}">${statusLabel(raw)}</span></td>
@@ -853,14 +888,14 @@ function renderLokasi(rows){
 }
 
 /* ============================================================
-   RENDER CURRENT EVENT (tanggal = hari ini)
+   RENDER CURRENT EVENT (tanggal = hari ini, valid)
    ============================================================ */
 function renderKegiatan(rows){
   const wrap = document.getElementById('wrapKegiatan');
 
   const current = rows.filter(r => {
-    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    return isToday(date);
+    const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    return isToday(dateStr);
   });
 
   document.getElementById('cntKegiatan').textContent = current.length;
@@ -872,12 +907,14 @@ function renderKegiatan(rows){
 
   let html = '<div class="kegiatan-list">';
   current.forEach(r=>{
-    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const dateObj = parseTanggalValid(dateRaw);
+    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw;
     const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']);
     const lokasi = getFlex(r,['lokasi']);
     const tech = getFlex(r,['teknisi','nama teknisi','nama']);
     html += `<div class="kegiatan-item">
-      <div class="k-date">${date}</div>
+      <div class="k-date">📅 ${dateDisplay}</div>
       <div class="k-name">${name}</div>
       ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
       <div class="k-tech">${tech}</div>
@@ -887,14 +924,14 @@ function renderKegiatan(rows){
 }
 
 /* ============================================================
-   RENDER UPCOMING EVENT (tanggal > hari ini)
+   RENDER UPCOMING EVENT (tanggal > hari ini, valid)
    ============================================================ */
 function renderUpcoming(rows){
   const wrap = document.getElementById('wrapUpcoming');
 
   const upcoming = rows.filter(r => {
-    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    return isFuture(date);
+    const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    return isFuture(dateStr);
   });
 
   document.getElementById('cntUpcoming').textContent = upcoming.length;
@@ -904,10 +941,10 @@ function renderUpcoming(rows){
     return;
   }
 
-  // Sort: terdekat di atas
+  // Sort terdekat di atas
   upcoming.sort((a, b) => {
-    const da = parseTanggalID(getFlex(a,['hari/tanggal','tanggal']));
-    const db = parseTanggalID(getFlex(b,['hari/tanggal','tanggal']));
+    const da = parseTanggalValid(getFlex(a,['hari/tanggal','tanggal']));
+    const db = parseTanggalValid(getFlex(b,['hari/tanggal','tanggal']));
     if(!da) return 1;
     if(!db) return -1;
     return da - db;
@@ -915,12 +952,14 @@ function renderUpcoming(rows){
 
   let html = '<div class="kegiatan-list">';
   upcoming.forEach(r=>{
-    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const dateObj = parseTanggalValid(dateRaw);
+    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw;
     const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']);
     const lokasi = getFlex(r,['lokasi']);
     const tech = getFlex(r,['teknisi','nama teknisi','nama']);
     html += `<div class="kegiatan-item upcoming-item">
-      <div class="k-date">📅 ${date}</div>
+      <div class="k-date">📅 ${dateDisplay}</div>
       <div class="k-name">${name}</div>
       ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
       <div class="k-tech">${tech}</div>
