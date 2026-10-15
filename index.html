@@ -237,6 +237,8 @@
   }
   .kegiatan-item .k-date { font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; font-weight:700; }
   .kegiatan-item .k-name { font-size:14px; color:#0f172a; font-weight:700; margin: 6px 0 8px; }
+  .kegiatan-item .k-lokasi { font-size:12px; color:#7c3aed; font-weight:600; margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
+  .kegiatan-item .k-lokasi::before { content:'📍'; font-size:12px; }
   .kegiatan-item .k-tech { font-size:12px; color:#0284c7; display:flex; align-items:center; gap:6px; font-weight:600; }
   .kegiatan-item .k-tech::before { content:'👤'; font-size:12px; }
   .kegiatan-item.upcoming-item {
@@ -248,12 +250,11 @@
     box-shadow: 0 6px 16px rgba(245,158,11,0.18);
   }
   .kegiatan-item.upcoming-item .k-date { color: #d97706; }
+  .kegiatan-item.upcoming-item .k-lokasi { color: #b45309; }
   .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
 
   /* WI SECTION - ACCORDION */
-  .wi-accordion {
-    display: flex; flex-direction: column; gap: 10px;
-  }
+  .wi-accordion { display: flex; flex-direction: column; gap: 10px; }
   .wi-accordion-item {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -281,59 +282,36 @@
     flex-shrink: 0;
   }
   .wi-accordion-item.open .wi-accordion-icon { transform: rotate(90deg); color: #0284c7; }
-  .wi-accordion-title {
-    flex: 1;
-    font-size: 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .wi-accordion-title { flex: 1; font-size: 14px; display: flex; align-items: center; gap: 8px; }
   .wi-accordion-count {
-    font-size: 11px;
-    background: #e0f2fe;
-    color: #0369a1;
-    padding: 3px 10px;
-    border-radius: 10px;
-    font-weight: 700;
-    flex-shrink: 0;
+    font-size: 11px; background: #e0f2fe; color: #0369a1;
+    padding: 3px 10px; border-radius: 10px; font-weight: 700; flex-shrink: 0;
   }
   .wi-accordion-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
+    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
   }
-  .wi-accordion-item.open .wi-accordion-body {
-    max-height: 3000px;
-  }
+  .wi-accordion-item.open .wi-accordion-body { max-height: 3000px; }
   .wi-accordion-content {
-    padding: 0 18px 16px 18px;
-    display: grid; gap: 8px;
+    padding: 0 18px 16px 18px; display: grid; gap: 8px;
   }
   .wi-cat-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    color: #334155;
-    transition: all 0.2s;
-    border-left: 3px solid #6366f1;
+    padding: 10px 12px; background: #f8fafc;
+    border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; color: #334155;
+    transition: all 0.2s; border-left: 3px solid #6366f1;
     text-decoration: none;
   }
   .wi-cat-item:hover {
-    background: #eff6ff;
-    border-left-color: #9333ea;
+    background: #eff6ff; border-left-color: #9333ea;
     transform: translateX(3px);
   }
   .wi-cat-item::before { content: '📄'; font-size: 13px; flex-shrink:0; }
   .wi-cat-item .wi-cat-name { flex: 1; }
   .wi-cat-item .link-arrow {
-    color: #94a3b8; font-weight: 700;
-    transition: all 0.2s;
+    color: #94a3b8; font-weight: 700; transition: all 0.2s;
   }
-  .wi-cat-item:hover .link-arrow {
-    color: #0284c7; transform: translateX(3px);
-  }
+  .wi-cat-item:hover .link-arrow { color: #0284c7; transform: translateX(3px); }
 
   .link-group { margin-bottom: 18px; }
   .link-group-title {
@@ -366,9 +344,7 @@
     color: #94a3b8; font-weight: 700;
     transition: transform 0.2s, color 0.2s;
   }
-  .link-btn:hover .link-arrow {
-    color: #0284c7; transform: translateX(3px);
-  }
+  .link-btn:hover .link-arrow { color: #0284c7; transform: translateX(3px); }
   .link-text {
     display: flex; align-items: center; gap: 10px;
     background: #f8fafc; border: 1px dashed #cbd5e1;
@@ -379,18 +355,15 @@
     background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
     border: 1px solid #fcd34d;
     border-left: 4px solid #f59e0b;
-    border-radius: 12px; padding: 18px 20px;
-    margin-bottom: 16px;
+    border-radius: 12px; padding: 18px 20px; margin-bottom: 16px;
   }
   .reminder-title {
-    font-size: 14px; font-weight: 800; color: #92400e;
-    margin-bottom: 10px;
+    font-size: 14px; font-weight: 800; color: #92400e; margin-bottom: 10px;
   }
   .reminder-list { list-style: none; padding: 0; margin: 0; }
   .reminder-list li {
     font-size: 13px; color: #78350f;
-    padding: 6px 0 6px 22px; position: relative;
-    line-height: 1.5;
+    padding: 6px 0 6px 22px; position: relative; line-height: 1.5;
   }
   .reminder-list li::before {
     content: '•'; position: absolute; left: 8px;
@@ -424,25 +397,19 @@
     margin: 0 auto;
   }
   .lock-icon { font-size: 48px; margin-bottom: 12px; }
-  .lock-title {
-    font-size: 16px; font-weight: 800; color: #0f172a;
-    margin-bottom: 6px;
-  }
+  .lock-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
   .lock-desc { font-size: 13px; color: #64748b; margin-bottom: 20px; }
   .lock-input-wrap {
-    display: flex; gap: 8px;
-    max-width: 340px; margin: 0 auto 12px;
+    display: flex; gap: 8px; max-width: 340px; margin: 0 auto 12px;
   }
   .lock-input {
     flex: 1; padding: 12px 14px;
     border: 1px solid #e2e8f0; border-radius: 10px;
     font-size: 14px; outline: none; font-family: inherit;
-    transition: border 0.2s;
-    letter-spacing: 2px;
+    transition: border 0.2s; letter-spacing: 2px;
   }
   .lock-input:focus {
-    border-color: #0284c7;
-    box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
+    border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
   }
   .lock-btn {
     background: linear-gradient(90deg,#0284c7,#4f46e5);
@@ -472,8 +439,7 @@
     backdrop-filter: blur(4px);
     z-index: 9999;
     display: flex; align-items: center; justify-content: center;
-    padding: 20px;
-    opacity: 0; pointer-events: none;
+    padding: 20px; opacity: 0; pointer-events: none;
     transition: opacity 0.2s;
   }
   .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -672,7 +638,7 @@
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI • 2026 • acg</footer>
+<footer>SIKAT-TI • realtime • by acg</footer>
 
 <div class="modal-overlay" id="modalPDF">
   <div class="modal-box modal-wide">
@@ -694,18 +660,17 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
 
 /* ============================================================
-   RUNNING TEXT — EDIT DI SINI BUAT GANTI PENGUMUMAN
+   RUNNING TEXT — EDIT DI SINI
    ============================================================ */
 const PENGUMUMAN = [
   'Jangan lupa isi absensi hari ini',
   'Close tiket SDP kalau udah selesai',
-  'Input Lembur - jangan lupa minta tiket ke HD'
+  'Input Lembur Gausah di Tahan tahan - Keluarin aja'
 ];
 /* ============================================================ */
 
 let rawLokasi = [];
 let rawKegiatan = [];
-let rawUpcoming = [];
 let rawLinks = [];
 let rawWI = [];
 let linksUnlocked = false;
@@ -796,7 +761,6 @@ function parseTanggalID(str){
   if(!str || str === '-') return null;
   const s = str.toString().toLowerCase().trim();
 
-  // Format: "Jumat, 16 Oktober" atau "16 Oktober 2025"
   const match = s.match(/(\d{1,2})\s+([a-z]+)/);
   if(match){
     const tgl = parseInt(match[1]);
@@ -808,7 +772,6 @@ function parseTanggalID(str){
     }
   }
 
-  // Format: "16/10/2025" atau "16-10-2025"
   const match2 = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{4}))?/);
   if(match2){
     const tgl = parseInt(match2[1]);
@@ -822,12 +785,10 @@ function parseTanggalID(str){
 
 function isUpcoming(dateStr){
   const date = parseTanggalID(dateStr);
-  if(!date) return true; // Kalau gak bisa di-parse, biarin tampil
-
+  if(!date) return true;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   date.setHours(0, 0, 0, 0);
-
   return date >= today;
 }
 
@@ -837,20 +798,15 @@ function isUpcoming(dateStr){
 function renderMarquee(){
   const txt = document.getElementById('marqueeText');
   const wrap = document.getElementById('marqueeWrap');
-
   if(!PENGUMUMAN.length){
     wrap.style.display = 'none';
     return;
   }
-
   const sep = ' <span class="sep">•</span> ';
   const combined = PENGUMUMAN.join(sep);
-
   txt.innerHTML = combined + sep + combined + sep;
-
   const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8));
   txt.style.animationDuration = duration + 's';
-
   wrap.style.display = 'block';
 }
 
@@ -894,22 +850,35 @@ function renderLokasi(rows){
   wrap.innerHTML = html + '</tbody></table></div>';
 }
 
+/* ============================================================
+   RENDER CURRENT EVENT (tanggal = hari ini)
+   ============================================================ */
 function renderKegiatan(rows){
   const wrap = document.getElementById('wrapKegiatan');
-  document.getElementById('cntKegiatan').textContent = rows.length;
-  if(!rows.length){
-    wrap.innerHTML = '<div class="empty">Belum ada kegiatan</div>';
+
+  // Filter: cuma yang tanggalnya HARI INI
+  const current = rows.filter(r => {
+    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    return isToday(date);
+  });
+
+  document.getElementById('cntKegiatan').textContent = current.length;
+
+  if(!current.length){
+    wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>';
     return;
   }
+
   let html = '<div class="kegiatan-list">';
-  rows.forEach(r=>{
+  current.forEach(r=>{
     const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan standby meeting','kegiatan [standby] meeting']);
+    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']);
+    const lokasi = getFlex(r,['lokasi']);
     const tech = getFlex(r,['teknisi','nama teknisi','nama']);
-    if(date === '-' && name === '-' && tech === '-') return;
     html += `<div class="kegiatan-item">
       <div class="k-date">${date}</div>
       <div class="k-name">${name}</div>
+      ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
       <div class="k-tech">${tech}</div>
     </div>`;
   });
@@ -917,15 +886,21 @@ function renderKegiatan(rows){
 }
 
 /* ============================================================
-   RENDER UPCOMING — filter otomatis (yang udah lewat gak tampil)
+   RENDER UPCOMING EVENT (tanggal > hari ini)
    ============================================================ */
 function renderUpcoming(rows){
   const wrap = document.getElementById('wrapUpcoming');
 
-  // Filter: cuma yang tanggalnya >= hari ini
+  // Filter: cuma yang tanggalnya > hari ini
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const upcoming = rows.filter(r => {
-    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    return isUpcoming(date);
+    const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    const date = parseTanggalID(dateStr);
+    if(!date) return false;
+    date.setHours(0, 0, 0, 0);
+    return date > today;
   });
 
   document.getElementById('cntUpcoming').textContent = upcoming.length;
@@ -935,7 +910,7 @@ function renderUpcoming(rows){
     return;
   }
 
-  // Sort: event terdekat di atas
+  // Sort: terdekat di atas
   upcoming.sort((a, b) => {
     const da = parseTanggalID(getFlex(a,['hari/tanggal','tanggal']));
     const db = parseTanggalID(getFlex(b,['hari/tanggal','tanggal']));
@@ -947,12 +922,13 @@ function renderUpcoming(rows){
   let html = '<div class="kegiatan-list">';
   upcoming.forEach(r=>{
     const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','upcoming event']);
+    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']);
+    const lokasi = getFlex(r,['lokasi']);
     const tech = getFlex(r,['teknisi','nama teknisi','nama']);
-    if(date === '-' && name === '-' && tech === '-') return;
     html += `<div class="kegiatan-item upcoming-item">
       <div class="k-date">📅 ${date}</div>
       <div class="k-name">${name}</div>
+      ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
       <div class="k-tech">${tech}</div>
     </div>`;
   });
@@ -960,7 +936,7 @@ function renderUpcoming(rows){
 }
 
 /* ============================================================
-   WI SECTION — ACCORDION PER KATEGORI
+   WI SECTION — ACCORDION
    ============================================================ */
 function renderWISection(rows){
   const wrap = document.getElementById('wrapWISection');
@@ -993,7 +969,6 @@ function renderWISection(rows){
       </div>
       <div class="wi-accordion-body">
         <div class="wi-accordion-content">`;
-
     grouped[kat].forEach(r => {
       const nama = (r['nama'] || '').trim();
       const url = (r['url_pdf'] || '').trim();
@@ -1005,7 +980,6 @@ function renderWISection(rows){
         <span class="link-arrow">→</span>
       </div>`;
     });
-
     html += `</div></div></div>`;
   });
   html += '</div>';
@@ -1017,7 +991,6 @@ function toggleWIAccordion(headerEl){
   if(!item) return;
   const kat = item.getAttribute('data-kat');
   const isOpen = item.classList.toggle('open');
-
   let openState = {};
   try {
     openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
@@ -1034,9 +1007,7 @@ function renderLinks(rows){
   const wrap = document.getElementById('wrapLinks');
 
   if(!linksUnlocked){
-    if(document.getElementById('lockInput')){
-      return;
-    }
+    if(document.getElementById('lockInput')) return;
     wrap.innerHTML = `
       <div class="lock-box">
         <div class="lock-icon">🔒</div>
@@ -1049,37 +1020,29 @@ function renderLinks(rows){
         <div class="lock-error" id="lockError"></div>
         <div class="lock-note">🔐 Akses hanya untuk Teknisi</div>
       </div>`;
-
     lockRealValue = '';
-
     setTimeout(() => {
       const inp = document.getElementById('lockInput');
       if(!inp) return;
       inp.focus();
-
       inp.addEventListener('input', () => {
         const val = inp.value;
         const realLen = lockRealValue.length;
         const currentLen = val.length;
-
         if(currentLen > realLen){
           const diff = currentLen - realLen;
-          const newChars = val.slice(-diff);
-          lockRealValue += newChars;
+          lockRealValue += val.slice(-diff);
         } else if(currentLen < realLen){
           lockRealValue = lockRealValue.slice(0, currentLen);
         }
-
         inp.value = '•'.repeat(lockRealValue.length);
       });
-
       inp.addEventListener('keypress', e => {
         if(e.key === 'Enter') unlockLinks();
       });
     }, 50);
     return;
   }
-
   renderLinksContent(rows);
 }
 
@@ -1088,23 +1051,19 @@ async function unlockLinks(){
   const err = document.getElementById('lockError');
   const btn = document.getElementById('lockBtn');
   const val = (lockRealValue || '').trim();
-
   if(!val){
     err.textContent = '❌ Password kosong';
     return;
   }
-
   err.textContent = '⏳ Memeriksa...';
   err.style.color = '#0284c7';
   btn.disabled = true;
-
   try {
     const res = await fetch(WEB_APP_URL, {
       method: 'POST',
       body: JSON.stringify({ password: val })
     });
     const data = await res.json();
-
     if(data.ok === true){
       linksUnlocked = true;
       lockRealValue = '';
@@ -1121,7 +1080,6 @@ async function unlockLinks(){
     err.textContent = '❌ Gagal terhubung. Coba lagi.';
     err.style.color = '#dc2626';
     btn.disabled = false;
-    console.error(e);
   }
 }
 
@@ -1139,7 +1097,6 @@ function renderLinksContent(rows){
     wrap.innerHTML = '<div class="empty">Belum ada link. Tambah tab "Links" di Google Sheets.</div>';
     return;
   }
-
   const grouped = {};
   rows.forEach(r => {
     const kat = (r['kategori'] || 'Lainnya').trim();
@@ -1153,21 +1110,17 @@ function renderLinksContent(rows){
   </div>`;
 
   const specialCats = ['reminder', 'footer', 'password', 'config'];
-
   Object.keys(grouped).forEach(kat => {
     const katLower = kat.toLowerCase();
     if(specialCats.includes(katLower)) return;
-
     html += `<div class="link-group">
       <div class="link-group-title">📂 ${kat}</div>
       <div class="link-group-items">`;
-
     grouped[kat].forEach(r => {
       const label = (r['label'] || '').trim();
       const url = (r['url'] || '').trim();
       const icon = (r['icon'] || '').trim();
       const hasValidUrl = url && url !== '-' && url.startsWith('http');
-
       if(hasValidUrl){
         html += `<a href="${url}" target="_blank" rel="noopener" class="link-btn">
           ${icon ? `<span class="link-icon">${icon}</span>` : ''}
@@ -1181,7 +1134,6 @@ function renderLinksContent(rows){
         </div>`;
       }
     });
-
     html += `</div></div>`;
   });
 
@@ -1191,8 +1143,7 @@ function renderLinksContent(rows){
       <div class="reminder-title">🛠️ Reminder Penting</div>
       <ul class="reminder-list">`;
     rem.forEach(r => {
-      const label = (r['label'] || '').trim();
-      html += `<li>${label}</li>`;
+      html += `<li>${(r['label'] || '').trim()}</li>`;
     });
     html += `</ul></div>`;
   }
@@ -1203,18 +1154,15 @@ function renderLinksContent(rows){
       html += `<div class="footer-note">${(r['label']||'').trim()}</div>`;
     });
   }
-
   wrap.innerHTML = html;
 }
 
 function openWIPDF(nama, url){
   document.getElementById('pdfTitle').textContent = nama || 'Dokumen';
   document.getElementById('pdfFrame').src = url || 'about:blank';
-  
   const btnOpen = document.getElementById('btnOpenOriginal');
   let openUrl = url;
   let btnLabel = '↗ Buka di tab baru';
-  
   if(url.includes('docs.google.com/document')){
     openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
     btnLabel = '✏️ Edit di Google Docs';
@@ -1223,12 +1171,9 @@ function openWIPDF(nama, url){
     btnLabel = '✏️ Edit di Google Sheets';
   } else if(url.includes('/preview')){
     openUrl = url.replace('/preview', '/view');
-    btnLabel = '↗ Buka di tab baru';
   }
-  
   btnOpen.href = openUrl;
   btnOpen.textContent = btnLabel;
-  
   document.getElementById('modalPDF').classList.add('active');
 }
 
@@ -1246,9 +1191,7 @@ document.querySelectorAll('.modal-overlay').forEach(el => {
 });
 
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){
-    closeModal('modalPDF');
-  }
+  if(e.key === 'Escape') closeModal('modalPDF');
 });
 
 function updateCards(rows){
@@ -1257,8 +1200,7 @@ function updateCards(rows){
   const count = k => today.filter(r => statusClass(getFlex(r,['status','keterangan']))===k).length;
   const on = count('onduty'), permit = count('permitted'),
         sick = count('sick'), leave = count('onleave'),
-        wfh = count('wfh'),
-        other = count('unknown');
+        wfh = count('wfh'), other = count('unknown');
 
   document.getElementById('cTotal').textContent  = total;
   document.getElementById('cOn').textContent     = on;
@@ -1293,21 +1235,19 @@ function updateCards(rows){
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4, r5] = await Promise.all([
+    const [r1, r2, r3, r4] = await Promise.all([
       fetch(apiUrl('Lokasi')).then(r => r.json()),
-      fetch(apiUrl('Kegiatan')).then(r => r.json()),
-      fetch(apiUrl('Upcoming')).then(r => r.json()),
+      fetch(apiUrl('kegiatan')).then(r => r.json()),
       fetch(apiUrl('Links')).then(r => r.json()),
       fetch(apiUrl('WI')).then(r => r.json())
     ]);
     rawLokasi = Array.isArray(r1) ? r1 : [];
     rawKegiatan = Array.isArray(r2) ? r2 : [];
-    rawUpcoming = Array.isArray(r3) ? r3 : [];
-    rawLinks = Array.isArray(r4) ? r4 : [];
-    rawWI = Array.isArray(r5) ? r5 : [];
+    rawLinks = Array.isArray(r3) ? r3 : [];
+    rawWI = Array.isArray(r4) ? r4 : [];
     renderLokasi(rawLokasi);
     renderKegiatan(rawKegiatan);
-    renderUpcoming(rawUpcoming);
+    renderUpcoming(rawKegiatan);
     renderWISection(rawWI);
     renderLinks(rawLinks);
     updateCards(rawLokasi);
