@@ -250,53 +250,90 @@
   .kegiatan-item.upcoming-item .k-date { color: #d97706; }
   .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
 
-  .wi-section-wrap {
-    display: grid; gap: 14px;
-    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  /* WI SECTION - ACCORDION */
+  .wi-accordion {
+    display: flex; flex-direction: column; gap: 10px;
   }
-  .wi-cat-block {
+  .wi-accordion-item {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-left: 4px solid #6366f1;
     border-radius: 12px;
-    padding: 14px 16px;
+    overflow: hidden;
     box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.2s;
   }
-  .wi-cat-block:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99,102,241,0.12);
+  .wi-accordion-item:hover { box-shadow: 0 4px 12px rgba(99,102,241,0.1); }
+  .wi-accordion-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    font-weight: 700;
+    color: #334155;
   }
-  .wi-cat-title {
-    font-size: 12px; font-weight: 800; color: #475569;
-    text-transform: uppercase; letter-spacing: .8px;
-    margin-bottom: 10px;
+  .wi-accordion-header:hover { background: #f8fafc; }
+  .wi-accordion-icon {
+    font-size: 16px;
+    transition: transform 0.25s ease;
+    color: #94a3b8;
+    flex-shrink: 0;
+  }
+  .wi-accordion-item.open .wi-accordion-icon { transform: rotate(90deg); color: #0284c7; }
+  .wi-accordion-title {
+    flex: 1;
+    font-size: 14px;
     display: flex; align-items: center; gap: 8px;
   }
-  .wi-cat-count {
-    background: #e0f2fe; color: #0369a1;
-    padding: 2px 8px; border-radius: 10px; font-size: 11px;
+  .wi-accordion-count {
+    font-size: 11px;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
   }
-  .wi-cat-list { display: grid; gap: 6px; }
+  .wi-accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .wi-accordion-item.open .wi-accordion-body {
+    max-height: 3000px;
+  }
+  .wi-accordion-content {
+    padding: 0 18px 16px 18px;
+    display: grid; gap: 8px;
+  }
   .wi-cat-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 9px 11px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
     background: #f8fafc;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 600;
     color: #334155;
     transition: all 0.2s;
     border-left: 3px solid #6366f1;
+    text-decoration: none;
   }
   .wi-cat-item:hover {
     background: #eff6ff;
     border-left-color: #9333ea;
     transform: translateX(3px);
   }
-  .wi-cat-item::before { content: '📄'; font-size: 12px; flex-shrink:0; }
+  .wi-cat-item::before { content: '📄'; font-size: 13px; flex-shrink:0; }
   .wi-cat-item .wi-cat-name { flex: 1; }
+  .wi-cat-item .link-arrow {
+    color: #94a3b8; font-weight: 700;
+    transition: all 0.2s;
+  }
+  .wi-cat-item:hover .link-arrow {
+    color: #0284c7; transform: translateX(3px);
+  }
 
   .link-group { margin-bottom: 18px; }
   .link-group-title {
@@ -760,10 +797,8 @@ function renderMarquee(){
   const sep = ' <span class="sep">•</span> ';
   const combined = PENGUMUMAN.join(sep);
 
-  // Duplikat 2x biar looping seamless
   txt.innerHTML = combined + sep + combined + sep;
 
-  // Durasi animasi auto-adjust berdasarkan panjang teks
   const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8));
   txt.style.animationDuration = duration + 's';
 
@@ -854,6 +889,9 @@ function renderUpcoming(rows){
   wrap.innerHTML = html + '</div>';
 }
 
+/* ============================================================
+   WI SECTION — ACCORDION PER KATEGORI
+   ============================================================ */
 function renderWISection(rows){
   const wrap = document.getElementById('wrapWISection');
   document.getElementById('cntWI').textContent = rows.length;
@@ -869,11 +907,24 @@ function renderWISection(rows){
     grouped[kat].push(r);
   });
 
-  let html = '<div class="wi-section-wrap">';
+  // Ambil state expand dari localStorage
+  let openState = {};
+  try {
+    openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
+  } catch(e){ openState = {}; }
+
+  let html = '<div class="wi-accordion">';
   Object.keys(grouped).forEach(kat => {
-    html += `<div class="wi-cat-block">
-      <div class="wi-cat-title">📂 ${kat} <span class="wi-cat-count">${grouped[kat].length}</span></div>
-      <div class="wi-cat-list">`;
+    const isOpen = !!openState[kat];
+    html += `<div class="wi-accordion-item ${isOpen ? 'open' : ''}" data-kat="${kat.replace(/"/g,'&quot;')}">
+      <div class="wi-accordion-header" onclick="toggleWIAccordion(this)">
+        <span class="wi-accordion-icon">▶</span>
+        <span class="wi-accordion-title">📂 ${kat}</span>
+        <span class="wi-accordion-count">${grouped[kat].length}</span>
+      </div>
+      <div class="wi-accordion-body">
+        <div class="wi-accordion-content">`;
+
     grouped[kat].forEach(r => {
       const nama = (r['nama'] || '').trim();
       const url = (r['url_pdf'] || '').trim();
@@ -885,12 +936,31 @@ function renderWISection(rows){
         <span class="link-arrow">→</span>
       </div>`;
     });
-    html += `</div></div>`;
+
+    html += `</div></div></div>`;
   });
   html += '</div>';
   wrap.innerHTML = html;
 }
 
+function toggleWIAccordion(headerEl){
+  const item = headerEl.closest('.wi-accordion-item');
+  if(!item) return;
+  const kat = item.getAttribute('data-kat');
+  const isOpen = item.classList.toggle('open');
+
+  // Simpan state ke localStorage
+  let openState = {};
+  try {
+    openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
+  } catch(e){ openState = {}; }
+  openState[kat] = isOpen;
+  localStorage.setItem('wiOpenState', JSON.stringify(openState));
+}
+
+/* ============================================================
+   LINKS
+   ============================================================ */
 function renderLinks(rows){
   rawLinksCache = rows;
   const wrap = document.getElementById('wrapLinks');
@@ -1075,12 +1145,21 @@ function openWIPDF(nama, url){
   
   const btnOpen = document.getElementById('btnOpenOriginal');
   let openUrl = url;
-  if(url.includes('/preview')){
-    openUrl = url.replace('/preview', '/view');
-  } else if(url.includes('docs.google.com/document')){
+  let btnLabel = '↗ Buka di tab baru';
+  
+  if(url.includes('docs.google.com/document')){
     openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
+    btnLabel = '✏️ Edit di Google Docs';
+  } else if(url.includes('docs.google.com/spreadsheets')){
+    openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
+    btnLabel = '✏️ Edit di Google Sheets';
+  } else if(url.includes('/preview')){
+    openUrl = url.replace('/preview', '/view');
+    btnLabel = '↗ Buka di tab baru';
   }
+  
   btnOpen.href = openUrl;
+  btnOpen.textContent = btnLabel;
   
   document.getElementById('modalPDF').classList.add('active');
 }
