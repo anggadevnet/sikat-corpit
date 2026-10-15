@@ -672,7 +672,7 @@
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI • realtime • by acg</footer>
+<footer>SIKAT-TI • 2026 • acg</footer>
 
 <div class="modal-overlay" id="modalPDF">
   <div class="modal-box modal-wide">
@@ -699,7 +699,7 @@ const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJ
 const PENGUMUMAN = [
   'Jangan lupa isi absensi hari ini',
   'Close tiket SDP kalau udah selesai',
-  'Input Lembur Gausah di Tahan tahan - Keluarin aja'
+  'Input Lembur - jangan lupa minta tiket ke HD'
 ];
 /* ============================================================ */
 
@@ -780,6 +780,55 @@ function isToday(dateStr){
                  || s.includes(`${tgl}-${bln}`)
                  || s.includes(`${thn}-${bln}-${tgl}`);
   return matchHari || matchTgl;
+}
+
+/* ============================================================
+   PARSER TANGGAL INDONESIA
+   ============================================================ */
+const NAMA_BULAN_ID = {
+  'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5,
+  'juli':6, 'agustus':7, 'september':8, 'oktober':9, 'november':10, 'desember':11,
+  'jan':0, 'feb':1, 'mar':2, 'apr':3, 'jun':5, 'jul':6, 'agu':7, 'ags':7,
+  'sep':8, 'okt':9, 'nov':10, 'des':11
+};
+
+function parseTanggalID(str){
+  if(!str || str === '-') return null;
+  const s = str.toString().toLowerCase().trim();
+
+  // Format: "Jumat, 16 Oktober" atau "16 Oktober 2025"
+  const match = s.match(/(\d{1,2})\s+([a-z]+)/);
+  if(match){
+    const tgl = parseInt(match[1]);
+    const bln = NAMA_BULAN_ID[match[2]];
+    if(bln !== undefined){
+      const tahunMatch = s.match(/(\d{4})/);
+      const thn = tahunMatch ? parseInt(tahunMatch[1]) : new Date().getFullYear();
+      return new Date(thn, bln, tgl);
+    }
+  }
+
+  // Format: "16/10/2025" atau "16-10-2025"
+  const match2 = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{4}))?/);
+  if(match2){
+    const tgl = parseInt(match2[1]);
+    const bln = parseInt(match2[2]) - 1;
+    const thn = match2[3] ? parseInt(match2[3]) : new Date().getFullYear();
+    return new Date(thn, bln, tgl);
+  }
+
+  return null;
+}
+
+function isUpcoming(dateStr){
+  const date = parseTanggalID(dateStr);
+  if(!date) return true; // Kalau gak bisa di-parse, biarin tampil
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+
+  return date >= today;
 }
 
 /* ============================================================
@@ -867,15 +916,36 @@ function renderKegiatan(rows){
   wrap.innerHTML = html + '</div>';
 }
 
+/* ============================================================
+   RENDER UPCOMING — filter otomatis (yang udah lewat gak tampil)
+   ============================================================ */
 function renderUpcoming(rows){
   const wrap = document.getElementById('wrapUpcoming');
-  document.getElementById('cntUpcoming').textContent = rows.length;
-  if(!rows.length){
+
+  // Filter: cuma yang tanggalnya >= hari ini
+  const upcoming = rows.filter(r => {
+    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    return isUpcoming(date);
+  });
+
+  document.getElementById('cntUpcoming').textContent = upcoming.length;
+
+  if(!upcoming.length){
     wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>';
     return;
   }
+
+  // Sort: event terdekat di atas
+  upcoming.sort((a, b) => {
+    const da = parseTanggalID(getFlex(a,['hari/tanggal','tanggal']));
+    const db = parseTanggalID(getFlex(b,['hari/tanggal','tanggal']));
+    if(!da) return 1;
+    if(!db) return -1;
+    return da - db;
+  });
+
   let html = '<div class="kegiatan-list">';
-  rows.forEach(r=>{
+  upcoming.forEach(r=>{
     const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
     const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','upcoming event']);
     const tech = getFlex(r,['teknisi','nama teknisi','nama']);
@@ -907,7 +977,6 @@ function renderWISection(rows){
     grouped[kat].push(r);
   });
 
-  // Ambil state expand dari localStorage
   let openState = {};
   try {
     openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
@@ -949,7 +1018,6 @@ function toggleWIAccordion(headerEl){
   const kat = item.getAttribute('data-kat');
   const isOpen = item.classList.toggle('open');
 
-  // Simpan state ke localStorage
   let openState = {};
   try {
     openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
