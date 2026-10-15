@@ -47,7 +47,6 @@
   .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.4; transform:scale(1.3)} }
 
-  /* RUNNING TEXT */
   .marquee-wrap {
     background: linear-gradient(90deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
     border: 1px solid #fcd34d;
@@ -253,7 +252,6 @@
   .kegiatan-item.upcoming-item .k-lokasi { color: #b45309; }
   .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
 
-  /* WI SECTION - ACCORDION */
   .wi-accordion { display: flex; flex-direction: column; gap: 10px; }
   .wi-accordion-item {
     background: #ffffff;
@@ -523,7 +521,6 @@
   </div>
 </header>
 
-<!-- RUNNING TEXT -->
 <div class="marquee-wrap" id="marqueeWrap">
   <div class="marquee-icon">📢</div>
   <div class="marquee" id="marqueeText"></div>
@@ -659,15 +656,11 @@
    ============================================================ */
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
 
-/* ============================================================
-   RUNNING TEXT — EDIT DI SINI
-   ============================================================ */
 const PENGUMUMAN = [
   'Jangan lupa isi absensi hari ini',
   'Close tiket SDP kalau udah selesai',
   'Input Lembur Gausah di Tahan tahan - Keluarin aja'
 ];
-/* ============================================================ */
 
 let rawLokasi = [];
 let rawKegiatan = [];
@@ -730,25 +723,15 @@ function getFlex(obj, keys){
   return '-';
 }
 
-function isToday(dateStr){
-  if(!dateStr || dateStr === '-' || dateStr === 'null') return false;
-  const today = new Date();
-  const hariIndo = ['minggu','senin','selasa','rabu','kamis','jumat','sabtu'][today.getDay()];
-  const tgl = today.getDate().toString().padStart(2,'0');
-  const bln = (today.getMonth()+1).toString().padStart(2,'0');
-  const thn = today.getFullYear();
-  const s = dateStr.toString().toLowerCase();
-  const matchHari = s.includes(hariIndo);
-  const matchTgl  = s.includes(`${tgl}/${bln}/${thn}`)
-                 || s.includes(`${tgl}-${bln}-${thn}`)
-                 || s.includes(`${tgl}/${bln}`)
-                 || s.includes(`${tgl}-${bln}`)
-                 || s.includes(`${thn}-${bln}-${tgl}`);
-  return matchHari || matchTgl;
-}
-
 /* ============================================================
-   PARSER TANGGAL INDONESIA
+   PARSER TANGGAL INDONESIA (fleksibel)
+   ============================================================
+   Support format:
+   - "Rabu, 15/10/2026"
+   - "Rabu, 15-10-2026"
+   - "Rabu, 15 Oktober 2026"
+   - "15 Oktober 2026"
+   - "15/10/2026"
    ============================================================ */
 const NAMA_BULAN_ID = {
   'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5,
@@ -761,35 +744,54 @@ function parseTanggalID(str){
   if(!str || str === '-') return null;
   const s = str.toString().toLowerCase().trim();
 
-  const match = s.match(/(\d{1,2})\s+([a-z]+)/);
-  if(match){
-    const tgl = parseInt(match[1]);
-    const bln = NAMA_BULAN_ID[match[2]];
-    if(bln !== undefined){
-      const tahunMatch = s.match(/(\d{4})/);
-      const thn = tahunMatch ? parseInt(tahunMatch[1]) : new Date().getFullYear();
+  // Coba format angka: dd/mm/yyyy atau dd-mm-yyyy
+  const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
+  if(matchAngka){
+    const tgl = parseInt(matchAngka[1]);
+    const bln = parseInt(matchAngka[2]) - 1;
+    let thn = matchAngka[3] ? parseInt(matchAngka[3]) : new Date().getFullYear();
+    if(thn < 100) thn += 2000; // 26 → 2026
+    if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11){
       return new Date(thn, bln, tgl);
     }
   }
 
-  const match2 = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{4}))?/);
-  if(match2){
-    const tgl = parseInt(match2[1]);
-    const bln = parseInt(match2[2]) - 1;
-    const thn = match2[3] ? parseInt(match2[3]) : new Date().getFullYear();
-    return new Date(thn, bln, tgl);
+  // Coba format nama bulan: "15 Oktober 2026" atau "15 Okt 2026"
+  const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/);
+  if(matchNama){
+    const tgl = parseInt(matchNama[1]);
+    const bln = NAMA_BULAN_ID[matchNama[2]];
+    if(bln !== undefined && tgl >= 1 && tgl <= 31){
+      const thn = matchNama[3] ? parseInt(matchNama[3]) : new Date().getFullYear();
+      return new Date(thn, bln, tgl);
+    }
   }
 
   return null;
 }
 
-function isUpcoming(dateStr){
+/* Cek apakah tanggal = hari ini */
+function isToday(dateStr){
   const date = parseTanggalID(dateStr);
-  if(!date) return true;
+  if(!date) return false;
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   date.setHours(0, 0, 0, 0);
-  return date >= today;
+
+  return date.getTime() === today.getTime();
+}
+
+/* Cek apakah tanggal > hari ini */
+function isFuture(dateStr){
+  const date = parseTanggalID(dateStr);
+  if(!date) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+
+  return date.getTime() > today.getTime();
 }
 
 /* ============================================================
@@ -856,7 +858,6 @@ function renderLokasi(rows){
 function renderKegiatan(rows){
   const wrap = document.getElementById('wrapKegiatan');
 
-  // Filter: cuma yang tanggalnya HARI INI
   const current = rows.filter(r => {
     const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
     return isToday(date);
@@ -891,16 +892,9 @@ function renderKegiatan(rows){
 function renderUpcoming(rows){
   const wrap = document.getElementById('wrapUpcoming');
 
-  // Filter: cuma yang tanggalnya > hari ini
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   const upcoming = rows.filter(r => {
-    const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    const date = parseTanggalID(dateStr);
-    if(!date) return false;
-    date.setHours(0, 0, 0, 0);
-    return date > today;
+    const date = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
+    return isFuture(date);
   });
 
   document.getElementById('cntUpcoming').textContent = upcoming.length;
