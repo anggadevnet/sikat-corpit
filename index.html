@@ -252,6 +252,193 @@
   .kegiatan-item.upcoming-item .k-lokasi { color: #b45309; }
   .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
 
+  /* WIFI GUEST SECTION */
+  .wifi-toolbar {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 16px; align-items: center;
+  }
+  .wifi-toolbar input, .wifi-toolbar select {
+    background: #ffffff; border:1px solid #e2e8f0; color:#1e293b;
+    padding: 10px 14px; border-radius: 10px; font-size:13px;
+    font-family: inherit; outline: none; transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  }
+  .wifi-toolbar input:focus, .wifi-toolbar select:focus {
+    border-color:#38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  }
+  .wifi-toolbar input { flex: 1; min-width: 180px; }
+  .wifi-grid {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+  }
+  .wifi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0891b2;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    position: relative;
+    overflow: hidden;
+  }
+  .wifi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(8,145,178,0.15);
+    border-left-color: #0284c7;
+  }
+  .wifi-card.inactive {
+    border-left-color: #94a3b8;
+    opacity: 0.7;
+  }
+  .wifi-card.inactive:hover {
+    box-shadow: 0 8px 20px rgba(100,116,139,0.15);
+    border-left-color: #64748b;
+  }
+  .wifi-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .wifi-card-minggu {
+    font-size: 11px; font-weight: 800;
+    color: #0891b2; text-transform: uppercase;
+    letter-spacing: .8px;
+  }
+  .wifi-card-status {
+    font-size: 10px; font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .wifi-card-status.active {
+    background: #dcfce7; color: #15803d;
+  }
+  .wifi-card-status.inactive {
+    background: #f1f5f9; color: #64748b;
+  }
+  .wifi-card-user {
+    font-size: 14px; font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+    word-break: break-all;
+  }
+  .wifi-card-pass {
+    font-size: 12px;
+    color: #64748b;
+    font-family: monospace;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .wifi-card-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    display: flex; align-items: center; gap: 4px;
+    font-weight: 600;
+  }
+  .wifi-card-hint::before { content: '👆'; font-size: 12px; }
+
+  /* MODAL WIFI */
+  .wifi-modal-content {
+    padding: 24px 26px;
+  }
+  .wifi-modal-minggu {
+    font-size: 12px; font-weight: 800;
+    color: #0891b2; text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .wifi-modal-title {
+    font-size: 20px; font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 20px;
+  }
+  .wifi-modal-field {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .wifi-modal-label {
+    font-size: 10px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .wifi-modal-value {
+    font-size: 16px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 1px;
+    word-break: break-all;
+  }
+  .wifi-modal-status {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 16px; margin-bottom: 18px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .wifi-modal-status.active { color: #15803d; }
+  .wifi-modal-status.inactive { color: #64748b; }
+  .wifi-modal-status::before {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .wifi-modal-actions {
+    display: flex; gap: 10px;
+    margin-top: 20px;
+  }
+  .wifi-btn-copy {
+    flex: 1;
+    background: linear-gradient(90deg,#0891b2,#0284c7);
+    color: white; border: none;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(8,145,178,0.3);
+  }
+  .wifi-btn-copy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(8,145,178,0.4);
+  }
+  .wifi-btn-copy:active {
+    transform: translateY(0);
+  }
+  .wifi-btn-copy.copied {
+    background: linear-gradient(90deg,#16a34a,#22c55e);
+  }
+  .toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #0f172a;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 12px 30px rgba(15,23,42,0.4);
+    z-index: 99999;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
   .wi-accordion { display: flex; flex-direction: column; gap: 10px; }
   .wi-accordion-item {
     background: #ffffff;
@@ -450,6 +637,7 @@
   }
   .modal-overlay.active .modal-box { transform: scale(1); }
   .modal-box.modal-wide { max-width: 1100px; max-height: 92vh; }
+  .modal-box.modal-small { max-width: 480px; }
   .modal-header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 18px 22px; border-bottom: 1px solid #e2e8f0;
@@ -625,6 +813,20 @@
   <div id="wrapUpcoming"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<!-- WIFI GUEST -->
+<section>
+  <h2>📶 Wifi Guest <span class="count" id="cntWifi">0</span></h2>
+  <div class="wifi-toolbar">
+    <input type="text" id="wifiSearch" placeholder="🔍 Cari username atau minggu...">
+    <select id="wifiFilter">
+      <option value="">Semua Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  </div>
+  <div id="wrapWifi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+</section>
+
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
   <div id="wrapWISection"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
@@ -637,6 +839,7 @@
 
 <footer>SIKAT-TI • realtime • by acg</footer>
 
+<!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF">
   <div class="modal-box modal-wide">
     <div class="modal-header">
@@ -649,6 +852,20 @@
     </div>
   </div>
 </div>
+
+<!-- MODAL WIFI -->
+<div class="modal-overlay" id="modalWifi">
+  <div class="modal-box modal-small">
+    <div class="modal-header">
+      <h3>📶 <span id="wifiModalTitle">Wifi Guest</span></h3>
+      <button class="modal-close" onclick="closeModal('modalWifi')">✕</button>
+    </div>
+    <div class="wifi-modal-content" id="wifiModalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Copied!</div>
 
 <script>
 /* ============================================================
@@ -666,6 +883,7 @@ let rawLokasi = [];
 let rawKegiatan = [];
 let rawLinks = [];
 let rawWI = [];
+let rawWifi = [];
 let linksUnlocked = false;
 let rawLinksCache = [];
 let lockRealValue = '';
@@ -739,7 +957,6 @@ function parseTanggalID(str){
   if(!str || str === '-') return null;
   const s = str.toString().toLowerCase().trim();
 
-  // Coba format angka: dd/mm/yyyy atau dd-mm-yyyy
   const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
   if(matchAngka){
     const tgl = parseInt(matchAngka[1]);
@@ -751,7 +968,6 @@ function parseTanggalID(str){
     }
   }
 
-  // Coba format nama bulan: "15 Oktober 2026"
   const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/);
   if(matchNama){
     const tgl = parseInt(matchNama[1]);
@@ -765,7 +981,6 @@ function parseTanggalID(str){
   return null;
 }
 
-/* Deteksi nama hari yang ditulis user (kalau ada) */
 function detectHariDitulis(str){
   if(!str) return null;
   const s = str.toString().toLowerCase();
@@ -775,7 +990,6 @@ function detectHariDitulis(str){
   return null;
 }
 
-/* Format tampilan: "Rabu, 15/10/2026" */
 function formatTanggalLengkap(date){
   if(!date) return '-';
   const hari = HARI_ID[date.getDay()];
@@ -785,45 +999,64 @@ function formatTanggalLengkap(date){
   return `${hari}, ${tgl}/${bln}/${thn}`;
 }
 
-/* Cek valid: parse + nama hari cocok */
 function parseTanggalValid(str){
   const date = parseTanggalID(str);
   if(!date) return null;
-
   const hariDitulis = detectHariDitulis(str);
   if(hariDitulis){
     const hariAsli = HARI_ID[date.getDay()];
     if(hariDitulis.toLowerCase() !== hariAsli.toLowerCase()){
-      // Hari salah → return null (skip)
       return null;
     }
   }
-
   return date;
 }
 
-/* Cek apakah tanggal = hari ini */
 function isToday(dateStr){
   const date = parseTanggalValid(dateStr);
   if(!date) return false;
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   date.setHours(0, 0, 0, 0);
-
   return date.getTime() === today.getTime();
 }
 
-/* Cek apakah tanggal > hari ini */
 function isFuture(dateStr){
   const date = parseTanggalValid(dateStr);
   if(!date) return false;
-
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   date.setHours(0, 0, 0, 0);
-
   return date.getTime() > today.getTime();
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg || '✅ Copied!';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+async function copyText(text){
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch(e){
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); document.body.removeChild(ta); return true; }
+    catch(err){ document.body.removeChild(ta); return false; }
+  }
 }
 
 /* ============================================================
@@ -888,23 +1121,19 @@ function renderLokasi(rows){
 }
 
 /* ============================================================
-   RENDER CURRENT EVENT (tanggal = hari ini, valid)
+   RENDER CURRENT EVENT
    ============================================================ */
 function renderKegiatan(rows){
   const wrap = document.getElementById('wrapKegiatan');
-
   const current = rows.filter(r => {
     const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
     return isToday(dateStr);
   });
-
   document.getElementById('cntKegiatan').textContent = current.length;
-
   if(!current.length){
     wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>';
     return;
   }
-
   let html = '<div class="kegiatan-list">';
   current.forEach(r=>{
     const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
@@ -924,24 +1153,19 @@ function renderKegiatan(rows){
 }
 
 /* ============================================================
-   RENDER UPCOMING EVENT (tanggal > hari ini, valid)
+   RENDER UPCOMING EVENT
    ============================================================ */
 function renderUpcoming(rows){
   const wrap = document.getElementById('wrapUpcoming');
-
   const upcoming = rows.filter(r => {
     const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
     return isFuture(dateStr);
   });
-
   document.getElementById('cntUpcoming').textContent = upcoming.length;
-
   if(!upcoming.length){
     wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>';
     return;
   }
-
-  // Sort terdekat di atas
   upcoming.sort((a, b) => {
     const da = parseTanggalValid(getFlex(a,['hari/tanggal','tanggal']));
     const db = parseTanggalValid(getFlex(b,['hari/tanggal','tanggal']));
@@ -949,7 +1173,6 @@ function renderUpcoming(rows){
     if(!db) return -1;
     return da - db;
   });
-
   let html = '<div class="kegiatan-list">';
   upcoming.forEach(r=>{
     const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
@@ -966,6 +1189,123 @@ function renderUpcoming(rows){
     </div>`;
   });
   wrap.innerHTML = html + '</div>';
+}
+
+/* ============================================================
+   WIFI GUEST
+   ============================================================ */
+function renderWifi(rows){
+  const wrap = document.getElementById('wrapWifi');
+  const keyword = (document.getElementById('wifiSearch').value || '').toLowerCase();
+  const filter = document.getElementById('wifiFilter').value;
+
+  document.getElementById('cntWifi').textContent = rows.length;
+
+  let filtered = rows.filter(r => {
+    const minggu = (r['minggu'] || '').toLowerCase();
+    const username = (r['username'] || '').toLowerCase();
+    const cocok = !keyword || minggu.includes(keyword) || username.includes(keyword);
+    const statusRaw = (r['status'] || '').toLowerCase();
+    const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
+    const statusCocok = !filter || (filter === 'active' && isActive) || (filter === 'inactive' && !isActive);
+    return cocok && statusCocok;
+  });
+
+  if(!filtered.length){
+    wrap.innerHTML = '<div class="empty">Belum ada data wifi guest</div>';
+    return;
+  }
+
+  let html = '<div class="wifi-grid">';
+  filtered.forEach((r, idx) => {
+    const minggu = (r['minggu'] || '-').trim();
+    const username = (r['username'] || '-').trim();
+    const password = (r['password'] || '-').trim();
+    const statusRaw = (r['status'] || '').toLowerCase();
+    const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
+    const cardClass = isActive ? '' : 'inactive';
+    const statusClass2 = isActive ? 'active' : 'inactive';
+    const statusLabel2 = isActive ? 'Active' : 'Inactive';
+    const passMasked = password ? '•'.repeat(Math.min(password.length, 12)) : '-';
+
+    html += `<div class="wifi-card ${cardClass}" onclick="openWifiDetail(${idx})" data-idx="${idx}">
+      <div class="wifi-card-header">
+        <span class="wifi-card-minggu">${minggu}</span>
+        <span class="wifi-card-status ${statusClass2}">${statusLabel2}</span>
+      </div>
+      <div class="wifi-card-user">${username}</div>
+      <div class="wifi-card-pass">${passMasked}</div>
+      <div class="wifi-card-hint">Klik untuk lihat & copy</div>
+    </div>`;
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+
+  // Simpan filtered ke global biar modal bisa akses
+  window._wifiFiltered = filtered;
+}
+
+function openWifiDetail(idx){
+  const r = window._wifiFiltered[idx];
+  if(!r) return;
+
+  const minggu = (r['minggu'] || '-').trim();
+  const username = (r['username'] || '-').trim();
+  const password = (r['password'] || '-').trim();
+  const statusRaw = (r['status'] || '').toLowerCase();
+  const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
+
+  document.getElementById('wifiModalTitle').textContent = minggu;
+
+  const content = `
+    <div class="wifi-modal-minggu">📶 Wifi Guest</div>
+    <div class="wifi-modal-title">${minggu}</div>
+
+    <div class="wifi-modal-field">
+      <div class="wifi-modal-label">Username</div>
+      <div class="wifi-modal-value">${username}</div>
+    </div>
+
+    <div class="wifi-modal-field">
+      <div class="wifi-modal-label">Password</div>
+      <div class="wifi-modal-value">${password}</div>
+    </div>
+
+    <div class="wifi-modal-status ${isActive ? 'active' : 'inactive'}">
+      ${isActive ? 'Active' : 'Inactive'}
+    </div>
+
+    <div class="wifi-modal-actions">
+      <button class="wifi-btn-copy" id="wifiCopyBtn" onclick="copyWifiDetail()">
+        📋 Copy Semua (Username + Password)
+      </button>
+    </div>
+  `;
+  document.getElementById('wifiModalContent').innerHTML = content;
+
+  // Simpan data ke global biar tombol copy bisa akses
+  window._wifiDetail = { username, password, minggu };
+
+  document.getElementById('modalWifi').classList.add('active');
+}
+
+async function copyWifiDetail(){
+  const d = window._wifiDetail;
+  if(!d) return;
+  const text = `Wifi Guest ${d.minggu}\nUsername: ${d.username}\nPassword: ${d.password}`;
+  const ok = await copyText(text);
+  const btn = document.getElementById('wifiCopyBtn');
+  if(ok){
+    btn.classList.add('copied');
+    btn.textContent = '✅ Berhasil dicopy!';
+    showToast('✅ Wifi Guest berhasil dicopy!');
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = '📋 Copy Semua (Username + Password)';
+    }, 2500);
+  } else {
+    showToast('❌ Gagal copy');
+  }
 }
 
 /* ============================================================
@@ -1224,9 +1564,15 @@ document.querySelectorAll('.modal-overlay').forEach(el => {
 });
 
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') closeModal('modalPDF');
+  if(e.key === 'Escape'){
+    closeModal('modalPDF');
+    closeModal('modalWifi');
+  }
 });
 
+/* ============================================================
+   UPDATE CARDS
+   ============================================================ */
 function updateCards(rows){
   const today = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal'])));
   const total = today.length;
@@ -1268,19 +1614,22 @@ function updateCards(rows){
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4] = await Promise.all([
+    const [r1, r2, r3, r4, r5] = await Promise.all([
       fetch(apiUrl('Lokasi')).then(r => r.json()),
       fetch(apiUrl('kegiatan')).then(r => r.json()),
       fetch(apiUrl('Links')).then(r => r.json()),
-      fetch(apiUrl('WI')).then(r => r.json())
+      fetch(apiUrl('WI')).then(r => r.json()),
+      fetch(apiUrl('WifiGuest')).then(r => r.json())
     ]);
     rawLokasi = Array.isArray(r1) ? r1 : [];
     rawKegiatan = Array.isArray(r2) ? r2 : [];
     rawLinks = Array.isArray(r3) ? r3 : [];
     rawWI = Array.isArray(r4) ? r4 : [];
+    rawWifi = Array.isArray(r5) ? r5 : [];
     renderLokasi(rawLokasi);
     renderKegiatan(rawKegiatan);
     renderUpcoming(rawKegiatan);
+    renderWifi(rawWifi);
     renderWISection(rawWI);
     renderLinks(rawLinks);
     updateCards(rawLokasi);
@@ -1306,6 +1655,9 @@ setInterval(tickClock, 1000);
 document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi));
 document.getElementById('statusFilter').addEventListener('change', () => renderLokasi(rawLokasi));
 document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
+
+document.getElementById('wifiSearch').addEventListener('input', () => renderWifi(rawWifi));
+document.getElementById('wifiFilter').addEventListener('change', () => renderWifi(rawWifi));
 
 renderMarquee();
 loadAll();
