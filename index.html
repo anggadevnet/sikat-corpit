@@ -570,6 +570,210 @@
     font-weight:500;
   }
 
+  /* BREAK TIME / GAMES */
+  .games-grid {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  }
+  .game-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #6366f1;
+    border-radius: 12px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    text-align: center;
+  }
+  .game-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(99,102,241,0.15);
+    border-left-color: #9333ea;
+  }
+  .game-card .game-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .game-card .game-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .game-card .game-desc {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .game-card .game-best {
+    font-size: 10px;
+    color: #22c55e;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  /* GAME MODAL */
+  .game-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .game-info {
+    display: flex; justify-content: space-between;
+    width: 100%; max-width: 500px;
+    font-size: 14px; font-weight: 700;
+    color: #334155;
+    gap: 16px;
+  }
+  .game-info span { display: flex; align-items: center; gap: 6px; }
+  .game-btn {
+    background: linear-gradient(90deg,#0284c7,#4f46e5);
+    color: white; border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .game-btn:hover { transform: translateY(-2px); }
+  .game-btn.secondary {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* SNAKE */
+  .snake-canvas {
+    background: #0f172a;
+    border-radius: 12px;
+    display: block;
+    max-width: 100%;
+  }
+  .snake-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .snake-controls button {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .snake-controls button:hover { background: #334155; }
+  .snake-controls button:active { transform: scale(0.95); }
+  .snake-controls .empty { visibility: hidden; }
+
+  /* 2048 */
+  .g2048-board {
+    background: #bbada0;
+    border-radius: 12px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    grid-template-rows: repeat(4, 80px);
+    gap: 10px;
+  }
+  .g2048-cell {
+    background: rgba(238,228,218,0.35);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 800;
+    color: #776e65;
+    transition: all 0.15s;
+  }
+  .g2048-cell[data-val="2"]    { background:#eee4da; }
+  .g2048-cell[data-val="4"]    { background:#ede0c8; }
+  .g2048-cell[data-val="8"]    { background:#f2b179; color:#f9f6f2; }
+  .g2048-cell[data-val="16"]   { background:#f59563; color:#f9f6f2; }
+  .g2048-cell[data-val="32"]   { background:#f67c5f; color:#f9f6f2; }
+  .g2048-cell[data-val="64"]   { background:#f65e3b; color:#f9f6f2; }
+  .g2048-cell[data-val="128"]  { background:#edcf72; color:#f9f6f2; font-size:24px; }
+  .g2048-cell[data-val="256"]  { background:#edcc61; color:#f9f6f2; font-size:24px; }
+  .g2048-cell[data-val="512"]  { background:#edc850; color:#f9f6f2; font-size:24px; }
+  .g2048-cell[data-val="1024"] { background:#edc53f; color:#f9f6f2; font-size:20px; }
+  .g2048-cell[data-val="2048"] { background:#edc22e; color:#f9f6f2; font-size:20px; }
+  .g2048-cell[data-val="4096"] { background:#3c3a32; color:#f9f6f2; font-size:18px; }
+
+  /* TIC TAC TOE */
+  .ttt-board {
+    display: grid;
+    grid-template-columns: repeat(3, 90px);
+    grid-template-rows: repeat(3, 90px);
+    gap: 8px;
+  }
+  .ttt-cell {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 40px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ttt-cell:hover:not(:disabled) {
+    background: #f0f9ff;
+    border-color: #38bdf8;
+  }
+  .ttt-cell[data-player="X"] { color: #0284c7; }
+  .ttt-cell[data-player="O"] { color: #dc2626; }
+  .ttt-cell:disabled { cursor: not-allowed; }
+  .ttt-status {
+    font-size: 16px; font-weight: 800;
+    color: #0f172a;
+    min-height: 24px;
+  }
+
+  /* MINESWEEPER */
+  .ms-board {
+    display: grid;
+    gap: 3px;
+    background: #94a3b8;
+    padding: 6px;
+    border-radius: 10px;
+  }
+  .ms-cell {
+    width: 32px; height: 32px;
+    background: #cbd5e1;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer;
+    transition: all 0.1s;
+    border: none;
+    font-family: inherit;
+    color: #1e293b;
+    padding: 0;
+  }
+  .ms-cell:hover:not(:disabled) { background: #e2e8f0; }
+  .ms-cell.revealed {
+    background: #f1f5f9;
+    cursor: default;
+  }
+  .ms-cell.mine { background: #dc2626; color: white; }
+  .ms-cell.flag { background: #fbbf24; }
+  .ms-cell[data-num="1"] { color: #2563eb; }
+  .ms-cell[data-num="2"] { color: #16a34a; }
+  .ms-cell[data-num="3"] { color: #dc2626; }
+  .ms-cell[data-num="4"] { color: #7c3aed; }
+  .ms-cell[data-num="5"] { color: #b45309; }
+  .ms-cell[data-num="6"] { color: #0891b2; }
+  .ms-cell[data-num="7"] { color: #1e293b; }
+  .ms-cell[data-num="8"] { color: #64748b; }
+
   .lock-box {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 2px dashed #cbd5e1;
@@ -675,7 +879,7 @@
     display: block; min-height: 70vh;
   }
 
-  /* ============ KALKULATOR GAJI ============ */
+  /* GAJI CALCULATOR */
   .gaji-body {
     padding: 24px 26px;
     overflow-y: auto;
@@ -697,9 +901,7 @@
     margin-bottom: 12px;
     display: flex; align-items: center; gap: 6px;
   }
-  .gaji-field {
-    margin-bottom: 12px;
-  }
+  .gaji-field { margin-bottom: 12px; }
   .gaji-field:last-child { margin-bottom: 0; }
   .gaji-label {
     font-size: 12px;
@@ -895,6 +1097,11 @@
     .marquee-icon { width: 26px; height: 26px; font-size: 14px; left: 10px; }
     .gaji-hari-row { grid-template-columns: 1fr 1fr 1fr auto; }
     .gaji-body { padding: 18px 16px; }
+    .g2048-board { grid-template-columns: repeat(4, 60px); grid-template-rows: repeat(4, 60px); }
+    .g2048-cell { font-size: 22px; }
+    .ttt-board { grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); }
+    .ttt-cell { font-size: 32px; }
+    .ms-cell { width: 28px; height: 28px; font-size: 14px; }
   }
 </style>
 </head>
@@ -1044,6 +1251,36 @@
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<section>
+  <h2>🕹️ Break Time</h2>
+  <div class="games-grid">
+    <div class="game-card" onclick="openGame('snake')">
+      <span class="game-icon">🐍</span>
+      <div class="game-name">Snake</div>
+      <div class="game-desc">Klasik, adiktif</div>
+      <div class="game-best" id="best-snake"></div>
+    </div>
+    <div class="game-card" onclick="openGame('2048')">
+      <span class="game-icon">🎯</span>
+      <div class="game-name">2048</div>
+      <div class="game-desc">Puzzle angka</div>
+      <div class="game-best" id="best-2048"></div>
+    </div>
+    <div class="game-card" onclick="openGame('ttt')">
+      <span class="game-icon">⭕</span>
+      <div class="game-name">Tic-Tac-Toe</div>
+      <div class="game-desc">2 pemain</div>
+      <div class="game-best"></div>
+    </div>
+    <div class="game-card" onclick="openGame('minesweeper')">
+      <span class="game-icon">💣</span>
+      <div class="game-name">Minesweeper</div>
+      <div class="game-desc">Cari bom</div>
+      <div class="game-best" id="best-ms"></div>
+    </div>
+  </div>
+</section>
+
 <footer>SIKAT-TI • by acg</footer>
 
 <!-- MODAL PDF -->
@@ -1071,7 +1308,7 @@
   </div>
 </div>
 
-<!-- MODAL KALKULATOR GAJI -->
+<!-- MODAL GAJI -->
 <div class="modal-overlay" id="modalGaji">
   <div class="modal-box modal-wide">
     <div class="modal-header">
@@ -1079,6 +1316,17 @@
       <button class="modal-close" onclick="closeModal('modalGaji')">✕</button>
     </div>
     <div class="gaji-body" id="gajiBody"></div>
+  </div>
+</div>
+
+<!-- MODAL GAME -->
+<div class="modal-overlay" id="modalGame">
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <h3>🕹️ <span id="gameTitle">Game</span></h3>
+      <button class="modal-close" onclick="closeGame()">✕</button>
+    </div>
+    <div class="game-container" id="gameContainer"></div>
   </div>
 </div>
 
@@ -1763,6 +2011,7 @@ document.addEventListener('keydown', e => {
     closeModal('modalPDF');
     closeModal('modalWifi');
     closeModal('modalGaji');
+    closeGame();
   }
 });
 
@@ -1865,6 +2114,7 @@ function renderGajiForm(){
       <div class="gaji-section-title">⏰ Lembur (Jam Mulai - Selesai)</div>
       <div class="gaji-hint" style="margin-bottom:10px;">
         Setiap <b>kelipatan 5 jam</b> dipotong <b>1 jam</b> untuk istirahat.
+        Contoh: 17:00-24:00 = 7 jam → 6 jam efektif.
       </div>
       <div id="gajiHariList"></div>
       <button class="gaji-add-btn" onclick="addGajiHari()">+ Tambah Hari</button>
@@ -2153,6 +2403,575 @@ function downloadGajiCSV(){
   showToast('📥 File CSV berhasil didownload!');
 }
 
+/* ============================================================
+   GAMES
+   ============================================================ */
+let activeGame = null;
+let gameState = {};
+
+function openGame(type){
+  activeGame = type;
+  gameState = {};
+  const container = document.getElementById('gameContainer');
+  const title = document.getElementById('gameTitle');
+
+  if(type === 'snake'){
+    title.textContent = '🐍 Snake';
+    container.innerHTML = `
+      <div class="game-info">
+        <span>🏆 Skor: <span id="snakeScore">0</span></span>
+        <span>⭐ Best: <span id="snakeBest">0</span></span>
+      </div>
+      <canvas id="snakeCanvas" class="snake-canvas" width="400" height="400"></canvas>
+      <div class="snake-controls">
+        <div class="empty"></div>
+        <button onmousedown="snakeDir(0,-1)" ontouchstart="snakeDir(0,-1);event.preventDefault();">↑</button>
+        <div class="empty"></div>
+        <button onmousedown="snakeDir(-1,0)" ontouchstart="snakeDir(-1,0);event.preventDefault();">←</button>
+        <button onmousedown="snakeDir(0,1)" ontouchstart="snakeDir(0,1);event.preventDefault();">↓</button>
+        <button onmousedown="snakeDir(1,0)" ontouchstart="snakeDir(1,0);event.preventDefault();">→</button>
+      </div>
+      <button class="game-btn" onclick="startSnake()">🔄 Main Lagi</button>
+    `;
+    setTimeout(startSnake, 100);
+  }
+  else if(type === '2048'){
+    title.textContent = '🎯 2048';
+    container.innerHTML = `
+      <div class="game-info">
+        <span>🏆 Skor: <span id="g2048Score">0</span></span>
+        <span>⭐ Best: <span id="g2048Best">0</span></span>
+      </div>
+      <div class="g2048-board" id="g2048Board"></div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button class="game-btn" onclick="start2048()">🔄 Main Lagi</button>
+      </div>
+    `;
+    setTimeout(start2048, 100);
+  }
+  else if(type === 'ttt'){
+    title.textContent = '⭕ Tic-Tac-Toe';
+    container.innerHTML = `
+      <div class="ttt-status" id="tttStatus">Giliran: X</div>
+      <div class="ttt-board" id="tttBoard"></div>
+      <button class="game-btn" onclick="startTTT()">🔄 Main Lagi</button>
+    `;
+    setTimeout(startTTT, 100);
+  }
+  else if(type === 'minesweeper'){
+    title.textContent = '💣 Minesweeper';
+    container.innerHTML = `
+      <div class="game-info">
+        <span>💣 Bom: <span id="msMines">0</span></span>
+        <span>🚩 Sisa: <span id="msFlags">0</span></span>
+        <span>⏱️ <span id="msTime">0</span>s</span>
+      </div>
+      <div class="ms-board" id="msBoard"></div>
+      <div style="margin-top:12px;">
+        <button class="game-btn" onclick="startMinesweeper()">🔄 Main Lagi</button>
+      </div>
+    `;
+    setTimeout(startMinesweeper, 100);
+  }
+
+  document.getElementById('modalGame').classList.add('active');
+}
+
+function closeGame(){
+  if(gameState.snakeInterval) clearInterval(gameState.snakeInterval);
+  if(gameState.msTimer) clearInterval(gameState.msTimer);
+  activeGame = null;
+  gameState = {};
+  document.getElementById('modalGame').classList.remove('active');
+}
+
+/* ============================================================
+   SNAKE GAME
+   ============================================================ */
+function startSnake(){
+  const canvas = document.getElementById('snakeCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = 20;
+  const cols = canvas.width / size;
+  const rows = canvas.height / size;
+
+  gameState.snake = [{x:10, y:10}];
+  gameState.snakeDir = {x:1, y:0};
+  gameState.snakeNextDir = {x:1, y:0};
+  gameState.snakeFood = {x:15, y:10};
+  gameState.snakeScore = 0;
+  gameState.snakeOver = false;
+
+  const best = parseInt(localStorage.getItem('best-snake') || '0');
+  document.getElementById('snakeBest').textContent = best;
+  document.getElementById('snakeScore').textContent = '0';
+
+  if(gameState.snakeInterval) clearInterval(gameState.snakeInterval);
+
+  gameState.snakeInterval = setInterval(() => {
+    if(gameState.snakeOver) return;
+
+    // Update direction
+    gameState.snakeDir = {...gameState.snakeNextDir};
+
+    // Move head
+    const head = {
+      x: gameState.snake[0].x + gameState.snakeDir.x,
+      y: gameState.snake[0].y + gameState.snakeDir.y
+    };
+
+    // Wrap around walls
+    head.x = (head.x + cols) % cols;
+    head.y = (head.y + rows) % rows;
+
+    // Check collision with self
+    if(gameState.snake.some(s => s.x === head.x && s.y === head.y)){
+      gameState.snakeOver = true;
+      if(gameState.snakeScore > best){
+        localStorage.setItem('best-snake', gameState.snakeScore);
+        document.getElementById('snakeBest').textContent = gameState.snakeScore;
+      }
+      showToast('🐍 Game Over! Skor: ' + gameState.snakeScore);
+      return;
+    }
+
+    gameState.snake.unshift(head);
+
+    // Check food
+    if(head.x === gameState.snakeFood.x && head.y === gameState.snakeFood.y){
+      gameState.snakeScore++;
+      document.getElementById('snakeScore').textContent = gameState.snakeScore;
+      // New food
+      do {
+        gameState.snakeFood = {
+          x: Math.floor(Math.random() * cols),
+          y: Math.floor(Math.random() * rows)
+        };
+      } while(gameState.snake.some(s => s.x === gameState.snakeFood.x && s.y === gameState.snakeFood.y));
+    } else {
+      gameState.snake.pop();
+    }
+
+    // Draw
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw food
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(gameState.snakeFood.x * size, gameState.snakeFood.y * size, size-2, size-2);
+
+    // Draw snake
+    gameState.snake.forEach((s, i) => {
+      ctx.fillStyle = i === 0 ? '#22c55e' : '#4ade80';
+      ctx.fillRect(s.x * size, s.y * size, size-2, size-2);
+    });
+  }, 120);
+}
+
+function snakeDir(x, y){
+  if(!gameState.snakeDir) return;
+  // Cegah gerak ke arah berlawanan
+  if(gameState.snakeDir.x === -x && gameState.snakeDir.y === -y) return;
+  gameState.snakeNextDir = {x, y};
+}
+
+/* ============================================================
+   2048 GAME
+   ============================================================ */
+function start2048(){
+  const board = document.getElementById('g2048Board');
+  if(!board) return;
+
+  gameState.g2048Grid = [
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]
+  ];
+  gameState.g2048Score = 0;
+  gameState.g2048Over = false;
+
+  const best = parseInt(localStorage.getItem('best-2048') || '0');
+  document.getElementById('g2048Best').textContent = best;
+  document.getElementById('g2048Score').textContent = '0';
+
+  add2048Tile();
+  add2048Tile();
+  render2048();
+
+  // Keyboard listener
+  document.removeEventListener('keydown', handle2048Key);
+  document.addEventListener('keydown', handle2048Key);
+}
+
+function handle2048Key(e){
+  if(activeGame !== '2048') return;
+  const map = {
+    'ArrowUp': 'up', 'ArrowDown': 'down',
+    'ArrowLeft': 'left', 'ArrowRight': 'right',
+    'w': 'up', 's': 'down', 'a': 'left', 'd': 'right'
+  };
+  const dir = map[e.key];
+  if(dir){
+    e.preventDefault();
+    move2048(dir);
+  }
+}
+
+function add2048Tile(){
+  const empty = [];
+  for(let i = 0; i < 4; i++){
+    for(let j = 0; j < 4; j++){
+      if(gameState.g2048Grid[i][j] === 0) empty.push([i, j]);
+    }
+  }
+  if(empty.length === 0) return;
+  const [i, j] = empty[Math.floor(Math.random() * empty.length)];
+  gameState.g2048Grid[i][j] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function render2048(){
+  const board = document.getElementById('g2048Board');
+  board.innerHTML = '';
+  for(let i = 0; i < 4; i++){
+    for(let j = 0; j < 4; j++){
+      const val = gameState.g2048Grid[i][j];
+      const cell = document.createElement('div');
+      cell.className = 'g2048-cell';
+      if(val > 0){
+        cell.textContent = val;
+        cell.setAttribute('data-val', val);
+      }
+      board.appendChild(cell);
+    }
+  }
+  document.getElementById('g2048Score').textContent = gameState.g2048Score;
+}
+
+function move2048(dir){
+  if(gameState.g2048Over) return;
+  let moved = false;
+  const grid = gameState.g2048Grid;
+
+  const rotate = (n) => {
+    for(let k = 0; k < n; k++){
+      const newGrid = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+      for(let i = 0; i < 4; i++){
+        for(let j = 0; j < 4; j++){
+          newGrid[i][j] = grid[3-j][i];
+        }
+      }
+      for(let i = 0; i < 4; i++){
+        for(let j = 0; j < 4; j++){
+          grid[i][j] = newGrid[i][j];
+        }
+      }
+    }
+  };
+
+  const slide = () => {
+    for(let i = 0; i < 4; i++){
+      let row = grid[i].filter(v => v !== 0);
+      for(let k = 0; k < row.length - 1; k++){
+        if(row[k] === row[k+1]){
+          row[k] *= 2;
+          gameState.g2048Score += row[k];
+          row[k+1] = 0;
+        }
+      }
+      row = row.filter(v => v !== 0);
+      while(row.length < 4) row.push(0);
+      for(let j = 0; j < 4; j++){
+        if(grid[i][j] !== row[j]){
+          grid[i][j] = row[j];
+          moved = true;
+        }
+      }
+    }
+  };
+
+  if(dir === 'left') slide();
+  if(dir === 'right'){ rotate(2); slide(); rotate(2); }
+  if(dir === 'up'){ rotate(3); slide(); rotate(1); }
+  if(dir === 'down'){ rotate(1); slide(); rotate(3); }
+
+  if(moved){
+    add2048Tile();
+    render2048();
+
+    // Update best
+    const best = parseInt(localStorage.getItem('best-2048') || '0');
+    if(gameState.g2048Score > best){
+      localStorage.setItem('best-2048', gameState.g2048Score);
+      document.getElementById('g2048Best').textContent = gameState.g2048Score;
+    }
+
+    // Check game over
+    if(isGameOver2048()){
+      gameState.g2048Over = true;
+      showToast('🎯 Game Over! Skor: ' + gameState.g2048Score);
+    }
+  }
+}
+
+function isGameOver2048(){
+  const grid = gameState.g2048Grid;
+  for(let i = 0; i < 4; i++){
+    for(let j = 0; j < 4; j++){
+      if(grid[i][j] === 0) return false;
+      if(j < 3 && grid[i][j] === grid[i][j+1]) return false;
+      if(i < 3 && grid[i][j] === grid[i+1][j]) return false;
+    }
+  }
+  return true;
+}
+
+/* ============================================================
+   TIC TAC TOE
+   ============================================================ */
+function startTTT(){
+  gameState.tttBoard = Array(9).fill(null);
+  gameState.tttPlayer = 'X';
+  gameState.tttOver = false;
+  renderTTT();
+  document.getElementById('tttStatus').textContent = 'Giliran: X';
+}
+
+function renderTTT(){
+  const board = document.getElementById('tttBoard');
+  board.innerHTML = '';
+  for(let i = 0; i < 9; i++){
+    const cell = document.createElement('button');
+    cell.className = 'ttt-cell';
+    cell.textContent = gameState.tttBoard[i] || '';
+    if(gameState.tttBoard[i]){
+      cell.setAttribute('data-player', gameState.tttBoard[i]);
+      cell.disabled = true;
+    }
+    cell.onclick = () => clickTTT(i);
+    board.appendChild(cell);
+  }
+}
+
+function clickTTT(i){
+  if(gameState.tttOver || gameState.tttBoard[i]) return;
+  gameState.tttBoard[i] = gameState.tttPlayer;
+  const winner = checkTTT();
+
+  if(winner){
+    gameState.tttOver = true;
+    document.getElementById('tttStatus').textContent =
+      winner === 'DRAW' ? 'Seri!' : `🎉 ${winner} Menang!`;
+  } else {
+    gameState.tttPlayer = gameState.tttPlayer === 'X' ? 'O' : 'X';
+    document.getElementById('tttStatus').textContent = `Giliran: ${gameState.tttPlayer}`;
+  }
+  renderTTT();
+
+  // Lock semua kalau game over
+  if(gameState.tttOver){
+    document.querySelectorAll('.ttt-cell').forEach(c => c.disabled = true);
+  }
+}
+
+function checkTTT(){
+  const b = gameState.tttBoard;
+  const lines = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  for(const [a,c,d] of lines){
+    if(b[a] && b[a] === b[c] && b[a] === b[d]) return b[a];
+  }
+  if(b.every(v => v)) return 'DRAW';
+  return null;
+}
+
+/* ============================================================
+   MINESWEEPER
+   ============================================================ */
+function startMinesweeper(){
+  const SIZE = 9;
+  const MINES = 10;
+
+  gameState.msSize = SIZE;
+  gameState.msMines = MINES;
+  gameState.msGrid = [];
+  gameState.msRevealed = [];
+  gameState.msFlags = [];
+  gameState.msOver = false;
+  gameState.msWin = false;
+  gameState.msTime = 0;
+  gameState.msRevealedCount = 0;
+
+  // Init grid
+  for(let i = 0; i < SIZE; i++){
+    gameState.msGrid[i] = [];
+    gameState.msRevealed[i] = [];
+    gameState.msFlags[i] = [];
+    for(let j = 0; j < SIZE; j++){
+      gameState.msGrid[i][j] = 0;
+      gameState.msRevealed[i][j] = false;
+      gameState.msFlags[i][j] = false;
+    }
+  }
+
+  // Place mines
+  let placed = 0;
+  while(placed < MINES){
+    const i = Math.floor(Math.random() * SIZE);
+    const j = Math.floor(Math.random() * SIZE);
+    if(gameState.msGrid[i][j] !== -1){
+      gameState.msGrid[i][j] = -1;
+      placed++;
+    }
+  }
+
+  // Calculate numbers
+  for(let i = 0; i < SIZE; i++){
+    for(let j = 0; j < SIZE; j++){
+      if(gameState.msGrid[i][j] === -1) continue;
+      let count = 0;
+      for(let di = -1; di <= 1; di++){
+        for(let dj = -1; dj <= 1; dj++){
+          const ni = i + di, nj = j + dj;
+          if(ni >= 0 && ni < SIZE && nj >= 0 && nj < SIZE && gameState.msGrid[ni][nj] === -1){
+            count++;
+          }
+        }
+      }
+      gameState.msGrid[i][j] = count;
+    }
+  }
+
+  document.getElementById('msMines').textContent = MINES;
+  document.getElementById('msFlags').textContent = MINES;
+  document.getElementById('msTime').textContent = '0';
+
+  renderMS();
+
+  // Timer
+  if(gameState.msTimer) clearInterval(gameState.msTimer);
+  gameState.msTimer = setInterval(() => {
+    if(gameState.msOver) return;
+    gameState.msTime++;
+    const el = document.getElementById('msTime');
+    if(el) el.textContent = gameState.msTime;
+  }, 1000);
+
+  // Right-click buat flag
+  document.removeEventListener('contextmenu', handleMSRightClick);
+  document.addEventListener('contextmenu', handleMSRightClick);
+}
+
+function handleMSRightClick(e){
+  if(activeGame !== 'minesweeper') return;
+  const cell = e.target.closest('.ms-cell');
+  if(!cell) return;
+  e.preventDefault();
+  const i = parseInt(cell.dataset.i);
+  const j = parseInt(cell.dataset.j);
+  if(gameState.msRevealed[i][j] || gameState.msOver) return;
+  gameState.msFlags[i][j] = !gameState.msFlags[i][j];
+  renderMS();
+}
+
+function renderMS(){
+  const board = document.getElementById('msBoard');
+  if(!board) return;
+  board.style.gridTemplateColumns = `repeat(${gameState.msSize}, auto)`;
+  board.innerHTML = '';
+
+  for(let i = 0; i < gameState.msSize; i++){
+    for(let j = 0; j < gameState.msSize; j++){
+      const btn = document.createElement('button');
+      btn.className = 'ms-cell';
+      btn.dataset.i = i;
+      btn.dataset.j = j;
+
+      if(gameState.msRevealed[i][j]){
+        btn.classList.add('revealed');
+        const val = gameState.msGrid[i][j];
+        if(val === -1){
+          btn.classList.add('mine');
+          btn.textContent = '💣';
+        } else if(val > 0){
+          btn.textContent = val;
+          btn.setAttribute('data-num', val);
+        }
+      } else if(gameState.msFlags[i][j]){
+        btn.classList.add('flag');
+        btn.textContent = '🚩';
+      }
+
+      btn.onclick = () => clickMS(i, j);
+      btn.oncontextmenu = (e) => { e.preventDefault(); handleMSRightClick(e); };
+      board.appendChild(btn);
+    }
+  }
+}
+
+function clickMS(i, j){
+  if(gameState.msOver || gameState.msRevealed[i][j] || gameState.msFlags[i][j]) return;
+
+  if(gameState.msGrid[i][j] === -1){
+    // Kena bom
+    gameState.msOver = true;
+    gameState.msRevealed[i][j] = true;
+    if(gameState.msTimer) clearInterval(gameState.msTimer);
+    // Reveal semua bom
+    for(let a = 0; a < gameState.msSize; a++){
+      for(let b = 0; b < gameState.msSize; b++){
+        if(gameState.msGrid[a][b] === -1) gameState.msRevealed[a][b] = true;
+      }
+    }
+    renderMS();
+    showToast('💣 Boom! Coba lagi.');
+    return;
+  }
+
+  // Reveal
+  revealMSCell(i, j);
+  renderMS();
+
+  // Check win
+  const totalSafe = gameState.msSize * gameState.msSize - gameState.msMines;
+  let revealedCount = 0;
+  for(let a = 0; a < gameState.msSize; a++){
+    for(let b = 0; b < gameState.msSize; b++){
+      if(gameState.msRevealed[a][b]) revealedCount++;
+    }
+  }
+
+  if(revealedCount === totalSafe){
+    gameState.msOver = true;
+    gameState.msWin = true;
+    if(gameState.msTimer) clearInterval(gameState.msTimer);
+    showToast('🎉 Menang! Waktu: ' + gameState.msTime + 's');
+  }
+}
+
+function revealMSCell(i, j){
+  if(i < 0 || i >= gameState.msSize || j < 0 || j >= gameState.msSize) return;
+  if(gameState.msRevealed[i][j] || gameState.msFlags[i][j]) return;
+
+  gameState.msRevealed[i][j] = true;
+
+  if(gameState.msGrid[i][j] === 0){
+    for(let di = -1; di <= 1; di++){
+      for(let dj = -1; dj <= 1; dj++){
+        if(di === 0 && dj === 0) continue;
+        revealMSCell(i + di, j + dj);
+      }
+    }
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
 function tickClock(){
   const now = new Date();
   document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID');
@@ -2169,6 +2988,11 @@ document.getElementById('onlyToday').addEventListener('change', () => renderLoka
 
 document.getElementById('wifiSearch').addEventListener('input', () => renderWifi(rawWifi));
 document.getElementById('wifiFilter').addEventListener('change', () => renderWifi(rawWifi));
+
+// Show best scores
+document.getElementById('best-snake').textContent = 'Best: ' + (localStorage.getItem('best-snake') || '0');
+document.getElementById('best-2048').textContent = 'Best: ' + (localStorage.getItem('best-2048') || '0');
+document.getElementById('best-ms').textContent = 'Best: ' + (localStorage.getItem('best-ms') || '0');
 
 renderMarquee();
 loadAll();
