@@ -4,898 +4,246 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIKAT-TI — Sistem Koordinasi Aktivitas Teknisi</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #f1f5f9;
-    background-image:
-      radial-gradient(circle at 10% 10%, rgba(56,189,248,0.10), transparent 35%),
-      radial-gradient(circle at 90% 90%, rgba(129,140,248,0.10), transparent 35%);
-    color: #1e293b;
-    padding: 24px;
-    min-height: 100vh;
-  }
-  header {
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 16px;
-    margin-bottom: 20px; padding-bottom: 20px;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .brand h1 {
-    font-size: 28px; font-weight: 800;
-    background: linear-gradient(90deg,#0284c7,#4f46e5,#9333ea);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
-  }
-  .subtitle { font-size: 13px; color:#64748b; margin-top:4px; font-weight:500; }
-  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .clock {
-    background: #ffffff; padding: 10px 16px; border-radius: 12px;
-    font-size: 14px; font-weight: 700; color:#0284c7;
-    font-variant-numeric: tabular-nums;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04); text-align: right;
-  }
-  .clock .date { display:block; font-size:11px; color:#64748b; font-weight:500; margin-top:2px; }
-  .refresh-info {
-    font-size: 12px; color:#475569;
-    background:#ffffff; padding:10px 14px; border-radius:12px;
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-  }
-  .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.4; transform:scale(1.3)} }
-
-  .marquee-wrap {
-    background: linear-gradient(90deg, #fef3c7 0%, #fde68a 50%, #fef3c7 100%);
-    border: 1px solid #fcd34d;
-    border-left: 5px solid #f59e0b;
-    border-radius: 12px;
-    padding: 12px 0;
-    margin-bottom: 20px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(245,158,11,0.12);
-  }
-  .marquee-wrap::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 60px;
-    background: linear-gradient(90deg, rgba(254,243,199,1) 0%, rgba(254,243,199,0) 100%);
-    z-index: 2; pointer-events: none;
-  }
-  .marquee-wrap::after {
-    content: '';
-    position: absolute; right: 0; top: 0; bottom: 0;
-    width: 60px;
-    background: linear-gradient(270deg, rgba(254,243,199,1) 0%, rgba(254,243,199,0) 100%);
-    z-index: 2; pointer-events: none;
-  }
-  .marquee-icon {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    font-size: 18px; z-index: 3;
-    background: #f59e0b;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(245,158,11,0.4);
-    animation: wiggle 1.5s infinite;
-  }
-  @keyframes wiggle {
-    0%, 100% { transform: translateY(-50%) rotate(0deg); }
-    25% { transform: translateY(-50%) rotate(-10deg); }
-    75% { transform: translateY(-50%) rotate(10deg); }
-  }
-  .marquee {
-    display: inline-block;
-    white-space: nowrap;
-    padding-left: 60px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #78350f;
-    animation: scroll-left linear infinite;
-  }
-  .marquee:hover { animation-play-state: paused; }
-  @keyframes scroll-left {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .marquee .sep {
-    color: #f59e0b;
-    margin: 0 16px;
-    font-size: 16px;
-  }
-
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
-    gap: 14px; margin-bottom: 20px;
-  }
-  .card {
-    background: #ffffff; border-radius: 14px; padding: 18px;
-    position: relative; overflow: hidden;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,23,42,0.08); }
-  .card::before {
-    content: ''; position: absolute; top:0; left:0; right:0; height:4px;
-    background: var(--accent);
-  }
-  .card.blue   { --accent: linear-gradient(90deg,#0ea5e9,#38bdf8); }
-  .card.green  { --accent: linear-gradient(90deg,#16a34a,#4ade80); }
-  .card.indigo { --accent: linear-gradient(90deg,#4f46e5,#818cf8); }
-  .card.purple { --accent: linear-gradient(90deg,#9333ea,#c084fc); }
-  .card.orange { --accent: linear-gradient(90deg,#ea580c,#fb923c); }
-  .card.cyan   { --accent: linear-gradient(90deg,#0891b2,#22d3ee); }
-  .card.gray   { --accent: linear-gradient(90deg,#64748b,#94a3b8); }
-  .card .label { font-size: 11px; color:#64748b; text-transform:uppercase; letter-spacing:.8px; font-weight:700; }
-  .card .value { font-size: 30px; font-weight: 800; margin-top: 6px; color:#0f172a; line-height:1; }
-  .card .pct   { font-size: 11px; color:#94a3b8; margin-top: 6px; font-weight:500; }
-  .card .icon  { position:absolute; top:14px; right:14px; font-size:20px; opacity:.35; }
-  .progress-wrap {
-    background: #ffffff; border: 1px solid #e2e8f0;
-    border-radius: 14px; padding: 18px 20px; margin-bottom: 28px;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-  }
-  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .progress-header .title { font-size: 13px; color:#334155; font-weight:700; }
-  .progress-header .val   { font-size: 13px; font-weight:800; }
-  .progress-bar { height: 12px; background:#f1f5f9; border-radius: 8px; overflow: hidden; display: flex; }
-  .progress-bar .seg { height:100%; transition: width 0.5s ease; }
-  .seg.on        { background: linear-gradient(90deg,#16a34a,#4ade80); }
-  .seg.wfh       { background: linear-gradient(90deg,#0891b2,#22d3ee); }
-  .seg.permitted { background: linear-gradient(90deg,#2563eb,#60a5fa); }
-  .seg.sick      { background: linear-gradient(90deg,#9333ea,#c084fc); }
-  .seg.leave     { background: linear-gradient(90deg,#4f46e5,#a5b4fc); }
-  .seg.other     { background: linear-gradient(90deg,#64748b,#94a3b8); }
-  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; color:#475569; font-weight:500; }
-  .legend span::before {
-    content:''; display:inline-block; width:8px; height:8px;
-    border-radius:50%; margin-right:6px; vertical-align:middle;
-  }
-  .legend .l-on::before     { background:#16a34a; }
-  .legend .l-wfh::before    { background:#0891b2; }
-  .legend .l-permit::before { background:#2563eb; }
-  .legend .l-sick::before   { background:#9333ea; }
-  .legend .l-leave::before  { background:#4f46e5; }
-  .legend .l-other::before  { background:#64748b; }
-  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
-  .toolbar input[type=text], .toolbar select {
-    background: #ffffff; border:1px solid #e2e8f0; color:#1e293b;
-    padding: 10px 14px; border-radius: 10px; font-size:13px;
-    font-family: inherit; outline: none; transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
-  }
-  .toolbar input[type=text]:focus, .toolbar select:focus {
-    border-color:#38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-  }
-  .toolbar input[type=text] { flex: 1; min-width: 180px; }
-  .toolbar input[type=text]::placeholder { color:#94a3b8; }
-  .toggle-label {
-    display:flex; align-items:center; gap:6px; font-size:13px;
-    color:#334155; cursor:pointer; padding: 10px 14px;
-    background:#ffffff; border:1px solid #e2e8f0; border-radius:10px;
-    font-weight:500; transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
-  }
-  .toggle-label:hover { border-color:#38bdf8; }
-  .toggle-label input { cursor:pointer; accent-color:#0284c7; }
-  section { margin-bottom: 32px; }
-  h2 {
-    font-size: 16px; margin-bottom: 14px; color:#0f172a;
-    display: flex; align-items: center; gap: 8px; font-weight:700;
-  }
-  h2::before {
-    content:''; width:4px; height:18px; border-radius:2px;
-    background: linear-gradient(180deg,#0284c7,#4f46e5);
-  }
-  h2 .count {
-    font-size:11px; background:#e0f2fe; color:#0369a1;
-    padding:3px 10px; border-radius:10px; font-weight:700;
-  }
-  .table-wrap {
-    overflow-x:auto; border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    border: 1px solid #e2e8f0;
-  }
-  table { width: 100%; border-collapse: collapse; background: #ffffff; font-size: 13.5px; min-width: 600px; }
-  th {
-    background: #f8fafc; color: #475569; text-align: left;
-    padding: 13px 16px; font-weight: 700; font-size: 11px;
-    text-transform: uppercase; letter-spacing: .8px;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  td { padding: 13px 16px; border-top: 1px solid #f1f5f9; color:#334155; }
-  tr:hover td { background: #f8fafc; }
-  .badge {
-    display:inline-block; padding: 4px 12px;
-    border-radius: 20px; font-size: 11.5px; font-weight: 700;
-    white-space: nowrap;
-  }
-  .badge.onduty    { background:#dcfce7; color:#15803d; }
-  .badge.wfh       { background:#cffafe; color:#0e7490; }
-  .badge.permitted { background:#dbeafe; color:#1d4ed8; }
-  .badge.sick      { background:#f3e8ff; color:#7e22ce; }
-  .badge.onleave   { background:#e0e7ff; color:#4338ca; }
-  .badge.unknown   { background:#f1f5f9; color:#475569; }
-  .kegiatan-list { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); }
-  .kegiatan-item {
-    background: #ffffff; border: 1px solid #e2e8f0;
-    border-left: 4px solid #6366f1;
-    border-radius: 12px; padding: 14px 16px;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-  }
-  .kegiatan-item:hover {
-    transform: translateX(4px);
-    border-left-color:#9333ea;
-    box-shadow: 0 6px 16px rgba(99,102,241,0.12);
-  }
-  .kegiatan-item .k-date { font-size:11.5px; color:#6366f1; text-transform:capitalize; letter-spacing:.3px; font-weight:700; }
-  .kegiatan-item .k-name { font-size:14px; color:#0f172a; font-weight:700; margin: 6px 0 8px; }
-  .kegiatan-item .k-lokasi { font-size:12px; color:#7c3aed; font-weight:600; margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
-  .kegiatan-item .k-lokasi::before { content:'📍'; font-size:12px; }
-  .kegiatan-item .k-tech { font-size:12px; color:#0284c7; display:flex; align-items:center; gap:6px; font-weight:600; }
-  .kegiatan-item .k-tech::before { content:'👤'; font-size:12px; }
-  .kegiatan-item.upcoming-item {
-    border-left-color: #f59e0b;
-    background: linear-gradient(135deg, #fffbf0 0%, #ffffff 100%);
-  }
-  .kegiatan-item.upcoming-item:hover {
-    border-left-color: #ea580c;
-    box-shadow: 0 6px 16px rgba(245,158,11,0.18);
-  }
-  .kegiatan-item.upcoming-item .k-date { color: #d97706; }
-  .kegiatan-item.upcoming-item .k-lokasi { color: #b45309; }
-  .kegiatan-item.upcoming-item .k-tech { color: #b45309; }
-
-  .wifi-toolbar {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    margin-bottom: 16px; align-items: center;
-  }
-  .wifi-toolbar input, .wifi-toolbar select {
-    background: #ffffff; border:1px solid #e2e8f0; color:#1e293b;
-    padding: 10px 14px; border-radius: 10px; font-size:13px;
-    font-family: inherit; outline: none; transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
-  }
-  .wifi-toolbar input:focus, .wifi-toolbar select:focus {
-    border-color:#38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-  }
-  .wifi-toolbar input { flex: 1; min-width: 180px; }
-  .wifi-grid {
-    display: grid; gap: 12px;
-    grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
-  }
-  .wifi-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 4px solid #0891b2;
-    border-radius: 12px;
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    position: relative;
-    overflow: hidden;
-  }
-  .wifi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(8,145,178,0.15);
-    border-left-color: #0284c7;
-  }
-  .wifi-card.inactive {
-    border-left-color: #94a3b8;
-    opacity: 0.7;
-  }
-  .wifi-card.inactive:hover {
-    box-shadow: 0 8px 20px rgba(100,116,139,0.15);
-    border-left-color: #64748b;
-  }
-  .wifi-card-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 10px;
-  }
-  .wifi-card-minggu {
-    font-size: 11px; font-weight: 800;
-    color: #0891b2; text-transform: uppercase;
-    letter-spacing: .8px;
-  }
-  .wifi-card-status {
-    font-size: 10px; font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-  }
-  .wifi-card-status.active {
-    background: #dcfce7; color: #15803d;
-  }
-  .wifi-card-status.inactive {
-    background: #f1f5f9; color: #64748b;
-  }
-  .wifi-card-user {
-    font-size: 14px; font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 6px;
-    word-break: break-all;
-  }
-  .wifi-card-pass {
-    font-size: 12px;
-    color: #64748b;
-    font-family: monospace;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-  }
-  .wifi-card-hint {
-    font-size: 11px;
-    color: #94a3b8;
-    display: flex; align-items: center; gap: 4px;
-    font-weight: 600;
-  }
-  .wifi-card-hint::before { content: '👆'; font-size: 12px; }
-
-  .wifi-modal-content {
-    padding: 24px 26px;
-  }
-  .wifi-modal-minggu {
-    font-size: 12px; font-weight: 800;
-    color: #0891b2; text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-  .wifi-modal-title {
-    font-size: 20px; font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 20px;
-  }
-  .wifi-modal-field {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 12px;
-  }
-  .wifi-modal-label {
-    font-size: 10px;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .wifi-modal-value {
-    font-size: 16px;
-    font-family: monospace;
-    font-weight: 700;
-    color: #0f172a;
-    letter-spacing: 1px;
-    word-break: break-all;
-  }
-  .wifi-modal-status {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 16px; margin-bottom: 18px;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .wifi-modal-status.active { color: #15803d; }
-  .wifi-modal-status.inactive { color: #64748b; }
-  .wifi-modal-status::before {
-    content: '';
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: currentColor;
-  }
-  .wifi-modal-actions {
-    display: flex; gap: 10px;
-    margin-top: 20px;
-  }
-  .wifi-btn-copy {
-    flex: 1;
-    background: linear-gradient(90deg,#0891b2,#0284c7);
-    color: white; border: none;
-    padding: 14px 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px rgba(8,145,178,0.3);
-  }
-  .wifi-btn-copy:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(8,145,178,0.4);
-  }
-  .wifi-btn-copy:active {
-    transform: translateY(0);
-  }
-  .wifi-btn-copy.copied {
-    background: linear-gradient(90deg,#16a34a,#22c55e);
-  }
-  .toast {
-    position: fixed;
-    bottom: 30px; left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #0f172a;
-    color: white;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 700;
-    box-shadow: 0 12px 30px rgba(15,23,42,0.4);
-    z-index: 99999;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-  }
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-
-  .wi-accordion { display: flex; flex-direction: column; gap: 10px; }
-  .wi-accordion-item {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 4px solid #6366f1;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    transition: box-shadow 0.2s;
-  }
-  .wi-accordion-item:hover { box-shadow: 0 4px 12px rgba(99,102,241,0.1); }
-  .wi-accordion-header {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px 18px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.2s;
-    font-weight: 700;
-    color: #334155;
-  }
-  .wi-accordion-header:hover { background: #f8fafc; }
-  .wi-accordion-icon {
-    font-size: 16px;
-    transition: transform 0.25s ease;
-    color: #94a3b8;
-    flex-shrink: 0;
-  }
-  .wi-accordion-item.open .wi-accordion-icon { transform: rotate(90deg); color: #0284c7; }
-  .wi-accordion-title { flex: 1; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-  .wi-accordion-count {
-    font-size: 11px; background: #e0f2fe; color: #0369a1;
-    padding: 3px 10px; border-radius: 10px; font-weight: 700; flex-shrink: 0;
-  }
-  .wi-accordion-body {
-    max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
-  }
-  .wi-accordion-item.open .wi-accordion-body { max-height: 3000px; }
-  .wi-accordion-content {
-    padding: 0 18px 16px 18px; display: grid; gap: 8px;
-  }
-  .wi-cat-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; background: #f8fafc;
-    border-radius: 8px; cursor: pointer;
-    font-size: 13px; font-weight: 600; color: #334155;
-    transition: all 0.2s; border-left: 3px solid #6366f1;
-    text-decoration: none;
-  }
-  .wi-cat-item:hover {
-    background: #eff6ff; border-left-color: #9333ea;
-    transform: translateX(3px);
-  }
-  .wi-cat-item::before { content: '📄'; font-size: 13px; flex-shrink:0; }
-  .wi-cat-item .wi-cat-name { flex: 1; }
-  .wi-cat-item .link-arrow {
-    color: #94a3b8; font-weight: 700; transition: all 0.2s;
-  }
-  .wi-cat-item:hover .link-arrow { color: #0284c7; transform: translateX(3px); }
-
-  .link-group { margin-bottom: 18px; }
-  .link-group-title {
-    font-size: 13px; font-weight: 700; color:#334155;
-    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
-  }
-  .link-group-items {
-    display: grid; gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  }
-  .link-btn {
-    display: flex; align-items: center; gap: 10px;
-    background: #ffffff; border: 1px solid #e2e8f0;
-    border-left: 4px solid #0284c7;
-    border-radius: 10px; padding: 12px 14px;
-    text-decoration: none; color: #1e293b;
-    font-weight: 600; font-size: 13px;
-    transition: all 0.2s;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-    cursor: pointer;
-  }
-  .link-btn:hover {
-    transform: translateY(-2px);
-    border-left-color: #9333ea;
-    box-shadow: 0 6px 16px rgba(2,132,199,0.15);
-  }
-  .link-icon { font-size: 18px; }
-  .link-label { flex: 1; }
-  .link-arrow {
-    color: #94a3b8; font-weight: 700;
-    transition: transform 0.2s, color 0.2s;
-  }
-  .link-btn:hover .link-arrow { color: #0284c7; transform: translateX(3px); }
-  .link-text {
-    display: flex; align-items: center; gap: 10px;
-    background: #f8fafc; border: 1px dashed #cbd5e1;
-    border-radius: 10px; padding: 12px 14px;
-    color: #475569; font-size: 13px; font-weight: 500;
-  }
-  .reminder-box {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    border: 1px solid #fcd34d;
-    border-left: 4px solid #f59e0b;
-    border-radius: 12px; padding: 18px 20px; margin-bottom: 16px;
-  }
-  .reminder-title {
-    font-size: 14px; font-weight: 800; color: #92400e; margin-bottom: 10px;
-  }
-  .reminder-list { list-style: none; padding: 0; margin: 0; }
-  .reminder-list li {
-    font-size: 13px; color: #78350f;
-    padding: 6px 0 6px 22px; position: relative; line-height: 1.5;
-  }
-  .reminder-list li::before {
-    content: '•'; position: absolute; left: 8px;
-    color: #f59e0b; font-weight: 800; font-size: 16px;
-  }
-  .footer-note {
-    text-align: center; font-size: 14px; font-weight: 600;
-    color: #0284c7; padding: 16px;
-    background: #f0f9ff; border-radius: 12px;
-    border: 1px solid #bae6fd;
-  }
-  .empty, .loading {
-    text-align:center; padding: 40px; color:#94a3b8;
-    background:#ffffff; border-radius:12px; font-size:14px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
-  }
-  footer {
-    text-align:center; color:#94a3b8; font-size:12px;
-    margin-top:40px; padding-top:20px; border-top:1px solid #e2e8f0;
-    font-weight:500;
-  }
-
-  .lock-box {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 2px dashed #cbd5e1;
-    border-radius: 14px;
-    padding: 40px 20px;
-    text-align: center;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-  .lock-icon { font-size: 48px; margin-bottom: 12px; }
-  .lock-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
-  .lock-desc { font-size: 13px; color: #64748b; margin-bottom: 20px; }
-  .lock-input-wrap {
-    display: flex; gap: 8px; max-width: 340px; margin: 0 auto 12px;
-  }
-  .lock-input {
-    flex: 1; padding: 12px 14px;
-    border: 1px solid #e2e8f0; border-radius: 10px;
-    font-size: 14px; outline: none; font-family: inherit;
-    transition: border 0.2s; letter-spacing: 2px;
-  }
-  .lock-input:focus {
-    border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
-  }
-  .lock-btn {
-    background: linear-gradient(90deg,#0284c7,#4f46e5);
-    color: white; border: none;
-    padding: 12px 20px; border-radius: 10px;
-    font-weight: 700; cursor: pointer;
-    font-size: 14px; font-family: inherit;
-    transition: transform 0.2s;
-  }
-  .lock-btn:hover { transform: translateY(-1px); }
-  .lock-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-  .lock-error { color: #dc2626; font-size: 12px; min-height: 16px; font-weight: 600; }
-  .lock-note { font-size: 11px; color: #94a3b8; margin-top: 16px; }
-  .lock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .lock-logout {
-    background: #f1f5f9; border: 1px solid #e2e8f0;
-    color: #64748b; padding: 6px 12px;
-    border-radius: 8px; font-size: 12px; font-weight: 600;
-    cursor: pointer; font-family: inherit;
-  }
-  .lock-logout:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
-  .lock-status { font-size:12px; color:#22c55e; font-weight:700; }
-
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(15,23,42,0.6);
-    backdrop-filter: blur(4px);
-    z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
-    padding: 20px; opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
-  }
-  .modal-overlay.active { opacity: 1; pointer-events: auto; }
-  .modal-box {
-    background: #ffffff; border-radius: 16px;
-    width: 100%; max-width: 720px; max-height: 88vh;
-    overflow: hidden; display: flex; flex-direction: column;
-    box-shadow: 0 24px 60px rgba(15,23,42,0.3);
-    transform: scale(0.95); transition: transform 0.2s;
-  }
-  .modal-overlay.active .modal-box { transform: scale(1); }
-  .modal-box.modal-wide { max-width: 1100px; max-height: 92vh; }
-  .modal-box.modal-small { max-width: 480px; }
-  .modal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 18px 22px; border-bottom: 1px solid #e2e8f0;
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    gap: 8px;
-  }
-  .modal-header h3 {
-    font-size: 16px; font-weight: 800; color: #0f172a;
-    display: flex; align-items: center; gap: 8px;
-    flex: 1; min-width: 0;
-  }
-  .modal-header h3 span {
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .modal-close {
-    background: #f1f5f9; border: none;
-    width: 34px; height: 34px; border-radius: 10px;
-    cursor: pointer; font-size: 18px;
-    color: #64748b; font-weight: 700;
-    transition: all 0.2s; flex-shrink: 0;
-  }
-  .modal-close:hover { background: #fee2e2; color: #dc2626; }
-  .modal-open-btn {
-    background: #ffffff; border: 1px solid #e2e8f0;
-    color: #0284c7; padding: 8px 14px; border-radius: 8px;
-    font-size: 12px; font-weight: 700; text-decoration: none;
-    transition: all 0.2s; font-family: inherit;
-    white-space: nowrap; flex-shrink: 0;
-  }
-  .modal-open-btn:hover { background: #f0f9ff; border-color: #38bdf8; }
-  .modal-pdf-body {
-    padding: 0; background: #525659;
-    flex: 1; min-height: 0; display: flex;
-  }
-  .modal-pdf-body iframe {
-    width: 100%; height: 100%; border: none;
-    display: block; min-height: 70vh;
-  }
-
-  /* ============ KALKULATOR GAJI ============ */
-  .gaji-body {
-    padding: 24px 26px;
-    overflow-y: auto;
-    max-height: calc(92vh - 70px);
-  }
-  .gaji-section {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px 18px;
-    margin-bottom: 16px;
-  }
-  .gaji-section-title {
-    font-size: 12px;
-    font-weight: 800;
-    color: #475569;
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .gaji-field {
-    margin-bottom: 12px;
-  }
-  .gaji-field:last-child { margin-bottom: 0; }
-  .gaji-label {
-    font-size: 12px;
-    color: #64748b;
-    font-weight: 600;
-    margin-bottom: 6px;
-    display: block;
-  }
-  .gaji-input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-    transition: border 0.2s;
-    background: #ffffff;
-  }
-  .gaji-input:focus {
-    border-color: #0284c7;
-    box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
-  }
-  .gaji-hint {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-top: 4px;
-  }
-  .gaji-hari-row {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr 1fr auto;
-    gap: 8px;
-    align-items: end;
-    margin-bottom: 8px;
-    padding: 10px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-  }
-  .gaji-hari-row select,
-  .gaji-hari-row input {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: inherit;
-    outline: none;
-    background: #ffffff;
-  }
-  .gaji-hari-row select:focus,
-  .gaji-hari-row input:focus {
-    border-color: #0284c7;
-    box-shadow: 0 0 0 2px rgba(2,132,199,0.15);
-  }
-  .gaji-hari-row label {
-    font-size: 11px;
-    color: #64748b;
-    font-weight: 600;
-    display: block;
-    margin-bottom: 4px;
-  }
-  .gaji-hapus-btn {
-    background: #fee2e2;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    color: #dc2626;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .gaji-hapus-btn:hover { background: #fecaca; }
-  .gaji-add-btn {
-    background: #ffffff;
-    border: 1px dashed #cbd5e1;
-    color: #0284c7;
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    font-family: inherit;
-    transition: all 0.2s;
-  }
-  .gaji-add-btn:hover {
-    background: #f0f9ff;
-    border-color: #38bdf8;
-  }
-  .gaji-calc-btn {
-    background: linear-gradient(90deg,#0284c7,#4f46e5);
-    color: white;
-    border: none;
-    padding: 14px 24px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 15px;
-    font-family: inherit;
-    width: 100%;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(2,132,199,0.3);
-  }
-  .gaji-calc-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(2,132,199,0.4);
-  }
-  .gaji-result {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 16px;
-  }
-  .gaji-result-title {
-    font-size: 14px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 16px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .gaji-result-row {
-    display: flex; justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed #e2e8f0;
-    font-size: 13px;
-    gap: 12px;
-  }
-  .gaji-result-row:last-child { border-bottom: none; }
-  .gaji-result-row .label { color: #64748b; }
-  .gaji-result-row .value { font-weight: 700; color: #0f172a; font-family: monospace; text-align: right; }
-  .gaji-result-row.total {
-    border-top: 2px solid #0f172a;
-    border-bottom: none;
-    margin-top: 8px;
-    padding-top: 12px;
-    font-size: 16px;
-  }
-  .gaji-result-row.total .label { color: #0f172a; font-weight: 800; }
-  .gaji-result-row.total .value { color: #0284c7; font-size: 18px; font-weight: 800; }
-  .gaji-result-row.big { font-size: 15px; padding: 12px 0; }
-  .gaji-hari-item {
-    background: #f8fafc;
-    border-left: 3px solid #0284c7;
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-  }
-  .gaji-hari-item-title {
-    font-size: 12px;
-    font-weight: 800;
-    color: #0284c7;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .gaji-hari-item .gaji-result-row {
-    font-size: 12px;
-    padding: 4px 0;
-  }
-  .gaji-download-btn {
-    background: linear-gradient(90deg,#16a34a,#22c55e);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 13px;
-    font-family: inherit;
-    width: 100%;
-    margin-top: 16px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(22,163,74,0.3);
-  }
-  .gaji-download-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(22,163,74,0.4);
-  }
-
-  @media (max-width: 600px) {
-    body { padding: 14px; }
-    .brand h1 { font-size: 22px; }
-    .card .value { font-size: 24px; }
-    .clock { font-size: 12px; padding: 8px 12px; }
-    .modal-box { max-height: 95vh; }
-    .modal-pdf-body iframe { min-height: 60vh; }
-    .modal-open-btn { padding: 6px 10px; font-size: 11px; }
-    .marquee { font-size: 12px; }
-    .marquee-icon { width: 26px; height: 26px; font-size: 14px; left: 10px; }
-    .gaji-hari-row { grid-template-columns: 1fr 1fr 1fr auto; }
-    .gaji-body { padding: 18px 16px; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;background-image:radial-gradient(circle at 10% 10%,rgba(56,189,248,.10),transparent 35%),radial-gradient(circle at 90% 90%,rgba(129,140,248,.10),transparent 35%);color:#1e293b;padding:24px;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #e2e8f0}
+.brand h1{font-size:28px;font-weight:800;background:linear-gradient(90deg,#0284c7,#4f46e5,#9333ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px}
+.subtitle{font-size:13px;color:#64748b;margin-top:4px;font-weight:500}
+.header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.clock{background:#fff;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:700;color:#0284c7;font-variant-numeric:tabular-nums;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(15,23,42,.04);text-align:right}
+.clock .date{display:block;font-size:11px;color:#64748b;font-weight:500;margin-top:2px}
+.refresh-info{font-size:12px;color:#475569;background:#fff;padding:10px 14px;border-radius:12px;display:flex;align-items:center;gap:8px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+.marquee-wrap{background:linear-gradient(90deg,#fef3c7 0%,#fde68a 50%,#fef3c7 100%);border:1px solid #fcd34d;border-left:5px solid #f59e0b;border-radius:12px;padding:12px 0;margin-bottom:20px;overflow:hidden;position:relative;box-shadow:0 2px 8px rgba(245,158,11,.12)}
+.marquee-wrap::before{content:'';position:absolute;left:0;top:0;bottom:0;width:60px;background:linear-gradient(90deg,rgba(254,243,199,1) 0%,rgba(254,243,199,0) 100%);z-index:2;pointer-events:none}
+.marquee-wrap::after{content:'';position:absolute;right:0;top:0;bottom:0;width:60px;background:linear-gradient(270deg,rgba(254,243,199,1) 0%,rgba(254,243,199,0) 100%);z-index:2;pointer-events:none}
+.marquee-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;z-index:3;background:#f59e0b;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(245,158,11,.4);animation:wiggle 1.5s infinite}
+@keyframes wiggle{0%,100%{transform:translateY(-50%) rotate(0deg)}25%{transform:translateY(-50%) rotate(-10deg)}75%{transform:translateY(-50%) rotate(10deg)}}
+.marquee{display:inline-block;white-space:nowrap;padding-left:60px;font-size:14px;font-weight:700;color:#78350f;animation:scroll-left linear infinite}
+.marquee:hover{animation-play-state:paused}
+@keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.marquee .sep{color:#f59e0b;margin:0 16px;font-size:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+.card{background:#fff;border-radius:14px;padding:18px;position:relative;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(15,23,42,.08)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent)}
+.card.blue{--accent:linear-gradient(90deg,#0ea5e9,#38bdf8)}
+.card.green{--accent:linear-gradient(90deg,#16a34a,#4ade80)}
+.card.indigo{--accent:linear-gradient(90deg,#4f46e5,#818cf8)}
+.card.purple{--accent:linear-gradient(90deg,#9333ea,#c084fc)}
+.card.orange{--accent:linear-gradient(90deg,#ea580c,#fb923c)}
+.card.cyan{--accent:linear-gradient(90deg,#0891b2,#22d3ee)}
+.card.gray{--accent:linear-gradient(90deg,#64748b,#94a3b8)}
+.card .label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.card .value{font-size:30px;font-weight:800;margin-top:6px;color:#0f172a;line-height:1}
+.card .pct{font-size:11px;color:#94a3b8;margin-top:6px;font-weight:500}
+.card .icon{position:absolute;top:14px;right:14px;font-size:20px;opacity:.35}
+.progress-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px 20px;margin-bottom:28px;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.progress-header .title{font-size:13px;color:#334155;font-weight:700}
+.progress-header .val{font-size:13px;font-weight:800}
+.progress-bar{height:12px;background:#f1f5f9;border-radius:8px;overflow:hidden;display:flex}
+.progress-bar .seg{height:100%;transition:width .5s ease}
+.seg.on{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.seg.wfh{background:linear-gradient(90deg,#0891b2,#22d3ee)}
+.seg.permitted{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.seg.sick{background:linear-gradient(90deg,#9333ea,#c084fc)}
+.seg.leave{background:linear-gradient(90deg,#4f46e5,#a5b4fc)}
+.seg.other{background:linear-gradient(90deg,#64748b,#94a3b8)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:#475569;font-weight:500}
+.legend span::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.legend .l-on::before{background:#16a34a}
+.legend .l-wfh::before{background:#0891b2}
+.legend .l-permit::before{background:#2563eb}
+.legend .l-sick::before{background:#9333ea}
+.legend .l-leave::before{background:#4f46e5}
+.legend .l-other::before{background:#64748b}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.toolbar input[type=text],.toolbar select{background:#fff;border:1px solid #e2e8f0;color:#1e293b;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+.toolbar input[type=text]:focus,.toolbar select:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
+.toolbar input[type=text]{flex:1;min-width:180px}
+.toolbar input[type=text]::placeholder{color:#94a3b8}
+.toggle-label{display:flex;align-items:center;gap:6px;font-size:13px;color:#334155;cursor:pointer;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;font-weight:500;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+.toggle-label:hover{border-color:#38bdf8}
+.toggle-label input{cursor:pointer;accent-color:#0284c7}
+section{margin-bottom:32px}
+h2{font-size:16px;margin-bottom:14px;color:#0f172a;display:flex;align-items:center;gap:8px;font-weight:700}
+h2::before{content:'';width:4px;height:18px;border-radius:2px;background:linear-gradient(180deg,#0284c7,#4f46e5)}
+h2 .count{font-size:11px;background:#e0f2fe;color:#0369a1;padding:3px 10px;border-radius:10px;font-weight:700}
+.table-wrap{overflow-x:auto;border-radius:12px;box-shadow:0 1px 3px rgba(15,23,42,.04);border:1px solid #e2e8f0}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px;min-width:600px}
+th{background:#f8fafc;color:#475569;text-align:left;padding:13px 16px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid #e2e8f0}
+td{padding:13px 16px;border-top:1px solid #f1f5f9;color:#334155}
+tr:hover td{background:#f8fafc}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.badge.onduty{background:#dcfce7;color:#15803d}
+.badge.wfh{background:#cffafe;color:#0e7490}
+.badge.permitted{background:#dbeafe;color:#1d4ed8}
+.badge.sick{background:#f3e8ff;color:#7e22ce}
+.badge.onleave{background:#e0e7ff;color:#4338ca}
+.badge.unknown{background:#f1f5f9;color:#475569}
+.kegiatan-list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.kegiatan-item{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:transform .2s,border-color .2s,box-shadow .2s}
+.kegiatan-item:hover{transform:translateX(4px);border-left-color:#9333ea;box-shadow:0 6px 16px rgba(99,102,241,.12)}
+.kegiatan-item .k-date{font-size:11.5px;color:#6366f1;text-transform:capitalize;letter-spacing:.3px;font-weight:700}
+.kegiatan-item .k-name{font-size:14px;color:#0f172a;font-weight:700;margin:6px 0 8px}
+.kegiatan-item .k-lokasi{font-size:12px;color:#7c3aed;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kegiatan-item .k-lokasi::before{content:'📍';font-size:12px}
+.kegiatan-item .k-tech{font-size:12px;color:#0284c7;display:flex;align-items:center;gap:6px;font-weight:600}
+.kegiatan-item .k-tech::before{content:'👤';font-size:12px}
+.kegiatan-item.upcoming-item{border-left-color:#f59e0b;background:linear-gradient(135deg,#fffbf0 0%,#fff 100%)}
+.kegiatan-item.upcoming-item:hover{border-left-color:#ea580c;box-shadow:0 6px 16px rgba(245,158,11,.18)}
+.kegiatan-item.upcoming-item .k-date{color:#d97706}
+.kegiatan-item.upcoming-item .k-lokasi{color:#b45309}
+.kegiatan-item.upcoming-item .k-tech{color:#b45309}
+.wifi-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.wifi-toolbar input,.wifi-toolbar select{background:#fff;border:1px solid #e2e8f0;color:#1e293b;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+.wifi-toolbar input:focus,.wifi-toolbar select:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
+.wifi-toolbar input{flex:1;min-width:180px}
+.wifi-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.wifi-card{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #0891b2;border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(15,23,42,.04);position:relative;overflow:hidden}
+.wifi-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(8,145,178,.15);border-left-color:#0284c7}
+.wifi-card.inactive{border-left-color:#94a3b8;opacity:.7}
+.wifi-card.inactive:hover{box-shadow:0 8px 20px rgba(100,116,139,.15);border-left-color:#64748b}
+.wifi-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.wifi-card-minggu{font-size:11px;font-weight:800;color:#0891b2;text-transform:uppercase;letter-spacing:.8px}
+.wifi-card-status{font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+.wifi-card-status.active{background:#dcfce7;color:#15803d}
+.wifi-card-status.inactive{background:#f1f5f9;color:#64748b}
+.wifi-card-user{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:6px;word-break:break-all}
+.wifi-card-pass{font-size:12px;color:#64748b;font-family:monospace;letter-spacing:1px;margin-bottom:10px}
+.wifi-card-hint{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:4px;font-weight:600}
+.wifi-card-hint::before{content:'👆';font-size:12px}
+.wifi-modal-content{padding:24px 26px}
+.wifi-modal-minggu{font-size:12px;font-weight:800;color:#0891b2;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.wifi-modal-title{font-size:20px;font-weight:800;color:#0f172a;margin-bottom:20px}
+.wifi-modal-field{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.wifi-modal-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:4px}
+.wifi-modal-value{font-size:16px;font-family:monospace;font-weight:700;color:#0f172a;letter-spacing:1px;word-break:break-all}
+.wifi-modal-status{display:flex;align-items:center;gap:8px;margin-top:16px;margin-bottom:18px;font-size:13px;font-weight:700}
+.wifi-modal-status.active{color:#15803d}
+.wifi-modal-status.inactive{color:#64748b}
+.wifi-modal-status::before{content:'';width:10px;height:10px;border-radius:50%;background:currentColor}
+.wifi-modal-actions{display:flex;gap:10px;margin-top:20px}
+.wifi-btn-copy{flex:1;background:linear-gradient(90deg,#0891b2,#0284c7);color:#fff;border:none;padding:14px 20px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 12px rgba(8,145,178,.3)}
+.wifi-btn-copy:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(8,145,178,.4)}
+.wifi-btn-copy.copied{background:linear-gradient(90deg,#16a34a,#22c55e)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(15,23,42,.4);z-index:99999;opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.wi-accordion{display:flex;flex-direction:column;gap:10px}
+.wi-accordion-item{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:box-shadow .2s}
+.wi-accordion-item:hover{box-shadow:0 4px 12px rgba(99,102,241,.1)}
+.wi-accordion-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .2s;font-weight:700;color:#334155}
+.wi-accordion-header:hover{background:#f8fafc}
+.wi-accordion-icon{font-size:16px;transition:transform .25s ease;color:#94a3b8;flex-shrink:0}
+.wi-accordion-item.open .wi-accordion-icon{transform:rotate(90deg);color:#0284c7}
+.wi-accordion-title{flex:1;font-size:14px;display:flex;align-items:center;gap:8px}
+.wi-accordion-count{font-size:11px;background:#e0f2fe;color:#0369a1;padding:3px 10px;border-radius:10px;font-weight:700;flex-shrink:0}
+.wi-accordion-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.wi-accordion-item.open .wi-accordion-body{max-height:3000px}
+.wi-accordion-content{padding:0 18px 16px 18px;display:grid;gap:8px}
+.wi-cat-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8fafc;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#334155;transition:all .2s;border-left:3px solid #6366f1;text-decoration:none}
+.wi-cat-item:hover{background:#eff6ff;border-left-color:#9333ea;transform:translateX(3px)}
+.wi-cat-item::before{content:'📄';font-size:13px;flex-shrink:0}
+.wi-cat-item .wi-cat-name{flex:1}
+.wi-cat-item .link-arrow{color:#94a3b8;font-weight:700;transition:all .2s}
+.wi-cat-item:hover .link-arrow{color:#0284c7;transform:translateX(3px)}
+.link-group{margin-bottom:18px}
+.link-group-title{font-size:13px;font-weight:700;color:#334155;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.link-group-items{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.link-btn{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e2e8f0;border-left:4px solid #0284c7;border-radius:10px;padding:12px 14px;text-decoration:none;color:#1e293b;font-weight:600;font-size:13px;transition:all .2s;box-shadow:0 1px 3px rgba(15,23,42,.04);cursor:pointer}
+.link-btn:hover{transform:translateY(-2px);border-left-color:#9333ea;box-shadow:0 6px 16px rgba(2,132,199,.15)}
+.link-icon{font-size:18px}
+.link-label{flex:1}
+.link-arrow{color:#94a3b8;font-weight:700;transition:transform .2s,color .2s}
+.link-btn:hover .link-arrow{color:#0284c7;transform:translateX(3px)}
+.link-text{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:12px 14px;color:#475569;font-size:13px;font-weight:500}
+.reminder-box{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.reminder-title{font-size:14px;font-weight:800;color:#92400e;margin-bottom:10px}
+.reminder-list{list-style:none;padding:0;margin:0}
+.reminder-list li{font-size:13px;color:#78350f;padding:6px 0 6px 22px;position:relative;line-height:1.5}
+.reminder-list li::before{content:'•';position:absolute;left:8px;color:#f59e0b;font-weight:800;font-size:16px}
+.footer-note{text-align:center;font-size:14px;font-weight:600;color:#0284c7;padding:16px;background:#f0f9ff;border-radius:12px;border:1px solid #bae6fd}
+.empty,.loading{text-align:center;padding:40px;color:#94a3b8;background:#fff;border-radius:12px;font-size:14px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-top:20px;border-top:1px solid #e2e8f0;font-weight:500}
+.lock-box{background:linear-gradient(135deg,#fff 0%,#f8fafc 100%);border:2px dashed #cbd5e1;border-radius:14px;padding:40px 20px;text-align:center;max-width:420px;margin:0 auto}
+.lock-icon{font-size:48px;margin-bottom:12px}
+.lock-title{font-size:16px;font-weight:800;color:#0f172a;margin-bottom:6px}
+.lock-desc{font-size:13px;color:#64748b;margin-bottom:20px}
+.lock-input-wrap{display:flex;gap:8px;max-width:340px;margin:0 auto 12px}
+.lock-input{flex:1;padding:12px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;outline:none;font-family:inherit;transition:border .2s;letter-spacing:2px}
+.lock-input:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+.lock-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;transition:transform .2s}
+.lock-btn:hover{transform:translateY(-1px)}
+.lock-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.lock-error{color:#dc2626;font-size:12px;min-height:16px;font-weight:600}
+.lock-note{font-size:11px;color:#94a3b8;margin-top:16px}
+.lock-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.lock-logout{background:#f1f5f9;border:1px solid #e2e8f0;color:#64748b;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.lock-logout:hover{background:#fee2e2;color:#dc2626;border-color:#fecaca}
+.lock-status{font-size:12px;color:#22c55e;font-weight:700}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal-box{background:#fff;border-radius:16px;width:100%;max-width:720px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(15,23,42,.3);transform:scale(.95);transition:transform .2s}
+.modal-overlay.active .modal-box{transform:scale(1)}
+.modal-box.modal-wide{max-width:1100px;max-height:92vh}
+.modal-box.modal-small{max-width:480px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e2e8f0;background:linear-gradient(135deg,#f8fafc 0%,#fff 100%);gap:8px}
+.modal-header h3{font-size:16px;font-weight:800;color:#0f172a;display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.modal-header h3 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal-close{background:#f1f5f9;border:none;width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:18px;color:#64748b;font-weight:700;transition:all .2s;flex-shrink:0}
+.modal-close:hover{background:#fee2e2;color:#dc2626}
+.modal-pdf-body{padding:0;background:#525659;flex:1;min-height:0;display:flex}
+.modal-pdf-body iframe{width:100%;height:100%;border:none;display:block;min-height:70vh}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:13.5px;outline:none;transition:all .2s;background:#fff;color:#1e293b}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-checkbox-group{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;background:#f8fafc;padding:12px;border-radius:10px;border:1px solid #e2e8f0}
+.form-checkbox-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:#334155;cursor:pointer}
+.form-checkbox-label input{accent-color:#0284c7;cursor:pointer;width:16px;height:16px}
+.form-submit-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;transition:all .2s;width:100%;box-shadow:0 4px 12px rgba(2,132,199,.3);margin-top:10px}
+.form-submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(2,132,199,.4)}
+.form-submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.gaji-body{padding:24px 26px;overflow-y:auto;max-height:calc(92vh - 70px)}
+.gaji-section{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.gaji-section-title{font-size:12px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.gaji-field{margin-bottom:12px}
+.gaji-field:last-child{margin-bottom:0}
+.gaji-label{font-size:12px;color:#64748b;font-weight:600;margin-bottom:6px;display:block}
+.gaji-input{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:border .2s;background:#fff}
+.gaji-input:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+.gaji-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+.gaji-hari-row{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px}
+.gaji-hari-row select,.gaji-hari-row input{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff}
+.gaji-hari-row select:focus,.gaji-hari-row input:focus{border-color:#0284c7;box-shadow:0 0 0 2px rgba(2,132,199,.15)}
+.gaji-hari-row label{font-size:11px;color:#64748b;font-weight:600;display:block;margin-bottom:4px}
+.gaji-hapus-btn{background:#fee2e2;border:none;width:36px;height:36px;border-radius:8px;color:#dc2626;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0}
+.gaji-hapus-btn:hover{background:#fecaca}
+.gaji-add-btn{background:#fff;border:1px dashed #cbd5e1;color:#0284c7;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;transition:all .2s}
+.gaji-add-btn:hover{background:#f0f9ff;border-color:#38bdf8}
+.gaji-calc-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px;font-family:inherit;width:100%;transition:all .2s;box-shadow:0 4px 12px rgba(2,132,199,.3)}
+.gaji-calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(2,132,199,.4)}
+.gaji-result{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
+.gaji-result-title{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.gaji-result-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px;gap:12px}
+.gaji-result-row:last-child{border-bottom:none}
+.gaji-result-row .label{color:#64748b}
+.gaji-result-row .value{font-weight:700;color:#0f172a;font-family:monospace;text-align:right}
+.gaji-result-row.total{border-top:2px solid #0f172a;border-bottom:none;margin-top:8px;padding-top:12px;font-size:16px}
+.gaji-result-row.total .label{color:#0f172a;font-weight:800}
+.gaji-result-row.total .value{color:#0284c7;font-size:18px;font-weight:800}
+.gaji-result-row.big{font-size:15px;padding:12px 0}
+.gaji-hari-item{background:#f8fafc;border-left:3px solid #0284c7;border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.gaji-hari-item-title{font-size:12px;font-weight:800;color:#0284c7;text-transform:uppercase;margin-bottom:8px}
+.gaji-hari-item .gaji-result-row{font-size:12px;padding:4px 0}
+.gaji-download-btn{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit;width:100%;margin-top:16px;transition:all .2s;box-shadow:0 4px 12px rgba(22,163,74,.3)}
+.gaji-download-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(22,163,74,.4)}
+@media(max-width:600px){body{padding:14px}.brand h1{font-size:22px}.card .value{font-size:24px}.clock{font-size:12px;padding:8px 12px}.modal-box{max-height:95vh}.modal-pdf-body iframe{min-height:60vh}.marquee{font-size:12px}.marquee-icon{width:26px;height:26px;font-size:14px;left:10px}.gaji-hari-row{grid-template-columns:1fr 1fr 1fr auto}.gaji-body{padding:18px 16px}}
 </style>
 </head>
 <body>
@@ -923,90 +271,31 @@
 </div>
 
 <div class="cards">
-  <div class="card blue">
-    <div class="icon">👥</div>
-    <div class="label">Total</div>
-    <div class="value" id="cTotal">0</div>
-    <div class="pct" id="pTotal">hari ini</div>
-  </div>
-  <div class="card green">
-    <div class="icon">✅</div>
-    <div class="label">Onsite</div>
-    <div class="value" id="cOn">0</div>
-    <div class="pct" id="pOn">0%</div>
-  </div>
-  <div class="card cyan">
-    <div class="icon">🏠</div>
-    <div class="label">WFH</div>
-    <div class="value" id="cWfh">0</div>
-    <div class="pct" id="pWfh">0%</div>
-  </div>
-  <div class="card indigo">
-    <div class="icon">📝</div>
-    <div class="label">Izin</div>
-    <div class="value" id="cPermit">0</div>
-    <div class="pct" id="pPermit">0%</div>
-  </div>
-  <div class="card purple">
-    <div class="icon">🤒</div>
-    <div class="label">Sakit</div>
-    <div class="value" id="cSick">0</div>
-    <div class="pct" id="pSick">0%</div>
-  </div>
-  <div class="card orange">
-    <div class="icon">🏖️</div>
-    <div class="label">Cuti</div>
-    <div class="value" id="cLeave">0</div>
-    <div class="pct" id="pLeave">0%</div>
-  </div>
-  <div class="card gray">
-    <div class="icon">❓</div>
-    <div class="label">Lainnya</div>
-    <div class="value" id="cOther">0</div>
-    <div class="pct" id="pOther">0%</div>
-  </div>
+  <div class="card blue"><div class="icon">👥</div><div class="label">Total</div><div class="value" id="cTotal">0</div><div class="pct" id="pTotal">hari ini</div></div>
+  <div class="card green"><div class="icon">✅</div><div class="label">Onsite</div><div class="value" id="cOn">0</div><div class="pct" id="pOn">0%</div></div>
+  <div class="card cyan"><div class="icon">🏠</div><div class="label">WFH</div><div class="value" id="cWfh">0</div><div class="pct" id="pWfh">0%</div></div>
+  <div class="card indigo"><div class="icon">📝</div><div class="label">Izin</div><div class="value" id="cPermit">0</div><div class="pct" id="pPermit">0%</div></div>
+  <div class="card purple"><div class="icon">🤒</div><div class="label">Sakit</div><div class="value" id="cSick">0</div><div class="pct" id="pSick">0%</div></div>
+  <div class="card orange"><div class="icon">🏖️</div><div class="label">Cuti</div><div class="value" id="cLeave">0</div><div class="pct" id="pLeave">0%</div></div>
+  <div class="card gray"><div class="icon">❓</div><div class="label">Lainnya</div><div class="value" id="cOther">0</div><div class="pct" id="pOther">0%</div></div>
 </div>
 
 <div class="progress-wrap">
-  <div class="progress-header">
-    <span class="title">📊 Distribusi Status Personil</span>
-    <span class="val" id="pTitle">0%</span>
-  </div>
+  <div class="progress-header"><span class="title">📊 Distribusi Status Personil</span><span class="val" id="pTitle">0%</span></div>
   <div class="progress-bar">
-    <div class="seg on"        id="segOn"     style="width:0%"></div>
-    <div class="seg wfh"       id="segWfh"    style="width:0%"></div>
-    <div class="seg permitted" id="segPermit" style="width:0%"></div>
-    <div class="seg sick"      id="segSick"   style="width:0%"></div>
-    <div class="seg leave"     id="segLeave"  style="width:0%"></div>
-    <div class="seg other"     id="segOther"  style="width:0%"></div>
+    <div class="seg on" id="segOn" style="width:0%"></div><div class="seg wfh" id="segWfh" style="width:0%"></div>
+    <div class="seg permitted" id="segPermit" style="width:0%"></div><div class="seg sick" id="segSick" style="width:0%"></div>
+    <div class="seg leave" id="segLeave" style="width:0%"></div><div class="seg other" id="segOther" style="width:0%"></div>
   </div>
-  <div class="legend">
-    <span class="l-on">Onsite</span>
-    <span class="l-wfh">WFH</span>
-    <span class="l-permit">Izin</span>
-    <span class="l-sick">Sakit</span>
-    <span class="l-leave">Cuti</span>
-    <span class="l-other">Lainnya</span>
-  </div>
+  <div class="legend"><span class="l-on">Onsite</span><span class="l-wfh">WFH</span><span class="l-permit">Izin</span><span class="l-sick">Sakit</span><span class="l-leave">Cuti</span><span class="l-other">Lainnya</span></div>
 </div>
 
 <section>
   <h2>📍 Lokasi Standby Harian <span class="count" id="cntLokasi">0</span></h2>
   <div class="toolbar">
     <input type="text" id="searchInput" placeholder="🔍 Cari nama teknisi atau lokasi...">
-    <select id="statusFilter">
-      <option value="">Semua Status</option>
-      <option value="onduty">Onsite</option>
-      <option value="wfh">WFH</option>
-      <option value="permitted">Izin</option>
-      <option value="sick">Sakit</option>
-      <option value="onleave">Cuti</option>
-      <option value="unknown">Lainnya</option>
-    </select>
-    <label class="toggle-label">
-      <input type="checkbox" id="onlyToday" checked>
-      Hanya hari ini
-    </label>
+    <select id="statusFilter"><option value="">Semua Status</option><option value="onduty">Onsite</option><option value="wfh">WFH</option><option value="permitted">Izin</option><option value="sick">Sakit</option><option value="onleave">Cuti</option><option value="unknown">Lainnya</option></select>
+    <label class="toggle-label"><input type="checkbox" id="onlyToday" checked>Hanya hari ini</label>
   </div>
   <div id="wrapLokasi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
@@ -1021,15 +310,22 @@
   <div id="wrapUpcoming"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<!-- SECTION GRAFIK LEMBUR -->
+<section>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <h2 style="margin: 0;">📊 Grafik Lembur Teknisi</h2>
+    <!-- Kotak Total & Kegiatan dihapus -->
+  </div>
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04);">
+    <canvas id="chartLembur" height="90"></canvas>
+  </div>
+</section>
+
 <section>
   <h2>📶 Wifi Guest <span class="count" id="cntWifi">0</span></h2>
   <div class="wifi-toolbar">
     <input type="text" id="wifiSearch" placeholder="🔍 Cari username atau minggu...">
-    <select id="wifiFilter">
-      <option value="">Semua Status</option>
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
-    </select>
+    <select id="wifiFilter"><option value="">Semua Status</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
   </div>
   <div id="wrapWifi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
@@ -1047,1133 +343,637 @@
 <footer>SIKAT-TI • realtime • by acg</footer>
 
 <!-- MODAL PDF -->
-<div class="modal-overlay" id="modalPDF">
-  <div class="modal-box modal-wide">
-    <div class="modal-header">
-      <h3>📄 <span id="pdfTitle">Dokumen</span></h3>
-      <a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a>
-      <button class="modal-close" onclick="closeModal('modalPDF')">✕</button>
-    </div>
-    <div class="modal-pdf-body">
-      <iframe id="pdfFrame" src="about:blank"></iframe>
-    </div>
-  </div>
-</div>
+<div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
 
 <!-- MODAL WIFI -->
-<div class="modal-overlay" id="modalWifi">
-  <div class="modal-box modal-small">
-    <div class="modal-header">
-      <h3>📶 <span id="wifiModalTitle">Wifi Guest</span></h3>
-      <button class="modal-close" onclick="closeModal('modalWifi')">✕</button>
+<div class="modal-overlay" id="modalWifi"><div class="modal-box modal-small"><div class="modal-header"><h3>📶 <span id="wifiModalTitle">Wifi Guest</span></h3><button class="modal-close" onclick="closeModal('modalWifi')">✕</button></div><div class="wifi-modal-content" id="wifiModalContent"></div></div></div>
+
+<!-- MODAL GAJI -->
+<div class="modal-overlay" id="modalGaji"><div class="modal-box modal-wide"><div class="modal-header"><h3>🧮 Kalkulator Gaji & Lembur</h3><button class="modal-close" onclick="closeModal('modalGaji')">✕</button></div><div class="gaji-body" id="gajiBody"></div></div></div>
+
+<!-- MODAL FORM LEMBUR -->
+<div class="modal-overlay" id="modalFormLembur">
+  <div class="modal-box modal-wide">
+    <div class="modal-header"><h3>📝 Input Form Lembur</h3><button class="modal-close" onclick="closeModal('modalFormLembur')">✕</button></div>
+    <div class="gaji-body" style="padding:24px 26px">
+      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, abis lembur → H+1 langsung input ya biar gak lupa!<br><i>(ipul juga bakal bawel sih :v)</i></p>
+      <form id="formLembur" onsubmit="submitLembur(event)">
+        <div class="form-group"><label class="form-label">1. Nama Kegiatan Lembur <span style="color:red">*</span></label><textarea class="form-textarea" id="inpKegiatan" required placeholder="Contoh: Standby Weekend / Implementasi LogRhythm"></textarea></div>
+        <div class="form-group"><label class="form-label">2. Engineer Penanggung Jawab <span style="color:red">*</span></label><select class="form-select" id="inpEngineer" required><option value="">-- Pilih Engineer --</option><option value="MUH. GHOFARUDIN FALAH">MUH. GHOFARUDIN FALAH</option><option value="MUHAMMAD LAZUARDI WILDAN">MUHAMMAD LAZUARDI WILDAN</option><option value="ANDI KURNIAWAN">ANDI KURNIAWAN</option><option value="DARWIN PRASETYA EKA GUNAWAN">DARWIN PRASETYA EKA GUNAWAN</option><option value="ACHMAD FAUZI FERDIANSYAH">ACHMAD FAUZI FERDIANSYAH</option><option value="DEZA NUR QHODBI">DEZA NUR QHODBI</option><option value="YULIANDARI PRATIWI">YULIANDARI PRATIWI</option></select></div>
+        
+        <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="form-label">3. Tanggal Mulai <span style="color:red">*</span></label><input type="date" class="form-input" id="inpTanggal" required></div>
+          <div><label class="form-label">4. Jam Mulai <span style="color:red">*</span></label><input type="time" class="form-input" id="inpJamMulai" required></div>
+        </div>
+        
+        <div class="form-group" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div><label class="form-label">5. Tanggal Akhir <span style="color:red">*</span></label><input type="date" class="form-input" id="inpTanggalAkhir" required></div>
+          <div><label class="form-label">6. Jam Akhir <span style="color:red">*</span></label><input type="time" class="form-input" id="inpJamAkhir" required></div>
+        </div>
+
+        <div class="form-group" style="background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:13px; font-weight:600; color:#334155;">Total Jam Lembur (Otomatis):</span>
+          <span id="labelTotalJam" style="font-size:18px; font-weight:800; color:#0284c7;">0 Jam</span>
+        </div>
+
+        <div class="form-group"><label class="form-label">7. Siapa saja teknisi yang terlibat? <span style="color:red">*</span></label><div class="form-checkbox-group" id="inpTeknisiList"></div></div>
+        <div class="form-group"><label class="form-label">8. No Tiket <span style="color:#94a3b8">(Opsional)</span></label><input type="text" class="form-input" id="inpNoTiket" placeholder="Contoh: REQ-12345"></div>
+        <button type="submit" class="form-submit-btn" id="btnSubmitLembur">🚀 Kirim Form Lembur</button>
+      </form>
     </div>
-    <div class="wifi-modal-content" id="wifiModalContent"></div>
   </div>
 </div>
 
-<!-- MODAL KALKULATOR GAJI -->
-<div class="modal-overlay" id="modalGaji">
+<!-- MODAL REKAP LEMBUR -->
+<div class="modal-overlay" id="modalRekapLembur">
   <div class="modal-box modal-wide">
     <div class="modal-header">
-      <h3>🧮 Kalkulator Gaji & Lembur</h3>
-      <button class="modal-close" onclick="closeModal('modalGaji')">✕</button>
+      <h3>📋 Rekap Data Lembur</h3>
+      <button class="modal-close" onclick="closeModal('modalRekapLembur')">✕</button>
     </div>
-    <div class="gaji-body" id="gajiBody"></div>
+    <div class="gaji-body" style="padding:0; display:flex; flex-direction:column;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="searchRekap" class="form-input" placeholder="🔍 Cari nama teknisi atau kegiatan..." style="flex:1; min-width: 200px;">
+        <button onclick="downloadRekapCSV()" class="form-submit-btn" style="display: none;width:auto; margin-top:0; padding: 0 20px; background: linear-gradient(90deg,#16a34a,#22c55e); display:flex; align-items:center; gap:8px;">
+          📥 Download CSV
+        </button>
+      </div>
+      <div style="overflow-y: auto; flex:1;">
+        <table style="min-width: 800px; width: 100%; border-collapse: collapse;">
+          <thead style="position: sticky; top: 0; background: #fff; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <tr>
+              <th>Tanggal</th>
+              <th>Jam</th>
+              <th>Kegiatan</th>
+              <th>Teknisi</th>
+              <th style="text-align: right;">Total Jam</th>
+              <th>No Tiket</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyRekap"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">✅ Copied!</div>
 
 <script>
 /* ============================================================
-   KONFIGURASI
+   KONFIGURASI & VARIABEL GLOBAL
    ============================================================ */
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
+const PENGUMUMAN = ['Jangan lupa isi absensi hari ini','Close tiket SDP kalau udah selesai','Input Lembur H+1 - biar gak lupa!'];
+let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawWifi = [], rawLembur = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
+let chartInstance = null;
 
-const PENGUMUMAN = [
-  'Jangan lupa isi absensi hari ini',
-  'Close tiket SDP kalau udah selesai',
-  'Input Lembur - biar gak lupa'
-];
+const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
 
-let rawLokasi = [];
-let rawKegiatan = [];
-let rawLinks = [];
-let rawWI = [];
-let rawWifi = [];
-let linksUnlocked = false;
-let rawLinksCache = [];
-let lockRealValue = '';
+function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`; }
 
-function apiUrl(sheetName){
-  return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`;
-}
+/* ============================================================
+   HELPER FUNCTIONS
+   ============================================================ */
+const STATUS_RULES = { wfh: ['wfh'], permitted: ['ijin', 'izin', 'permitted'], sick: ['sakit', 'sick', 'mmr'], onleave: ['cuti', 'on leave', 'onleave', 'libur'], onduty: ['onsite', 'on site', 'on-site', 'hadir', 'masuk', 'onduty', 'on duty'] };
+function statusClass(s){ const t = (s||'').toLowerCase().trim(); if(!t) return 'unknown'; const order = ['wfh', 'permitted', 'sick', 'onleave', 'onduty']; for(const cat of order){ for(const kw of STATUS_RULES[cat]){ if(t.includes(kw)) return cat; } } return 'unknown'; }
+function statusLabel(s){ const c = statusClass(s); if(c === 'onduty') return 'Onsite'; if(c === 'wfh') return 'WFH'; if(c === 'permitted') return 'Izin'; if(c === 'sick') return 'Sakit'; if(c === 'onleave') return 'Cuti'; if(c === 'unknown') return s ? s : 'Lainnya'; return s || '-'; }
+function getFlex(obj, keys){ if(!obj) return '-'; for(const k of keys){ if(obj[k] !== undefined && obj[k] !== '' && obj[k] !== null) return obj[k]; } const objKeys = Object.keys(obj); for(const k of keys){ const target = k.toLowerCase().replace(/[\s\/\[\]]/g,''); for(const ok of objKeys){ const normalized = ok.toLowerCase().replace(/[\s\/\[\]]/g,''); if(normalized === target || normalized.includes(target) || target.includes(normalized)){ if(obj[ok] !== undefined && obj[ok] !== '' && obj[ok] !== null) return obj[ok]; } } } return '-'; }
 
-const STATUS_RULES = {
-  wfh:       ['wfh'],
-  permitted: ['ijin', 'izin', 'permitted'],
-  sick:      ['sakit', 'sick', 'mmr'],
-  onleave:   ['cuti', 'on leave', 'onleave', 'libur'],
-  onduty:    ['onsite', 'on site', 'on-site', 'hadir', 'masuk', 'onduty', 'on duty']
-};
-
-function statusClass(s){
-  const t = (s||'').toLowerCase().trim();
-  if(!t) return 'unknown';
-  const order = ['wfh', 'permitted', 'sick', 'onleave', 'onduty'];
-  for(const cat of order){
-    for(const kw of STATUS_RULES[cat]){
-      if(t.includes(kw)) return cat;
-    }
-  }
-  return 'unknown';
-}
-
-function statusLabel(s){
-  const c = statusClass(s);
-  if(c === 'onduty')    return 'Onsite';
-  if(c === 'wfh')       return 'WFH';
-  if(c === 'permitted') return 'Izin';
-  if(c === 'sick')      return 'Sakit';
-  if(c === 'onleave')   return 'Cuti';
-  if(c === 'unknown')   return s ? s : 'Lainnya';
-  return s || '-';
-}
-
-function getFlex(obj, keys){
-  if(!obj) return '-';
-  for(const k of keys){
-    if(obj[k] !== undefined && obj[k] !== '' && obj[k] !== null) return obj[k];
-  }
-  const objKeys = Object.keys(obj);
-  for(const k of keys){
-    const target = k.toLowerCase().replace(/[\s\/\[\]]/g,'');
-    for(const ok of objKeys){
-      const normalized = ok.toLowerCase().replace(/[\s\/\[\]]/g,'');
-      if(normalized === target || normalized.includes(target) || target.includes(normalized)){
-        if(obj[ok] !== undefined && obj[ok] !== '' && obj[ok] !== null) return obj[ok];
-      }
-    }
-  }
-  return '-';
-}
-
-const NAMA_BULAN_ID = {
-  'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5,
-  'juli':6, 'agustus':7, 'september':8, 'oktober':9, 'november':10, 'desember':11,
-  'jan':0, 'feb':1, 'mar':2, 'apr':3, 'jun':5, 'jul':6, 'agu':7, 'ags':7,
-  'sep':8, 'okt':9, 'nov':10, 'des':11
-};
-
+const NAMA_BULAN_ID = {'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5, 'juli':6, 'agustus':7, 'september':8, 'oktober':9, 'november':10, 'desember':11, 'jan':0, 'feb':1, 'mar':2, 'apr':3, 'jun':5, 'jul':6, 'agu':7, 'ags':7, 'sep':8, 'okt':9, 'nov':10, 'des':11};
 const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
-function parseTanggalID(str){
-  if(!str || str === '-') return null;
-  const s = str.toString().toLowerCase().trim();
-  const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
-  if(matchAngka){
-    const tgl = parseInt(matchAngka[1]);
-    const bln = parseInt(matchAngka[2]) - 1;
-    let thn = matchAngka[3] ? parseInt(matchAngka[3]) : new Date().getFullYear();
-    if(thn < 100) thn += 2000;
-    if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11){
-      return new Date(thn, bln, tgl);
-    }
-  }
-  const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/);
-  if(matchNama){
-    const tgl = parseInt(matchNama[1]);
-    const bln = NAMA_BULAN_ID[matchNama[2]];
-    if(bln !== undefined && tgl >= 1 && tgl <= 31){
-      const thn = matchNama[3] ? parseInt(matchNama[3]) : new Date().getFullYear();
-      return new Date(thn, bln, tgl);
-    }
-  }
-  return null;
+function parseTanggalID(str){ 
+  if(!str || str === '-') return null; 
+  const s = str.toString().toLowerCase().trim(); 
+  const matchYMD = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(matchYMD){ return new Date(parseInt(matchYMD[1]), parseInt(matchYMD[2])-1, parseInt(matchYMD[3])); }
+  const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/); 
+  if(matchAngka){ 
+    const tgl = parseInt(matchAngka[1]); const bln = parseInt(matchAngka[2]) - 1; 
+    let thn = matchAngka[3] ? parseInt(matchAngka[3]) : new Date().getFullYear(); 
+    if(thn < 100) thn += 2000; 
+    if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11) return new Date(thn, bln, tgl); 
+  } 
+  const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/); 
+  if(matchNama){ 
+    const tgl = parseInt(matchNama[1]); const bln = NAMA_BULAN_ID[matchNama[2]]; 
+    if(bln !== undefined && tgl >= 1 && tgl <= 31){ 
+      const thn = matchNama[3] ? parseInt(matchNama[3]) : new Date().getFullYear(); 
+      return new Date(thn, bln, tgl); 
+    } 
+  } 
+  return null; 
 }
 
-function detectHariDitulis(str){
-  if(!str) return null;
-  const s = str.toString().toLowerCase();
-  for(const h of HARI_ID){
-    if(s.includes(h.toLowerCase())) return h;
-  }
-  return null;
-}
-
-function formatTanggalLengkap(date){
-  if(!date) return '-';
-  const hari = HARI_ID[date.getDay()];
-  const tgl = date.getDate().toString().padStart(2,'0');
-  const bln = (date.getMonth()+1).toString().padStart(2,'0');
-  const thn = date.getFullYear();
-  return `${hari}, ${tgl}/${bln}/${thn}`;
-}
-
-function parseTanggalValid(str){
-  const date = parseTanggalID(str);
-  if(!date) return null;
-  const hariDitulis = detectHariDitulis(str);
-  if(hariDitulis){
-    const hariAsli = HARI_ID[date.getDay()];
-    if(hariDitulis.toLowerCase() !== hariAsli.toLowerCase()){
-      return null;
-    }
-  }
-  return date;
-}
-
-function isToday(dateStr){
-  const date = parseTanggalValid(dateStr);
-  if(!date) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  date.setHours(0, 0, 0, 0);
-  return date.getTime() === today.getTime();
-}
-
-function isFuture(dateStr){
-  const date = parseTanggalValid(dateStr);
-  if(!date) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  date.setHours(0, 0, 0, 0);
-  return date.getTime() > today.getTime();
-}
+function detectHariDitulis(str){ if(!str) return null; const s = str.toString().toLowerCase(); for(const h of HARI_ID){ if(s.includes(h.toLowerCase())) return h; } return null; }
+function formatTanggalLengkap(date){ if(!date) return '-'; const hari = HARI_ID[date.getDay()]; const tgl = date.getDate().toString().padStart(2,'0'); const bln = (date.getMonth()+1).toString().padStart(2,'0'); const thn = date.getFullYear(); return `${hari}, ${tgl}/${bln}/${thn}`; }
+function parseTanggalValid(str){ const date = parseTanggalID(str); if(!date) return null; const hariDitulis = detectHariDitulis(str); if(hariDitulis){ const hariAsli = HARI_ID[date.getDay()]; if(hariDitulis.toLowerCase() !== hariAsli.toLowerCase()) return null; } return date; }
+function isToday(dateStr){ const d = parseTanggalValid(dateStr); if(!d) return false; const t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0); return d.getTime() === t.getTime(); }
+function isFuture(dateStr){ const d = parseTanggalValid(dateStr); if(!d) return false; const t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0); return d.getTime() > t.getTime(); }
 
 let toastTimer = null;
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg || '✅ Copied!';
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
-}
+function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg || '✅ Copied!'; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
 
-async function copyText(text){
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch(e){
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); document.body.removeChild(ta); return true; }
-    catch(err){ document.body.removeChild(ta); return false; }
-  }
-}
-
-function renderMarquee(){
-  const txt = document.getElementById('marqueeText');
-  const wrap = document.getElementById('marqueeWrap');
-  if(!PENGUMUMAN.length){
-    wrap.style.display = 'none';
-    return;
-  }
-  const sep = ' <span class="sep">•</span> ';
-  const combined = PENGUMUMAN.join(sep);
-  txt.innerHTML = combined + sep + combined + sep;
-  const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8));
-  txt.style.animationDuration = duration + 's';
-  wrap.style.display = 'block';
-}
+/* ============================================================
+   RENDER FUNCTIONS
+   ============================================================ */
+function renderMarquee(){ const txt = document.getElementById('marqueeText'); const wrap = document.getElementById('marqueeWrap'); if(!PENGUMUMAN.length){ wrap.style.display = 'none'; return; } const sep = ' <span class="sep">•</span> '; const combined = PENGUMUMAN.join(sep); txt.innerHTML = combined + sep + combined + sep; const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8)); txt.style.animationDuration = duration + 's'; wrap.style.display = 'block'; }
 
 function renderLokasi(rows){
-  const wrap = document.getElementById('wrapLokasi');
-  const keyword = (document.getElementById('searchInput').value || '').toLowerCase();
-  const filter = document.getElementById('statusFilter').value;
-  const onlyToday = document.getElementById('onlyToday').checked;
-
+  const wrap = document.getElementById('wrapLokasi'); const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); const filter = document.getElementById('statusFilter').value; const onlyToday = document.getElementById('onlyToday').checked;
   let filtered = rows.filter(r => !onlyToday || isToday(getFlex(r,['hari/tanggal','tanggal'])));
-  filtered = filtered.filter(r => {
-    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase();
-    const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase();
-    const cocok = !keyword || nama.includes(keyword) || lokasi.includes(keyword);
-    const status = statusClass(getFlex(r,['status','keterangan']));
-    const statusCocok = !filter || status === filter;
-    return cocok && statusCocok;
-  });
-
+  filtered = filtered.filter(r => { const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase(); const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase(); const cocok = !keyword || nama.includes(keyword) || lokasi.includes(keyword); const status = statusClass(getFlex(r,['status','keterangan'])); return cocok && (!filter || status === filter); });
   document.getElementById('cntLokasi').textContent = filtered.length;
-
-  if(!filtered.length){
-    wrap.innerHTML = '<div class="empty">Tidak ada data yang cocok</div>';
-    return;
-  }
-
+  if(!filtered.length){ wrap.innerHTML = '<div class="empty">Tidak ada data yang cocok</div>'; return; }
   let html = '<div class="table-wrap"><table><thead><tr><th>Hari/Tanggal</th><th>Nama Teknisi</th><th>Lokasi Standby</th><th>Status</th></tr></thead><tbody>';
-  filtered.forEach(r=>{
-    const raw = getFlex(r,['status','keterangan']);
-    const cls = statusClass(raw);
-    const dateRaw = getFlex(r,['hari/tanggal','tanggal']);
-    const dateObj = parseTanggalValid(dateRaw);
-    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw;
-    html += `<tr>
-      <td>${dateDisplay}</td>
-      <td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td>
-      <td>${getFlex(r,['lokasi standby','lokasi'])}</td>
-      <td><span class="badge ${cls}">${statusLabel(raw)}</span></td>
-    </tr>`;
-  });
+  filtered.forEach(r=>{ const raw = getFlex(r,['status','keterangan']); const cls = statusClass(raw); const dateRaw = getFlex(r,['hari/tanggal','tanggal']); const dateObj = parseTanggalValid(dateRaw); const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; html += `<tr><td>${dateDisplay}</td><td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td><td>${getFlex(r,['lokasi standby','lokasi'])}</td><td><span class="badge ${cls}">${statusLabel(raw)}</span></td></tr>`; });
   wrap.innerHTML = html + '</tbody></table></div>';
 }
 
 function renderKegiatan(rows){
-  const wrap = document.getElementById('wrapKegiatan');
-  const current = rows.filter(r => {
-    const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    return isToday(dateStr);
-  });
-  document.getElementById('cntKegiatan').textContent = current.length;
-  if(!current.length){
-    wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>';
-    return;
-  }
+  const wrap = document.getElementById('wrapKegiatan'); const current = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
+  document.getElementById('cntKegiatan').textContent = current.length; if(!current.length){ wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>'; return; }
   let html = '<div class="kegiatan-list">';
-  current.forEach(r=>{
-    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    const dateObj = parseTanggalValid(dateRaw);
-    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw;
-    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']);
-    const lokasi = getFlex(r,['lokasi']);
-    const tech = getFlex(r,['teknisi','nama teknisi','nama']);
-    html += `<div class="kegiatan-item">
-      <div class="k-date">📅 ${dateDisplay}</div>
-      <div class="k-name">${name}</div>
-      ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
-      <div class="k-tech">${tech}</div>
-    </div>`;
-  });
+  current.forEach(r=>{ const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); const dateObj = parseTanggalValid(dateRaw); const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); const lokasi = getFlex(r,['lokasi']); const tech = getFlex(r,['teknisi','nama teknisi','nama']); html += `<div class="kegiatan-item"><div class="k-date">📅 ${dateDisplay}</div><div class="k-name">${name}</div>${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}<div class="k-tech">${tech}</div></div>`; });
   wrap.innerHTML = html + '</div>';
 }
 
 function renderUpcoming(rows){
-  const wrap = document.getElementById('wrapUpcoming');
-  const upcoming = rows.filter(r => {
-    const dateStr = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    return isFuture(dateStr);
-  });
-  document.getElementById('cntUpcoming').textContent = upcoming.length;
-  if(!upcoming.length){
-    wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>';
-    return;
-  }
-  upcoming.sort((a, b) => {
-    const da = parseTanggalValid(getFlex(a,['hari/tanggal','tanggal']));
-    const db = parseTanggalValid(getFlex(b,['hari/tanggal','tanggal']));
-    if(!da) return 1;
-    if(!db) return -1;
-    return da - db;
-  });
+  const wrap = document.getElementById('wrapUpcoming'); const upcoming = rows.filter(r => isFuture(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
+  document.getElementById('cntUpcoming').textContent = upcoming.length; if(!upcoming.length){ wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>'; return; }
+  upcoming.sort((a, b) => { const da = parseTanggalValid(getFlex(a,['hari/tanggal','tanggal'])); const db = parseTanggalValid(getFlex(b,['hari/tanggal','tanggal'])); if(!da) return 1; if(!db) return -1; return da - db; });
   let html = '<div class="kegiatan-list">';
-  upcoming.forEach(r=>{
-    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']);
-    const dateObj = parseTanggalValid(dateRaw);
-    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw;
-    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']);
-    const lokasi = getFlex(r,['lokasi']);
-    const tech = getFlex(r,['teknisi','nama teknisi','nama']);
-    html += `<div class="kegiatan-item upcoming-item">
-      <div class="k-date">📅 ${dateDisplay}</div>
-      <div class="k-name">${name}</div>
-      ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
-      <div class="k-tech">${tech}</div>
-    </div>`;
-  });
+  upcoming.forEach(r=>{ const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); const dateObj = parseTanggalValid(dateRaw); const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); const lokasi = getFlex(r,['lokasi']); const tech = getFlex(r,['teknisi','nama teknisi','nama']); html += `<div class="kegiatan-item upcoming-item"><div class="k-date">📅 ${dateDisplay}</div><div class="k-name">${name}</div>${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}<div class="k-tech">${tech}</div></div>`; });
   wrap.innerHTML = html + '</div>';
 }
 
-function renderWifi(rows){
-  const wrap = document.getElementById('wrapWifi');
-  const keyword = (document.getElementById('wifiSearch').value || '').toLowerCase();
-  const filter = document.getElementById('wifiFilter').value;
+/* ============================================================
+   RENDER GRAFIK LEMBUR & REKAP
+   ============================================================ */
+async function renderGrafikLembur() {
+  try {
+    const res = await fetch(apiUrl('Lembur'));
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return;
+    rawLembur = data;
 
-  document.getElementById('cntWifi').textContent = rows.length;
+    let dataPerTeknisi = {};
+    DAFTAR_TEKNISI.forEach(nama => { dataPerTeknisi[nama] = { jam: 0, jumlah: 0 }; });
 
-  let filtered = rows.filter(r => {
-    const minggu = (r['minggu'] || '').toLowerCase();
-    const username = (r['username'] || '').toLowerCase();
-    const cocok = !keyword || minggu.includes(keyword) || username.includes(keyword);
-    const statusRaw = (r['status'] || '').toLowerCase();
-    const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
-    const statusCocok = !filter || (filter === 'active' && isActive) || (filter === 'inactive' && !isActive);
-    return cocok && statusCocok;
+    data.forEach(row => {
+      const teknisiStr = getFlex(row, ['teknisi']);
+      let totalJam = parseFloat((getFlex(row, ['total jam']) || '0').replace(',', '.')) || 0;
+      
+      if (teknisiStr && teknisiStr !== '-') {
+        const names = teknisiStr.split(',').map(s => s.trim());
+        names.forEach(n => {
+          const found = DAFTAR_TEKNISI.find(t => t.toLowerCase() === n.toLowerCase());
+          if (found) { dataPerTeknisi[found].jam += totalJam; dataPerTeknisi[found].jumlah += 1; }
+        });
+      }
+    });
+
+    const sortedData = Object.entries(dataPerTeknisi).sort((a, b) => b[1].jam - a[1].jam).filter(item => item[1].jam > 0);
+    if (sortedData.length === 0) return;
+
+    const labels = sortedData.map(item => item[0]);
+    const valuesJam = sortedData.map(item => item[1].jam);
+    const valuesJumlah = sortedData.map(item => item[1].jumlah);
+
+    const ctx = document.getElementById('chartLembur').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+
+    const gradientBiru = ctx.createLinearGradient(0, 0, 0, 400);
+    gradientBiru.addColorStop(0, 'rgba(2, 132, 199, 0.9)');
+    gradientBiru.addColorStop(1, 'rgba(56, 189, 248, 0.4)');
+
+    chartInstance = new Chart(ctx, {
+      data: {
+        labels: labels,
+        datasets: [
+          { 
+            type: 'bar',
+            label: 'Total Jam Lembur', 
+            data: valuesJam, 
+            backgroundColor: gradientBiru, 
+            borderRadius: 6, 
+            yAxisID: 'y', 
+            barPercentage: 0.5 
+          },
+          { 
+            type: 'line',
+            label: 'Jumlah Lembur (Kali)', 
+            data: valuesJumlah, 
+            borderColor: '#f59e0b',
+            backgroundColor: '#f59e0b',
+            borderWidth: 3,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 3,
+            yAxisID: 'y1', 
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Segoe UI', weight: 'bold'} } },
+          tooltip: { 
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleFont: { size: 14, family: 'Segoe UI' },
+            bodyFont: { size: 13, family: 'Segoe UI' },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: { 
+              label: function(context) { 
+                if(context.datasetIndex === 0) return ` ⏱️ ${context.parsed.y} Jam Lembur`; 
+                return ` 📋 ${context.parsed.y} Kali Lembur`; 
+              } 
+            } 
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: {family: 'Segoe UI', weight: 'bold'}, color: '#475569' } },
+          y: { 
+            type: 'linear', display: true, position: 'left', beginAtZero: true, 
+            title: { display: true, text: 'Total Jam', color: '#0284c7', font: {weight: 'bold'} },
+            grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' }
+          },
+          y1: { 
+            type: 'linear', display: true, position: 'right', beginAtZero: true, 
+            title: { display: true, text: 'Jumlah Lembur (Kali)', color: '#f59e0b', font: {weight: 'bold'} },
+            grid: { drawOnChartArea: false }, 
+            ticks: { stepSize: 1, color: '#64748b' } 
+          }
+        }
+      }
+    });
+  } catch(err) { console.error('Gagal render grafik:', err); }
+}
+
+function openRekapLembur() {
+  document.getElementById('searchRekap').value = '';
+  renderTabelRekap(rawLembur);
+  document.getElementById('modalRekapLembur').classList.add('active');
+}
+
+function renderTabelRekap(data) {
+  const tbody = document.getElementById('tbodyRekap');
+  const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
+  
+  let filtered = data.filter(r => {
+    const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase();
+    const tek = (getFlex(r, ['teknisi']) || '').toLowerCase();
+    return !kw || keg.includes(kw) || tek.includes(kw);
   });
 
-  if(!filtered.length){
-    wrap.innerHTML = '<div class="empty">Belum ada data wifi guest</div>';
+  filtered.sort((a,b) => {
+    const da = parseTanggalValid(getFlex(a,['tanggal']));
+    const db = parseTanggalValid(getFlex(b,['tanggal']));
+    return (db || 0) - (da || 0);
+  });
+
+  if(!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Tidak ada data rekap.</td></tr>';
     return;
   }
 
-  let html = '<div class="wifi-grid">';
-  filtered.forEach((r, idx) => {
-    const minggu = (r['minggu'] || '-').trim();
-    const username = (r['username'] || '-').trim();
-    const password = (r['password'] || '-').trim();
-    const statusRaw = (r['status'] || '').toLowerCase();
-    const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
-    const cardClass = isActive ? '' : 'inactive';
-    const statusClass2 = isActive ? 'active' : 'inactive';
-    const statusLabel2 = isActive ? 'Active' : 'Inactive';
-    const passMasked = password ? '•'.repeat(Math.min(password.length, 12)) : '-';
-
-    html += `<div class="wifi-card ${cardClass}" onclick="openWifiDetail(${idx})" data-idx="${idx}">
-      <div class="wifi-card-header">
-        <span class="wifi-card-minggu">${minggu}</span>
-        <span class="wifi-card-status ${statusClass2}">${statusLabel2}</span>
-      </div>
-      <div class="wifi-card-user">${username}</div>
-      <div class="wifi-card-pass">${passMasked}</div>
-      <div class="wifi-card-hint">Klik untuk lihat & copy</div>
-    </div>`;
+  let html = '';
+  filtered.forEach(r => {
+    const tglRaw = getFlex(r, ['tanggal']);
+    const tglObj = parseTanggalValid(tglRaw);
+    const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
+    const tglAkhir = getFlex(r, ['tanggal akhir']);
+    const jMulai = getFlex(r, ['jam mulai']);
+    const jAkhir = getFlex(r, ['jam akhir']);
+    const keg = getFlex(r, ['kegiatan']);
+    const tek = getFlex(r, ['teknisi']);
+    const jam = getFlex(r, ['total jam']);
+    const tiket = getFlex(r, ['no tiket']);
+    
+    // Tampilkan jam dengan range, jika tanggal akhir beda kasih info
+    let jamStr = `${jMulai} - ${jAkhir}`;
+    if (tglAkhir !== '-' && tglAkhir) {
+      const tglAkhirObj = parseTanggalValid(tglAkhir);
+      if (tglAkhirObj && tglObj && tglAkhirObj.getTime() !== tglObj.getTime()) {
+        jamStr += ` (Beda Hari)`;
+      }
+    }
+    
+    html += `<tr>
+      <td style="white-space:nowrap;">${tgl}</td>
+      <td style="white-space:nowrap;">${jamStr}</td>
+      <td>${keg}</td>
+      <td>${tek}</td>
+      <td style="text-align:right; font-weight:700; color:#0284c7;">${jam} Jam</td>
+      <td>${tiket !== '-' ? `<span class="badge" style="background:#f1f5f9; color:#475569;">${tiket}</span>` : '-'}</td>
+    </tr>`;
   });
-  html += '</div>';
-  wrap.innerHTML = html;
+  tbody.innerHTML = html;
+}
 
-  window._wifiFiltered = filtered;
+document.getElementById('searchRekap').addEventListener('input', () => renderTabelRekap(rawLembur));
+
+/* DOWNLOAD CSV REKAP LEMBUR LENGKAP */
+function downloadRekapCSV() {
+  const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
+  
+  let filtered = rawLembur.filter(r => {
+    const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase();
+    const tek = (getFlex(r, ['teknisi']) || '').toLowerCase();
+    return !kw || keg.includes(kw) || tek.includes(kw);
+  });
+
+  filtered.sort((a,b) => {
+    const da = parseTanggalValid(getFlex(a,['tanggal']));
+    const db = parseTanggalValid(getFlex(b,['tanggal']));
+    return (db || 0) - (da || 0);
+  });
+
+  if(!filtered.length) {
+    showToast('❌ Tidak ada data untuk di-download!');
+    return;
+  }
+
+  // Header CSV diupdate lengkap
+  let csvContent = "Tanggal Mulai,Jam Mulai,Tanggal Akhir,Jam Akhir,Kegiatan,Engineer,Teknisi,Total Jam,No Tiket\n";
+  
+  filtered.forEach(r => {
+    const tglRaw = getFlex(r, ['tanggal']);
+    const tglObj = parseTanggalValid(tglRaw);
+    const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
+    
+    const tglAkhirRaw = getFlex(r, ['tanggal akhir']);
+    const tglAkhirObj = parseTanggalValid(tglAkhirRaw);
+    const tglAkhir = tglAkhirObj ? formatTanggalLengkap(tglAkhirObj) : tglAkhirRaw;
+
+    const jMulai = getFlex(r, ['jam mulai']);
+    const jAkhir = getFlex(r, ['jam akhir']);
+    const keg = getFlex(r, ['kegiatan']).replace(/"/g, '""');
+    const eng = getFlex(r, ['engineer']).replace(/"/g, '""');
+    const tek = getFlex(r, ['teknisi']).replace(/"/g, '""');
+    const jam = getFlex(r, ['total jam']);
+    const tiket = getFlex(r, ['no tiket']);
+    
+    // Bungkus dengan tanda kutip agar aman jika ada koma
+    csvContent += `"${tgl}","${jMulai}","${tglAkhir}","${jAkhir}","${keg}","${eng}","${tek}","${jam}","${tiket}"\n`;
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Rekap_Lembur_Lengkap_${new Date().toISOString().slice(0,10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  showToast('✅ Berhasil download CSV Lengkap!');
+}
+
+function renderWifi(rows){
+  const wrap = document.getElementById('wrapWifi'); const keyword = (document.getElementById('wifiSearch').value || '').toLowerCase(); const filter = document.getElementById('wifiFilter').value;
+  document.getElementById('cntWifi').textContent = rows.length;
+  let filtered = rows.filter(r => { const minggu = (r['minggu'] || '').toLowerCase(); const username = (r['username'] || '').toLowerCase(); const cocok = !keyword || minggu.includes(keyword) || username.includes(keyword); const statusRaw = (r['status'] || '').toLowerCase(); const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive'); return cocok && (!filter || (filter === 'active' && isActive) || (filter === 'inactive' && !isActive)); });
+  if(!filtered.length){ wrap.innerHTML = '<div class="empty">Belum ada data wifi guest</div>'; return; }
+  let html = '<div class="wifi-grid">';
+  filtered.forEach((r, idx) => { const minggu = (r['minggu'] || '-').trim(); const username = (r['username'] || '-').trim(); const password = (r['password'] || '-').trim(); const statusRaw = (r['status'] || '').toLowerCase(); const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive'); const passMasked = password ? '•'.repeat(Math.min(password.length, 12)) : '-'; html += `<div class="wifi-card ${isActive ? '' : 'inactive'}" onclick="openWifiDetail(${idx})" data-idx="${idx}"><div class="wifi-card-header"><span class="wifi-card-minggu">${minggu}</span><span class="wifi-card-status ${isActive ? 'active' : 'inactive'}">${isActive ? 'Active' : 'Inactive'}</span></div><div class="wifi-card-user">${username}</div><div class="wifi-card-pass">${passMasked}</div><div class="wifi-card-hint">Klik untuk lihat & copy</div></div>`; });
+  wrap.innerHTML = html + '</div>'; window._wifiFiltered = filtered;
 }
 
 function openWifiDetail(idx){
-  const r = window._wifiFiltered[idx];
-  if(!r) return;
-
-  const minggu = (r['minggu'] || '-').trim();
-  const username = (r['username'] || '-').trim();
-  const password = (r['password'] || '-').trim();
-  const statusRaw = (r['status'] || '').toLowerCase();
-  const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
-
+  const r = window._wifiFiltered[idx]; if(!r) return;
+  const minggu = (r['minggu'] || '-').trim(); const username = (r['username'] || '-').trim(); const password = (r['password'] || '-').trim(); const statusRaw = (r['status'] || '').toLowerCase(); const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
   document.getElementById('wifiModalTitle').textContent = minggu;
-
-  const content = `
-    <div class="wifi-modal-minggu">📶 Wifi Guest</div>
-    <div class="wifi-modal-title">${minggu}</div>
-
-    <div class="wifi-modal-field">
-      <div class="wifi-modal-label">Username</div>
-      <div class="wifi-modal-value">${username}</div>
-    </div>
-
-    <div class="wifi-modal-field">
-      <div class="wifi-modal-label">Password</div>
-      <div class="wifi-modal-value">${password}</div>
-    </div>
-
-    <div class="wifi-modal-status ${isActive ? 'active' : 'inactive'}">
-      ${isActive ? 'Active' : 'Inactive'}
-    </div>
-
-    <div class="wifi-modal-actions">
-      <button class="wifi-btn-copy" id="wifiCopyBtn" onclick="copyWifiDetail()">
-        📋 Copy Semua (Username + Password)
-      </button>
-    </div>
-  `;
-  document.getElementById('wifiModalContent').innerHTML = content;
-  window._wifiDetail = { username, password, minggu };
-
-  document.getElementById('modalWifi').classList.add('active');
+  document.getElementById('wifiModalContent').innerHTML = `<div class="wifi-modal-minggu">📶 Wifi Guest</div><div class="wifi-modal-title">${minggu}</div><div class="wifi-modal-field"><div class="wifi-modal-label">Username</div><div class="wifi-modal-value">${username}</div></div><div class="wifi-modal-field"><div class="wifi-modal-label">Password</div><div class="wifi-modal-value">${password}</div></div><div class="wifi-modal-status ${isActive ? 'active' : 'inactive'}">${isActive ? 'Active' : 'Inactive'}</div><div class="wifi-modal-actions"><button class="wifi-btn-copy" id="wifiCopyBtn" onclick="copyWifiDetail()">📋 Copy Semua</button></div>`;
+  window._wifiDetail = { username, password, minggu }; document.getElementById('modalWifi').classList.add('active');
 }
 
 async function copyWifiDetail(){
-  const d = window._wifiDetail;
-  if(!d) return;
+  const d = window._wifiDetail; if(!d) return;
   const text = `Wifi Guest ${d.minggu}\nUsername: ${d.username}\nPassword: ${d.password}`;
-  const ok = await copyText(text);
+  try { await navigator.clipboard.writeText(text); showToast('✅ Wifi Guest berhasil dicopy!'); } catch(e){ showToast('❌ Gagal copy'); }
   const btn = document.getElementById('wifiCopyBtn');
-  if(ok){
-    btn.classList.add('copied');
-    btn.textContent = '✅ Berhasil dicopy!';
-    showToast('✅ Wifi Guest berhasil dicopy!');
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.textContent = '📋 Copy Semua (Username + Password)';
-    }, 2500);
-  } else {
-    showToast('❌ Gagal copy');
-  }
+  if(btn){ btn.classList.add('copied'); btn.textContent='✅ Berhasil!'; setTimeout(()=>{btn.classList.remove('copied');btn.textContent='📋 Copy Semua';},2500); }
 }
 
 function renderWISection(rows){
-  const wrap = document.getElementById('wrapWISection');
-  document.getElementById('cntWI').textContent = rows.length;
-  if(!rows.length){
-    wrap.innerHTML = '<div class="empty">Belum ada WI. Tambah data di tab "WI" Google Sheets.</div>';
-    return;
-  }
-
-  const grouped = {};
-  rows.forEach(r => {
-    const kat = (r['kategori'] || 'Umum').trim();
-    if(!grouped[kat]) grouped[kat] = [];
-    grouped[kat].push(r);
-  });
-
-  let openState = {};
-  try {
-    openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
-  } catch(e){ openState = {}; }
-
+  const wrap = document.getElementById('wrapWISection'); document.getElementById('cntWI').textContent = rows.length; if(!rows.length){ wrap.innerHTML = '<div class="empty">Belum ada WI.</div>'; return; }
+  const grouped = {}; rows.forEach(r => { const kat = (r['kategori'] || 'Umum').trim(); if(!grouped[kat]) grouped[kat] = []; grouped[kat].push(r); });
+  let openState = {}; try { openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}'); } catch(e){ openState = {}; }
   let html = '<div class="wi-accordion">';
   Object.keys(grouped).forEach(kat => {
     const isOpen = !!openState[kat];
-    html += `<div class="wi-accordion-item ${isOpen ? 'open' : ''}" data-kat="${kat.replace(/"/g,'&quot;')}">
-      <div class="wi-accordion-header" onclick="toggleWIAccordion(this)">
-        <span class="wi-accordion-icon">▶</span>
-        <span class="wi-accordion-title">📂 ${kat}</span>
-        <span class="wi-accordion-count">${grouped[kat].length}</span>
-      </div>
-      <div class="wi-accordion-body">
-        <div class="wi-accordion-content">`;
-    grouped[kat].forEach(r => {
-      const nama = (r['nama'] || '').trim();
-      const url = (r['url_pdf'] || '').trim();
-      const escapedNama = nama.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      const escapedUrl = url.replace(/'/g, "\\'");
-      if(!nama || !url) return;
-      html += `<div class="wi-cat-item" onclick="openWIPDF('${escapedNama}', '${escapedUrl}')">
-        <span class="wi-cat-name">${nama}</span>
-        <span class="link-arrow">→</span>
-      </div>`;
-    });
+    html += `<div class="wi-accordion-item ${isOpen ? 'open' : ''}" data-kat="${kat.replace(/"/g,'&quot;')}"><div class="wi-accordion-header" onclick="toggleWIAccordion(this)"><span class="wi-accordion-icon">▶</span><span class="wi-accordion-title">📂 ${kat}</span><span class="wi-accordion-count">${grouped[kat].length}</span></div><div class="wi-accordion-body"><div class="wi-accordion-content">`;
+    grouped[kat].forEach(r => { const nama = (r['nama'] || '').trim(); const url = (r['url_pdf'] || '').trim(); const escapedNama = nama.replace(/'/g, "\\'").replace(/"/g, '&quot;'); const escapedUrl = url.replace(/'/g, "\\'"); if(!nama || !url) return; html += `<div class="wi-cat-item" onclick="openWIPDF('${escapedNama}', '${escapedUrl}')"><span class="wi-cat-name">${nama}</span><span class="link-arrow">→</span></div>`; });
     html += `</div></div></div>`;
   });
-  html += '</div>';
-  wrap.innerHTML = html;
+  html += '</div>'; wrap.innerHTML = html;
 }
 
 function toggleWIAccordion(headerEl){
-  const item = headerEl.closest('.wi-accordion-item');
-  if(!item) return;
-  const kat = item.getAttribute('data-kat');
-  const isOpen = item.classList.toggle('open');
-  let openState = {};
-  try {
-    openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}');
-  } catch(e){ openState = {}; }
-  openState[kat] = isOpen;
-  localStorage.setItem('wiOpenState', JSON.stringify(openState));
+  const item = headerEl.closest('.wi-accordion-item'); if(!item) return;
+  const kat = item.getAttribute('data-kat'); const isOpen = item.classList.toggle('open');
+  let openState = {}; try { openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}'); } catch(e){ openState = {}; }
+  openState[kat] = isOpen; localStorage.setItem('wiOpenState', JSON.stringify(openState));
 }
 
 function renderLinks(rows){
-  rawLinksCache = rows;
-  const wrap = document.getElementById('wrapLinks');
-
+  rawLinksCache = rows; const wrap = document.getElementById('wrapLinks');
   if(!linksUnlocked){
     if(document.getElementById('lockInput')) return;
-    wrap.innerHTML = `
-      <div class="lock-box">
-        <div class="lock-icon">🔒</div>
-        <div class="lock-title">Konten Terkunci</div>
-        <div class="lock-desc">Masukkan password untuk membuka akses</div>
-        <div class="lock-input-wrap">
-          <input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-          <button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button>
-        </div>
-        <div class="lock-error" id="lockError"></div>
-        <div class="lock-note">🔐 Akses hanya untuk Teknisi</div>
-      </div>`;
+    wrap.innerHTML = `<div class="lock-box"><div class="lock-icon">🔒</div><div class="lock-title">Konten Terkunci</div><div class="lock-desc">Masukkan password untuk membuka akses</div><div class="lock-input-wrap"><input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off"><button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button></div><div class="lock-error" id="lockError"></div><div class="lock-note">🔐 Akses hanya untuk Teknisi</div></div>`;
     lockRealValue = '';
-    setTimeout(() => {
-      const inp = document.getElementById('lockInput');
-      if(!inp) return;
-      inp.focus();
-      inp.addEventListener('input', () => {
-        const val = inp.value;
-        const realLen = lockRealValue.length;
-        const currentLen = val.length;
-        if(currentLen > realLen){
-          const diff = currentLen - realLen;
-          lockRealValue += val.slice(-diff);
-        } else if(currentLen < realLen){
-          lockRealValue = lockRealValue.slice(0, currentLen);
-        }
-        inp.value = '•'.repeat(lockRealValue.length);
-      });
-      inp.addEventListener('keypress', e => {
-        if(e.key === 'Enter') unlockLinks();
-      });
-    }, 50);
-    return;
+    setTimeout(() => { const inp = document.getElementById('lockInput'); if(!inp) return; inp.focus(); inp.addEventListener('input', () => { const val = inp.value; const realLen = lockRealValue.length; const currentLen = val.length; if(currentLen > realLen){ lockRealValue += val.slice(-(currentLen - realLen)); } else if(currentLen < realLen){ lockRealValue = lockRealValue.slice(0, currentLen); } inp.value = '•'.repeat(lockRealValue.length); }); inp.addEventListener('keypress', e => { if(e.key === 'Enter') unlockLinks(); }); }, 50); return;
   }
   renderLinksContent(rows);
 }
 
 async function unlockLinks(){
-  const input = document.getElementById('lockInput');
-  const err = document.getElementById('lockError');
-  const btn = document.getElementById('lockBtn');
-  const val = (lockRealValue || '').trim();
-  if(!val){
-    err.textContent = '❌ Password kosong';
-    return;
-  }
-  err.textContent = '⏳ Memeriksa...';
-  err.style.color = '#0284c7';
-  btn.disabled = true;
+  const input = document.getElementById('lockInput'); const err = document.getElementById('lockError'); const btn = document.getElementById('lockBtn'); const val = (lockRealValue || '').trim(); if(!val){ err.textContent = '❌ Password kosong'; return; }
+  err.textContent = '⏳ Memeriksa...'; err.style.color = '#0284c7'; btn.disabled = true;
   try {
-    const res = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ password: val })
-    });
+    const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ password: val }) });
     const data = await res.json();
-    if(data.ok === true){
-      linksUnlocked = true;
-      lockRealValue = '';
-      renderLinksContent(rawLinksCache);
-    } else {
-      err.textContent = '❌ Password salah';
-      err.style.color = '#dc2626';
-      input.value = '';
-      lockRealValue = '';
-      input.focus();
-      btn.disabled = false;
-    }
-  } catch(e){
-    err.textContent = '❌ Gagal terhubung. Coba lagi.';
-    err.style.color = '#dc2626';
-    btn.disabled = false;
-  }
+    if(data.ok === true){ linksUnlocked = true; lockRealValue = ''; renderLinksContent(rawLinksCache); }
+    else { err.textContent = '❌ Password salah'; err.style.color = '#dc2626'; input.value = ''; lockRealValue = ''; input.focus(); btn.disabled = false; }
+  } catch(e){ err.textContent = '❌ Gagal terhubung.'; err.style.color = '#dc2626'; btn.disabled = false; }
 }
 
-function lockLinks(){
-  linksUnlocked = false;
-  lockRealValue = '';
-  const wrap = document.getElementById('wrapLinks');
-  wrap.innerHTML = '';
-  renderLinks(rawLinksCache);
-}
+function lockLinks(){ linksUnlocked = false; lockRealValue = ''; document.getElementById('wrapLinks').innerHTML = ''; renderLinks(rawLinksCache); }
 
 function renderLinksContent(rows){
   const wrap = document.getElementById('wrapLinks');
-  if(!rows.length){
-    wrap.innerHTML = '<div class="empty">Belum ada link. Tambah tab "Links" di Google Sheets.</div>';
-    return;
-  }
-  const grouped = {};
-  rows.forEach(r => {
-    const kat = (r['kategori'] || 'Lainnya').trim();
-    if(!grouped[kat]) grouped[kat] = [];
-    grouped[kat].push(r);
-  });
-
-  let html = `<div class="lock-header">
-    <span class="lock-status">🔓 Terbuka</span>
-    <button class="lock-logout" onclick="lockLinks()">🔒 Kunci Lagi</button>
+  if(!rows.length){ wrap.innerHTML = '<div class="empty">Belum ada link.</div>'; return; }
+  const grouped = {}; rows.forEach(r => { const kat = (r['kategori'] || 'Lainnya').trim(); if(!grouped[kat]) grouped[kat] = []; grouped[kat].push(r); });
+  let html = `<div class="lock-header"><span class="lock-status">🔓 Terbuka</span><button class="lock-logout" onclick="lockLinks()">🔒 Kunci Lagi</button></div>`;
+  
+  html += `<div style="margin-bottom:20px; display: flex; gap: 10px; flex-wrap: wrap;">
+    <button onclick="openFormLembur()" class="form-submit-btn" style="width:auto; padding:10px 20px; font-size:14px; display:inline-flex; align-items:center; gap:8px;">📝 Input Lembur Baru</button>
+    <button onclick="openRekapLembur()" class="form-submit-btn" style="width:auto; padding:10px 20px; font-size:14px; display:inline-flex; align-items:center; gap:8px; background: linear-gradient(90deg,#16a34a,#22c55e);">📋 Lihat Rekap Lembur</button>
   </div>`;
 
   const specialCats = ['reminder', 'footer', 'password', 'config'];
   Object.keys(grouped).forEach(kat => {
-    const katLower = kat.toLowerCase();
-    if(specialCats.includes(katLower)) return;
-    html += `<div class="link-group">
-      <div class="link-group-title">📂 ${kat}</div>
-      <div class="link-group-items">`;
+    if(specialCats.includes(kat.toLowerCase())) return;
+    html += `<div class="link-group"><div class="link-group-title">📂 ${kat}</div><div class="link-group-items">`;
     grouped[kat].forEach(r => {
-      const label = (r['label'] || '').trim();
-      const url = (r['url'] || '').trim();
-      const icon = (r['icon'] || '').trim();
-      const hasValidUrl = url && url !== '-' && url.startsWith('http');
-
-      if(url === 'calc:gaji'){
-        html += `<div class="link-btn" onclick="openGajiCalculator()">
-          ${icon ? `<span class="link-icon">${icon}</span>` : '<span class="link-icon">🧮</span>'}
-          <span class="link-label">${label}</span>
-          <span class="link-arrow">→</span>
-        </div>`;
-      } else if(hasValidUrl){
-        html += `<a href="${url}" target="_blank" rel="noopener" class="link-btn">
-          ${icon ? `<span class="link-icon">${icon}</span>` : ''}
-          <span class="link-label">${label}</span>
-          <span class="link-arrow">→</span>
-        </a>`;
-      } else {
-        html += `<div class="link-text">
-          ${icon ? `<span class="link-icon">${icon}</span>` : ''}
-          <span>${label}</span>
-        </div>`;
-      }
+      const label = (r['label'] || '').trim(); const url = (r['url'] || '').trim(); const icon = (r['icon'] || '').trim(); const hasValidUrl = url && url !== '-' && url.startsWith('http');
+      if(url === 'calc:gaji'){ html += `<div class="link-btn" onclick="openGajiCalculator()">${icon ? `<span class="link-icon">${icon}</span>` : '<span class="link-icon">🧮</span>'}<span class="link-label">${label}</span><span class="link-arrow">→</span></div>`; }
+      else if(hasValidUrl){ html += `<a href="${url}" target="_blank" rel="noopener" class="link-btn">${icon ? `<span class="link-icon">${icon}</span>` : ''}<span class="link-label">${label}</span><span class="link-arrow">→</span></a>`; }
+      else { html += `<div class="link-text">${icon ? `<span class="link-icon">${icon}</span>` : ''}<span>${label}</span></div>`; }
     });
     html += `</div></div>`;
   });
-
-  if(grouped['Reminder'] || grouped['reminder']){
-    const rem = grouped['Reminder'] || grouped['reminder'];
-    html += `<div class="reminder-box">
-      <div class="reminder-title">🛠️ Reminder Penting</div>
-      <ul class="reminder-list">`;
-    rem.forEach(r => {
-      html += `<li>${(r['label'] || '').trim()}</li>`;
-    });
-    html += `</ul></div>`;
-  }
-
-  if(grouped['Footer'] || grouped['footer']){
-    const foot = grouped['Footer'] || grouped['footer'];
-    foot.forEach(r => {
-      html += `<div class="footer-note">${(r['label']||'').trim()}</div>`;
-    });
-  }
+  if(grouped['Reminder'] || grouped['reminder']){ const rem = grouped['Reminder'] || grouped['reminder']; html += `<div class="reminder-box"><div class="reminder-title">🛠️ Reminder Penting</div><ul class="reminder-list">`; rem.forEach(r => { html += `<li>${(r['label'] || '').trim()}</li>`; }); html += `</ul></div>`; }
+  if(grouped['Footer'] || grouped['footer']){ const foot = grouped['Footer'] || grouped['footer']; foot.forEach(r => { html += `<div class="footer-note">${(r['label']||'').trim()}</div>`; }); }
   wrap.innerHTML = html;
 }
 
 function openWIPDF(nama, url){
-  document.getElementById('pdfTitle').textContent = nama || 'Dokumen';
-  document.getElementById('pdfFrame').src = url || 'about:blank';
-  const btnOpen = document.getElementById('btnOpenOriginal');
-  let openUrl = url;
-  let btnLabel = '↗ Buka di tab baru';
-  if(url.includes('docs.google.com/document')){
-    openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
-    btnLabel = '✏️ Edit di Google Docs';
-  } else if(url.includes('docs.google.com/spreadsheets')){
-    openUrl = url.replace('/preview', '/edit').replace('/view', '/edit');
-    btnLabel = '✏️ Edit di Google Sheets';
-  } else if(url.includes('/preview')){
-    openUrl = url.replace('/preview', '/view');
-  }
-  btnOpen.href = openUrl;
-  btnOpen.textContent = btnLabel;
-  document.getElementById('modalPDF').classList.add('active');
+  document.getElementById('pdfTitle').textContent = nama || 'Dokumen'; document.getElementById('pdfFrame').src = url || 'about:blank';
+  const btnOpen = document.getElementById('btnOpenOriginal'); let openUrl = url; let btnLabel = '↗ Buka di tab baru';
+  if(url.includes('docs.google.com/document')){ openUrl = url.replace('/preview', '/edit').replace('/view', '/edit'); btnLabel = '✏️ Edit di Google Docs'; }
+  else if(url.includes('docs.google.com/spreadsheets')){ openUrl = url.replace('/preview', '/edit').replace('/view', '/edit'); btnLabel = '✏️ Edit di Google Sheets'; }
+  else if(url.includes('/preview')){ openUrl = url.replace('/preview', '/view'); }
+  btnOpen.href = openUrl; btnOpen.textContent = btnLabel; document.getElementById('modalPDF').classList.add('active');
 }
 
 function closeModal(id){
   document.getElementById(id).classList.remove('active');
-  if(id === 'modalPDF'){
-    document.getElementById('pdfFrame').src = 'about:blank';
+  if(id === 'modalPDF') document.getElementById('pdfFrame').src = 'about:blank';
+  if(id === 'modalGaji') { document.getElementById('gajiBody').innerHTML = ''; window._gajiResult = null; }
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener('click', e => { if(e.target === el) closeModal(el.id); }); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('modalPDF'); closeModal('modalWifi'); closeModal('modalGaji'); closeModal('modalFormLembur'); closeModal('modalRekapLembur'); } });
+
+/* ============================================================
+   LOGIKA FORM LEMBUR
+   ============================================================ */
+function openFormLembur() {
+  const wrap = document.getElementById('inpTeknisiList'); wrap.innerHTML = '';
+  DAFTAR_TEKNISI.forEach(t => { wrap.innerHTML += `<label class="form-checkbox-label"><input type="checkbox" name="teknisi" value="${t}"> ${t}</label>`; });
+  document.getElementById('formLembur').reset(); 
+  document.getElementById('labelTotalJam').textContent = '0 Jam';
+  document.getElementById('modalFormLembur').classList.add('active');
+}
+
+function hitungTotalJam() {
+  const tglMulai = document.getElementById('inpTanggal').value;
+  const jamMulai = document.getElementById('inpJamMulai').value;
+  const tglAkhir = document.getElementById('inpTanggalAkhir').value;
+  const jamAkhir = document.getElementById('inpJamAkhir').value;
+  
+  if(tglMulai && jamMulai && tglAkhir && jamAkhir) {
+    const start = new Date(`${tglMulai}T${jamMulai}:00`);
+    const end = new Date(`${tglAkhir}T${jamAkhir}:00`);
+    
+    if(end < start) {
+      document.getElementById('labelTotalJam').textContent = 'Error: Waktu akhir < mulai';
+      document.getElementById('labelTotalJam').style.color = '#dc2626';
+      return 0;
+    }
+
+    const diffMs = end - start;
+    const diffJam = diffMs / (1000 * 60 * 60);
+    
+    // Format ke 1 desimal, pakai koma
+    const formatted = diffJam.toFixed(1).replace('.', ',');
+    document.getElementById('labelTotalJam').textContent = `${formatted} Jam`;
+    document.getElementById('labelTotalJam').style.color = '#0284c7';
+    return diffJam;
   }
-  if(id === 'modalGaji'){
-    document.getElementById('gajiBody').innerHTML = '';
-    window._gajiResult = null;
+  return 0;
+}
+
+// Event listener untuk otomatis hitung
+['inpTanggal', 'inpJamMulai', 'inpTanggalAkhir', 'inpJamAkhir'].forEach(id => {
+  document.getElementById(id).addEventListener('input', hitungTotalJam);
+});
+
+async function submitLembur(e) {
+  e.preventDefault(); const btn = document.getElementById('btnSubmitLembur'); const originalText = btn.textContent; btn.disabled = true; btn.textContent = '⏳ Mengirim...';
+  const checkboxes = document.querySelectorAll('input[name="teknisi"]:checked'); const teknisiArr = Array.from(checkboxes).map(cb => cb.value);
+  if(teknisiArr.length === 0) { showToast('❌ Pilih minimal 1 teknisi!'); btn.disabled = false; btn.textContent = originalText; return; }
+  
+  const totalJam = hitungTotalJam();
+  if(totalJam <= 0) {
+    showToast('❌ Tanggal/Jam tidak valid!'); btn.disabled = false; btn.textContent = originalText; return;
+  }
+
+  // Format total jam ke string dengan koma untuk dikirim ke Sheet
+  const totalJamStr = totalJam.toFixed(1).replace('.', ',');
+
+  const data = {
+    tanggal: document.getElementById('inpTanggal').value, 
+    tanggalAkhir: document.getElementById('inpTanggalAkhir').value, // Tambahan field
+    kegiatan: document.getElementById('inpKegiatan').value, 
+    engineer: document.getElementById('inpEngineer').value,
+    jamMulai: document.getElementById('inpJamMulai').value, 
+    jamAkhir: document.getElementById('inpJamAkhir').value,
+    totalJam: totalJamStr, 
+    teknisi: teknisiArr.join(', '), 
+    noTiket: document.getElementById('inpNoTiket').value
+  };
+
+  try {
+    const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(data) });
+    const result = await res.json();
+    
+    if(result.ok === true) { 
+      showToast('✅ Lembur berhasil disimpan!'); 
+      closeModal('modalFormLembur'); 
+      loadAll(); 
+    } else { 
+      showToast('❌ Gagal: ' + (result.error || 'Terjadi kesalahan')); 
+    }
+  } catch(err) { 
+    console.error(err); 
+    showToast('❌ Gagal terhubung ke server'); 
+  } finally { 
+    btn.disabled = false; btn.textContent = originalText; 
   }
 }
 
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => {
-    if(e.target === el) closeModal(el.id);
-  });
-});
-
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){
-    closeModal('modalPDF');
-    closeModal('modalWifi');
-    closeModal('modalGaji');
-  }
-});
-
+/* ============================================================
+   UPDATE CARDS & LOAD ALL
+   ============================================================ */
 function updateCards(rows){
-  const today = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal'])));
-  const total = today.length;
+  const today = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal']))); const total = today.length;
   const count = k => today.filter(r => statusClass(getFlex(r,['status','keterangan']))===k).length;
-  const on = count('onduty'), permit = count('permitted'),
-        sick = count('sick'), leave = count('onleave'),
-        wfh = count('wfh'), other = count('unknown');
-
-  document.getElementById('cTotal').textContent  = total;
-  document.getElementById('cOn').textContent     = on;
-  document.getElementById('cWfh').textContent    = wfh;
-  document.getElementById('cPermit').textContent = permit;
-  document.getElementById('cSick').textContent   = sick;
-  document.getElementById('cLeave').textContent  = leave;
-  document.getElementById('cOther').textContent  = other;
-
+  const on = count('onduty'), permit = count('permitted'), sick = count('sick'), leave = count('onleave'), wfh = count('wfh'), other = count('unknown');
+  document.getElementById('cTotal').textContent = total; document.getElementById('cOn').textContent = on; document.getElementById('cWfh').textContent = wfh; document.getElementById('cPermit').textContent = permit; document.getElementById('cSick').textContent = sick; document.getElementById('cLeave').textContent = leave; document.getElementById('cOther').textContent = other;
   const pct = n => total ? Math.round(n/total*100) : 0;
-  document.getElementById('pTotal').textContent  = `hari ini (${total} baris)`;
-  document.getElementById('pOn').textContent     = pct(on) + '%';
-  document.getElementById('pWfh').textContent    = pct(wfh) + '%';
-  document.getElementById('pPermit').textContent = pct(permit) + '%';
-  document.getElementById('pSick').textContent   = pct(sick) + '%';
-  document.getElementById('pLeave').textContent  = pct(leave) + '%';
-  document.getElementById('pOther').textContent  = pct(other) + '%';
-
-  document.getElementById('segOn').style.width     = pct(on) + '%';
-  document.getElementById('segWfh').style.width    = pct(wfh) + '%';
-  document.getElementById('segPermit').style.width = pct(permit) + '%';
-  document.getElementById('segSick').style.width   = pct(sick) + '%';
-  document.getElementById('segLeave').style.width  = pct(leave) + '%';
-  document.getElementById('segOther').style.width  = pct(other) + '%';
-
-  const onPct = pct(on);
-  document.getElementById('pTitle').textContent = onPct + '% Onsite';
-  document.getElementById('pTitle').style.color =
-    onPct >= 70 ? '#16a34a' : onPct >= 40 ? '#ea580c' : '#dc2626';
+  document.getElementById('pTotal').textContent = `hari ini (${total} baris)`; document.getElementById('pOn').textContent = pct(on) + '%'; document.getElementById('pWfh').textContent = pct(wfh) + '%'; document.getElementById('pPermit').textContent = pct(permit) + '%'; document.getElementById('pSick').textContent = pct(sick) + '%'; document.getElementById('pLeave').textContent = pct(leave) + '%'; document.getElementById('pOther').textContent = pct(other) + '%';
+  document.getElementById('segOn').style.width = pct(on) + '%'; document.getElementById('segWfh').style.width = pct(wfh) + '%'; document.getElementById('segPermit').style.width = pct(permit) + '%'; document.getElementById('segSick').style.width = pct(sick) + '%'; document.getElementById('segLeave').style.width = pct(leave) + '%'; document.getElementById('segOther').style.width = pct(other) + '%';
+  const onPct = pct(on); document.getElementById('pTitle').textContent = onPct + '% Onsite'; document.getElementById('pTitle').style.color = onPct >= 70 ? '#16a34a' : onPct >= 40 ? '#ea580c' : '#dc2626';
 }
 
 async function loadAll(){
   const now = new Date();
   try {
     const [r1, r2, r3, r4, r5] = await Promise.all([
-      fetch(apiUrl('Lokasi')).then(r => r.json()),
-      fetch(apiUrl('kegiatan')).then(r => r.json()),
-      fetch(apiUrl('Links')).then(r => r.json()),
-      fetch(apiUrl('WI')).then(r => r.json()),
-      fetch(apiUrl('WifiGuest')).then(r => r.json())
+      fetch(apiUrl('Lokasi')).then(r => r.json()), fetch(apiUrl('kegiatan')).then(r => r.json()),
+      fetch(apiUrl('Links')).then(r => r.json()), fetch(apiUrl('WI')).then(r => r.json()), fetch(apiUrl('WifiGuest')).then(r => r.json())
     ]);
-    rawLokasi = Array.isArray(r1) ? r1 : [];
-    rawKegiatan = Array.isArray(r2) ? r2 : [];
-    rawLinks = Array.isArray(r3) ? r3 : [];
-    rawWI = Array.isArray(r4) ? r4 : [];
-    rawWifi = Array.isArray(r5) ? r5 : [];
-    renderLokasi(rawLokasi);
-    renderKegiatan(rawKegiatan);
-    renderUpcoming(rawKegiatan);
-    renderWifi(rawWifi);
-    renderWISection(rawWI);
-    renderLinks(rawLinks);
-    updateCards(rawLokasi);
-    document.getElementById('lastUpdate').textContent =
-      'Sync: ' + now.toLocaleTimeString('id-ID');
-  } catch(err) {
-    console.error(err);
-    document.getElementById('wrapLokasi').innerHTML =
-      '<div class="empty">❌ Gagal memuat. Cek URL Apps Script & nama sheet.</div>';
-  }
+    rawLokasi = Array.isArray(r1) ? r1 : []; rawKegiatan = Array.isArray(r2) ? r2 : []; rawLinks = Array.isArray(r3) ? r3 : []; rawWI = Array.isArray(r4) ? r4 : []; rawWifi = Array.isArray(r5) ? r5 : [];
+    renderLokasi(rawLokasi); renderKegiatan(rawKegiatan); renderUpcoming(rawKegiatan); renderWifi(rawWifi); renderWISection(rawWI); renderLinks(rawLinks); updateCards(rawLokasi);
+    renderGrafikLembur(); 
+    
+    document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
+  } catch(err) { console.error(err); document.getElementById('wrapLokasi').innerHTML = '<div class="empty">❌ Gagal memuat. Cek URL Apps Script & nama sheet.</div>'; }
 }
 
-/* ============================================================
-   KALKULATOR GAJI & LEMBUR
-   ============================================================ */
-let gajiHariCounter = 0;
-
-function formatRupiah(n){
-  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
-}
-
-function openGajiCalculator(){
-  renderGajiForm();
-  document.getElementById('modalGaji').classList.add('active');
-}
-
-function renderGajiForm(){
-  const body = document.getElementById('gajiBody');
-  body.innerHTML = `
-    <div class="gaji-section">
-      <div class="gaji-section-title">💰 Data Gaji</div>
-      <div class="gaji-field">
-        <label class="gaji-label">Gaji Pokok (Rp)</label>
-        <input type="number" class="gaji-input" id="gajiPokok" placeholder="5000000" min="0" step="100000">
-        <div class="gaji-hint">Upah/jam otomatis = Gaji Pokok ÷ 173 (PP 35/2021)</div>
-      </div>
-    </div>
-
-    <div class="gaji-section">
-      <div class="gaji-section-title">⏰ Lembur (Jam Mulai - Selesai)</div>
-      <div class="gaji-hint" style="margin-bottom:10px;">
-        Setiap <b>kelipatan 5 jam</b> dipotong <b>1 jam</b> untuk istirahat.
-        Contoh: 17:00-24:00 = 7 jam → 6 jam efektif.
-      </div>
-      <div id="gajiHariList"></div>
-      <button class="gaji-add-btn" onclick="addGajiHari()">+ Tambah Hari</button>
-    </div>
-
-    <button class="gaji-calc-btn" onclick="hitungGaji()">🧮 Hitung Gaji & Lembur</button>
-
-    <div id="gajiHasil"></div>
-  `;
-  gajiHariCounter = 0;
-  addGajiHari();
-}
-
-function addGajiHari(){
-  gajiHariCounter++;
-  const id = gajiHariCounter;
-  const list = document.getElementById('gajiHariList');
-  const row = document.createElement('div');
-  row.className = 'gaji-hari-row';
-  row.setAttribute('data-id', id);
-  row.innerHTML = `
-    <div>
-      <label>Hari</label>
-      <select class="gaji-hari-select">
-        <option value="senin">Senin</option>
-        <option value="selasa">Selasa</option>
-        <option value="rabu">Rabu</option>
-        <option value="kamis">Kamis</option>
-        <option value="jumat">Jumat</option>
-        <option value="sabtu">Sabtu</option>
-        <option value="minggu">Minggu</option>
-      </select>
-    </div>
-    <div>
-      <label>Mulai</label>
-      <input type="time" class="gaji-jam-mulai" value="17:00">
-    </div>
-    <div>
-      <label>Selesai</label>
-      <input type="time" class="gaji-jam-selesai" value="20:00">
-    </div>
-    <button class="gaji-hapus-btn" onclick="hapusGajiHari(this)" title="Hapus">✕</button>
-  `;
-  list.appendChild(row);
-}
-
-function hapusGajiHari(btn){
-  const rows = document.querySelectorAll('#gajiHariList .gaji-hari-row');
-  if(rows.length <= 1){
-    alert('Minimal 1 hari harus ada');
-    return;
-  }
-  btn.closest('.gaji-hari-row').remove();
-}
-
-function hitungJamLembur(mulai, selesai){
-  const [h1, m1] = mulai.split(':').map(Number);
-  const [h2, m2] = selesai.split(':').map(Number);
-
-  let totalMenit = (h2 * 60 + m2) - (h1 * 60 + m1);
-  if(totalMenit < 0) totalMenit += 24 * 60;
-
-  const totalJam = totalMenit / 60;
-  const istirahat = Math.floor(totalJam / 5);
-  const efektif = totalJam - istirahat;
-
-  return { totalJam, istirahat, efektif };
-}
-
-function hitungLemburWeekday(jamEfektif, upahPerJam){
-  let total = 0;
-  let detail = [];
-  for(let i = 1; i <= jamEfektif; i++){
-    const rate = (i === 1) ? 1.5 : 2;
-    const jumlah = rate * upahPerJam;
-    total += jumlah;
-    detail.push({ jam: i, rate: rate, jumlah: jumlah });
-  }
-  return { total, detail };
-}
-
-function hitungLemburWeekend(jamEfektif, upahPerJam){
-  let total = 0;
-  let detail = [];
-  for(let i = 1; i <= jamEfektif; i++){
-    const rate = 2;
-    const jumlah = rate * upahPerJam;
-    total += jumlah;
-    detail.push({ jam: i, rate: rate, jumlah: jumlah });
-  }
-  return { total, detail };
-}
-
-function hitungGaji(){
-  const gajiPokok = parseFloat(document.getElementById('gajiPokok').value) || 0;
-
-  if(gajiPokok <= 0){
-    alert('Isi gaji pokok dulu bro');
-    return;
-  }
-
-  const upahPerJam = gajiPokok / 173;
-  const rows = document.querySelectorAll('#gajiHariList .gaji-hari-row');
-
-  let totalLembur = 0;
-  let perHari = [];
-
-  rows.forEach(row => {
-    const hari = row.querySelector('.gaji-hari-select').value;
-    const mulai = row.querySelector('.gaji-jam-mulai').value;
-    const selesai = row.querySelector('.gaji-jam-selesai').value;
-
-    if(!mulai || !selesai) return;
-
-    const { totalJam, istirahat, efektif } = hitungJamLembur(mulai, selesai);
-
-    const isWeekend = (hari === 'sabtu' || hari === 'minggu');
-    const lembur = isWeekend
-      ? hitungLemburWeekend(efektif, upahPerJam)
-      : hitungLemburWeekday(efektif, upahPerJam);
-
-    totalLembur += lembur.total;
-    perHari.push({
-      hari, mulai, selesai,
-      totalJam, istirahat, efektif,
-      isWeekend, detail: lembur.detail,
-      total: lembur.total
-    });
-  });
-
-  const jht = gajiPokok * 0.02;
-  const jp = gajiPokok * 0.01;
-  const totalPotongan = jht + jp;
-
-  const gajiKotor = gajiPokok + totalLembur;
-  const thp = gajiKotor - totalPotongan;
-
-  window._gajiResult = {
-    gajiPokok, upahPerJam,
-    totalLembur, perHari,
-    jht, jp, totalPotongan,
-    gajiKotor, thp
-  };
-
-  const hasil = document.getElementById('gajiHasil');
-  let html = `
-    <div class="gaji-result">
-      <div class="gaji-result-title">📊 Hasil Perhitungan</div>
-
-      <div class="gaji-result-row">
-        <span class="label">Gaji Pokok</span>
-        <span class="value">${formatRupiah(gajiPokok)}</span>
-      </div>
-      <div class="gaji-result-row">
-        <span class="label">Upah/jam (÷ 173)</span>
-        <span class="value">${formatRupiah(upahPerJam)}</span>
-      </div>
-    </div>
-  `;
-
-  html += `<div class="gaji-result"><div class="gaji-result-title">⏰ Detail Lembur</div>`;
-  perHari.forEach((h) => {
-    const hariNama = h.hari.charAt(0).toUpperCase() + h.hari.slice(1);
-    const tipe = h.isWeekend ? 'Weekend (2×)' : 'Weekday (1.5× & 2×)';
-    html += `
-      <div class="gaji-hari-item">
-        <div class="gaji-hari-item-title">${hariNama} • ${h.mulai}-${h.selesai} • ${tipe}</div>
-        <div class="gaji-result-row">
-          <span class="label">Durasi total</span>
-          <span class="value">${h.totalJam} jam</span>
-        </div>
-        <div class="gaji-result-row">
-          <span class="label">Istirahat (per 5 jam)</span>
-          <span class="value">-${h.istirahat} jam</span>
-        </div>
-        <div class="gaji-result-row">
-          <span class="label">Jam efektif</span>
-          <span class="value">${h.efektif} jam</span>
-        </div>
-        <div class="gaji-result-row big">
-          <span class="label">Subtotal lembur</span>
-          <span class="value">${formatRupiah(h.total)}</span>
-        </div>
-      </div>
-    `;
-  });
-  html += `</div>`;
-
-  html += `
-    <div class="gaji-result">
-      <div class="gaji-result-title">💰 Total Perhitungan</div>
-      <div class="gaji-result-row">
-        <span class="label">Total Lembur</span>
-        <span class="value">${formatRupiah(totalLembur)}</span>
-      </div>
-      <div class="gaji-result-row big">
-        <span class="label">GAJI KOTOR</span>
-        <span class="value">${formatRupiah(gajiKotor)}</span>
-      </div>
-      <div class="gaji-result-row" style="margin-top:12px;">
-        <span class="label">JHT (2%)</span>
-        <span class="value" style="color:#dc2626;">-${formatRupiah(jht)}</span>
-      </div>
-      <div class="gaji-result-row">
-        <span class="label">JP (1%)</span>
-        <span class="value" style="color:#dc2626;">-${formatRupiah(jp)}</span>
-      </div>
-      <div class="gaji-result-row">
-        <span class="label">Total Potongan</span>
-        <span class="value" style="color:#dc2626;">-${formatRupiah(totalPotongan)}</span>
-      </div>
-      <div class="gaji-result-row total">
-        <span class="label">THP (Take Home Pay)</span>
-        <span class="value">${formatRupiah(thp)}</span>
-      </div>
-      <button class="gaji-download-btn" onclick="downloadGajiCSV()">📥 Download Detail (.csv)</button>
-    </div>
-  `;
-
-  hasil.innerHTML = html;
-
-  setTimeout(() => {
-    hasil.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
-function downloadGajiCSV(){
-  const r = window._gajiResult;
-  if(!r){ alert('Hitung dulu bro'); return; }
-
-  let csv = '';
-  const sep = ';';
-  const nl = '\n';
-
-  csv += `KALKULATOR GAJI & LEMBUR${nl}`;
-  csv += `Tanggal cetak${sep}${new Date().toLocaleString('id-ID')}${nl}`;
-  csv += `${nl}`;
-
-  csv += `RINGKASAN GAJI${nl}`;
-  csv += `Komponen${sep}Jumlah (Rp)${nl}`;
-  csv += `Gaji Pokok${sep}${Math.round(r.gajiPokok)}${nl}`;
-  csv += `Upah/jam (÷173)${sep}${Math.round(r.upahPerJam)}${nl}`;
-  csv += `Total Lembur${sep}${Math.round(r.totalLembur)}${nl}`;
-  csv += `GAJI KOTOR${sep}${Math.round(r.gajiKotor)}${nl}`;
-  csv += `JHT 2%${sep}-${Math.round(r.jht)}${nl}`;
-  csv += `JP 1%${sep}-${Math.round(r.jp)}${nl}`;
-  csv += `THP (Take Home Pay)${sep}${Math.round(r.thp)}${nl}`;
-  csv += `${nl}`;
-
-  csv += `DETAIL LEMBUR PER HARI${nl}`;
-  csv += `Hari${sep}Mulai${sep}Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
-  r.perHari.forEach(h => {
-    csv += `${h.hari}${sep}${h.mulai}${sep}${h.selesai}${sep}${h.isWeekend ? 'Weekend' : 'Weekday'}${sep}${h.totalJam}${sep}${h.istirahat}${sep}${h.efektif}${sep}${Math.round(h.total)}${nl}`;
-  });
-  csv += `${nl}`;
-
-  csv += `DETAIL PER JAM LEMBUR${nl}`;
-  r.perHari.forEach(h => {
-    csv += `${nl}`;
-    csv += `${h.hari.toUpperCase()} - ${h.mulai} sampai ${h.selesai}${nl}`;
-    csv += `Jam ke${sep}Rate${sep}Jumlah (Rp)${nl}`;
-    h.detail.forEach(d => {
-      csv += `${d.jam}${sep}${d.rate}x${sep}${Math.round(d.jumlah)}${nl}`;
-    });
-    csv += `Subtotal${sep}${sep}${Math.round(h.total)}${nl}`;
-  });
-
-  csv += `${nl}`;
-  csv += `Catatan:${nl}`;
-  csv += `- Upah per jam = Gaji Pokok / 173 (PP 35/2021)${nl}`;
-  csv += `- Lembur weekday: jam ke-1 = 1.5x, jam ke-2 dst = 2x${nl}`;
-  csv += `- Lembur weekend: semua jam = 2x${nl}`;
-  csv += `- Setiap kelipatan 5 jam lembur dipotong 1 jam istirahat${nl}`;
-  csv += `- Potongan BPJS Ketenagakerjaan: JHT 2% + JP 1% = 3%${nl}`;
-
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `gaji-lembur-${new Date().toISOString().slice(0,10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  showToast('📥 File CSV berhasil didownload!');
-}
-
-function tickClock(){
-  const now = new Date();
-  document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID');
-  document.getElementById('today').textContent = now.toLocaleDateString('id-ID', {
-    weekday:'long', day:'numeric', month:'long', year:'numeric'
-  });
-}
-tickClock();
-setInterval(tickClock, 1000);
-
-document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi));
-document.getElementById('statusFilter').addEventListener('change', () => renderLokasi(rawLokasi));
-document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
-
-document.getElementById('wifiSearch').addEventListener('input', () => renderWifi(rawWifi));
-document.getElementById('wifiFilter').addEventListener('change', () => renderWifi(rawWifi));
-
-renderMarquee();
-loadAll();
-setInterval(loadAll, 5000);
+function tickClock(){ const now = new Date(); document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID'); document.getElementById('today').textContent = now.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }); }
+tickClock(); setInterval(tickClock, 1000);
+document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi)); document.getElementById('statusFilter').addEventListener('change', () => renderLokasi(rawLokasi)); document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
+document.getElementById('wifiSearch').addEventListener('input', () => renderWifi(rawWifi)); document.getElementById('wifiFilter').addEventListener('change', () => renderWifi(rawWifi));
+renderMarquee(); loadAll(); setInterval(loadAll, 30000);
 </script>
 </body>
 </html>
