@@ -359,7 +359,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI • by acg</footer>
+<footer>SIKAT-TI •(.)• by acg</footer>
 
 <!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
@@ -569,27 +569,25 @@ function renderJadwalMingguan(rows) {
   const wrap = document.getElementById('wrapJadwalMingguan');
   if(!rows || rows.length === 0) { wrap.innerHTML = '<div class="empty">Belum ada jadwal mingguan.</div>'; return; }
   
-  // 1. Ambil baris tanggal dari Sheet (Baris ke-2, index 1)
-  let tanggalRow = {};
-  if (rows.length > 1) {
-    for (let key in rows[1]) {
-      const cleanKey = key.toString().trim().toLowerCase();
-      if (cleanKey !== 'no' && cleanKey !== 'nama') {
-         const val = rows[1][key];
-         if (!isNaN(val) && val.trim() !== '') {
-            tanggalRow[cleanKey] = val;
-         }
-      }
-    }
-  }
-
-  // 2. Filter data: buang baris kosong / nama kosong
+  // 1. Filter data: buang baris kosong / nama kosong
   const validRows = rows.filter(r => {
     const nama = (r['nama'] || r[' nama'] || '').toString().trim();
     return nama !== '' && nama !== '-' && isNaN(nama);
   });
 
   if(validRows.length === 0) { wrap.innerHTML = '<div class="empty">Data jadwal kosong.</div>'; return; }
+
+  // 2. Ambil tanggal yang bener dengan trik ngecek baris angka
+  let tanggalAsli = {};
+  for(let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
+    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
+    if(isDateRow && keys.length > 0) {
+      keys.forEach(k => { tanggalAsli[k.toLowerCase()] = r[k]; });
+      break;
+    }
+  }
 
   // 3. BIKIN TABLE HEADER
   let html = '<div style="overflow-x: auto; width: 100%; max-width: 100%;">';
@@ -605,7 +603,7 @@ function renderJadwalMingguan(rows) {
     const cleanKey = key.toString().trim().toLowerCase();
     if(cleanKey === 'no' || cleanKey === 'nama') continue;
     
-    let tglText = tanggalRow[cleanKey] || '-';
+    let tglText = tanggalAsli[cleanKey] || '-';
     
     html += `<th style="padding:10px; font-weight:700; color:#475569; border-right:1px solid #cbd5e1; text-align:center; text-transform:uppercase; line-height:1.4;">
       ${cleanKey}<br><span style="font-size:12px; color:#b45309;">${tglText}</span>
@@ -635,6 +633,7 @@ function renderJadwalMingguan(rows) {
       if(val.toUpperCase().includes('CT')) { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
       else if(val.toUpperCase().includes('TBS')) { badgeColor = '#cffafe'; textColor = '#0e7490'; }
       else if(val.toUpperCase().includes('SW')) { badgeColor = '#bbf7d0'; textColor = '#166534'; }
+      else if(val.toUpperCase().includes('WFH')) { badgeColor = '#fef3c7'; textColor = '#b45309'; } // Warna WFH kuning
       else if(val.toUpperCase().includes('P3') || val.toUpperCase().includes('ARC')) { badgeColor = '#dcfce7'; textColor = '#15803d'; }
       else if(val.toUpperCase().includes('LT')) { badgeColor = '#dbeafe'; textColor = '#1d4ed8'; }
 
