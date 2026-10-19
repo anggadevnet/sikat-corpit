@@ -359,7 +359,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI •99• by acg</footer>
+<footer>SIKAT-TI • by acg</footer>
 
 <!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
@@ -504,16 +504,14 @@ function downloadGambar(elementId, namaFile) {
   
   showToast('📸 Sedang memproses gambar...');
 
-  // Trik: Paksa lebar maksimal biar tabel gak kepotong di HP
   const originalWidth = element.style.width;
   const originalMaxWidth = element.style.maxWidth;
   const originalOverflow = element.style.overflow;
   
-  element.style.width = 'max-content'; // Paksa melebar sesuai isi tabel
+  element.style.width = 'max-content'; 
   element.style.maxWidth = 'none';
-  element.style.overflow = 'visible'; // Matiin scroll bar sementara
+  element.style.overflow = 'visible'; 
 
-  // Simpan style background asli
   const originalBg = element.style.background;
   if (elementId === 'wrapKegiatan') {
     element.style.background = '#fff'; 
@@ -522,7 +520,6 @@ function downloadGambar(elementId, namaFile) {
   }
 
   setTimeout(() => {
-    // Hitung tinggi & lebar asli elemen
     const targetWidth = element.scrollWidth;
     const targetHeight = element.scrollHeight;
 
@@ -536,7 +533,6 @@ function downloadGambar(elementId, namaFile) {
       scrollX: 0,
       scrollY: 0
     }).then(canvas => {
-      // Balikin style semula
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
       element.style.overflow = originalOverflow;
@@ -557,7 +553,6 @@ function downloadGambar(elementId, namaFile) {
     }).catch(err => {
       console.error(err);
       showToast('❌ Gagal memproses gambar');
-      // Balikin style kalau error
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
       element.style.overflow = originalOverflow;
