@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIKAT-TI — Sistem Koordinasi Aktivitas Teknisi</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- LIBRARY UNTUK DOWNLOAD GAMBAR -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Tahoma,sans-serif;background:#f1f5f9;background-image:radial-gradient(circle at 10% 10%,rgba(56,189,248,.10),transparent 35%),radial-gradient(circle at 90% 90%,rgba(129,140,248,.10),transparent 35%);color:#1e293b;padding:24px;min-height:100vh}
@@ -290,6 +292,19 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="legend"><span class="l-on">Onsite</span><span class="l-wfh">WFH</span><span class="l-permit">Izin</span><span class="l-sick">Sakit</span><span class="l-leave">Cuti</span><span class="l-other">Lainnya</span></div>
 </div>
 
+<!-- FITUR BARU: JADWAL MINGGUAN -->
+<section>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <h2 style="margin: 0;">📅 Jadwal Mingguan (Senin - Minggu)</h2>
+    <button onclick="downloadGambar('wrapJadwalMingguan', 'Jadwal_Mingguan')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
+      📸 Save Gambar
+    </button>
+  </div>
+  <div style="background:#fff; border-radius:12px; padding:18px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04); overflow-x:auto;">
+    <div id="wrapJadwalMingguan"><div class="loading">⏳ Memuat jadwal mingguan...</div></div>
+  </div>
+</section>
+
 <section>
   <h2>📍 Lokasi Standby Harian <span class="count" id="cntLokasi">0</span></h2>
   <div class="toolbar">
@@ -301,7 +316,12 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 </section>
 
 <section>
-  <h2>📋 Current Event <span class="count" id="cntKegiatan">0</span></h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <h2 style="margin: 0;">📋 Current Event <span class="count" id="cntKegiatan">0</span></h2>
+    <button onclick="downloadGambar('wrapKegiatan', 'Current_Event')" style="background:#4f46e5; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(79,70,229,.3);">
+      📸 Save Gambar
+    </button>
+  </div>
   <div id="wrapKegiatan"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
@@ -314,7 +334,6 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📊 Grafik Lembur Teknisi</h2>
-    <!-- Kotak Total & Kegiatan dihapus -->
   </div>
   <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04);">
     <canvas id="chartLembur" height="90"></canvas>
@@ -340,7 +359,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI • realtime • by acg</footer>
+<footer>SIKAT-TI •99• by acg</footer>
 
 <!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
@@ -423,9 +442,10 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 /* ============================================================
    KONFIGURASI & VARIABEL GLOBAL
    ============================================================ */
+// GANTI URL DI BAWAH INI DENGAN URL WEB APP APPS SCRIPT LO YANG BARU!
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
 const PENGUMUMAN = ['Jangan lupa isi absensi hari ini','Close tiket SDP kalau udah selesai','Input Lembur H+1 - biar gak lupa!'];
-let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawWifi = [], rawLembur = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
+let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawWifi = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
 
 const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
@@ -435,7 +455,7 @@ function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sh
 /* ============================================================
    HELPER FUNCTIONS
    ============================================================ */
-const STATUS_RULES = { wfh: ['wfh'], permitted: ['ijin', 'izin', 'permitted'], sick: ['sakit', 'sick', 'mmr'], onleave: ['cuti', 'on leave', 'onleave', 'libur'], onduty: ['onsite', 'on site', 'on-site', 'hadir', 'masuk', 'onduty', 'on duty'] };
+const STATUS_RULES = { wfh: ['wfh', 'tbs'], permitted: ['ijin', 'izin', 'permitted'], sick: ['sakit', 'sick', 'mmr'], onleave: ['cuti', 'on leave', 'onleave', 'libur', 'ct'], onduty: ['onsite', 'on site', 'on-site', 'hadir', 'masuk', 'onduty', 'on duty', 'p3', 'arc', 'lt', '11', '12', 'sw'] };
 function statusClass(s){ const t = (s||'').toLowerCase().trim(); if(!t) return 'unknown'; const order = ['wfh', 'permitted', 'sick', 'onleave', 'onduty']; for(const cat of order){ for(const kw of STATUS_RULES[cat]){ if(t.includes(kw)) return cat; } } return 'unknown'; }
 function statusLabel(s){ const c = statusClass(s); if(c === 'onduty') return 'Onsite'; if(c === 'wfh') return 'WFH'; if(c === 'permitted') return 'Izin'; if(c === 'sick') return 'Sakit'; if(c === 'onleave') return 'Cuti'; if(c === 'unknown') return s ? s : 'Lainnya'; return s || '-'; }
 function getFlex(obj, keys){ if(!obj) return '-'; for(const k of keys){ if(obj[k] !== undefined && obj[k] !== '' && obj[k] !== null) return obj[k]; } const objKeys = Object.keys(obj); for(const k of keys){ const target = k.toLowerCase().replace(/[\s\/\[\]]/g,''); for(const ok of objKeys){ const normalized = ok.toLowerCase().replace(/[\s\/\[\]]/g,''); if(normalized === target || normalized.includes(target) || target.includes(normalized)){ if(obj[ok] !== undefined && obj[ok] !== '' && obj[ok] !== null) return obj[ok]; } } } return '-'; }
@@ -476,9 +496,146 @@ let toastTimer = null;
 function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg || '✅ Copied!'; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
 
 /* ============================================================
+   FUNGSI DOWNLOAD GAMBAR (html2canvas)
+   ============================================================ */
+function downloadGambar(elementId, namaFile) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  
+  showToast('📸 Sedang memproses gambar...');
+
+  // Simpan style background asli
+  const originalBg = element.style.background;
+  
+  // Kasih background putih biar pas di-save gak transparan
+  if (elementId === 'wrapKegiatan') {
+    element.style.background = '#fff'; // Card grid butuh bg biar rapi
+    element.style.padding = '16px';
+    element.style.borderRadius = '12px';
+  }
+
+  // Kasih jeda dikit biar rendering CSS selesai
+  setTimeout(() => {
+    html2canvas(element, {
+      scale: 2, // Scale 2x biar HD (gak pecah)
+      useCORS: true,
+      backgroundColor: '#ffffff', // Background putih
+      scrollX: 0,
+      scrollY: -window.scrollY, // Biar gak geser posisinya
+      windowWidth: document.documentElement.offsetWidth
+    }).then(canvas => {
+      // Balikin style semula
+      element.style.background = originalBg;
+      if (elementId === 'wrapKegiatan') {
+        element.style.padding = '0';
+        element.style.borderRadius = '0';
+      }
+
+      // Convert canvas ke link download
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement('a');
+      const tanggal = new Date().toISOString().slice(0,10);
+      link.download = `${namaFile}_${tanggal}.png`;
+      link.href = image;
+      link.click();
+      
+      showToast('✅ Gambar berhasil didownload!');
+    }).catch(err => {
+      console.error(err);
+      showToast('❌ Gagal memproses gambar');
+    });
+  }, 300);
+}
+
+/* ============================================================
    RENDER FUNCTIONS
    ============================================================ */
 function renderMarquee(){ const txt = document.getElementById('marqueeText'); const wrap = document.getElementById('marqueeWrap'); if(!PENGUMUMAN.length){ wrap.style.display = 'none'; return; } const sep = ' <span class="sep">•</span> '; const combined = PENGUMUMAN.join(sep); txt.innerHTML = combined + sep + combined + sep; const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8)); txt.style.animationDuration = duration + 's'; wrap.style.display = 'block'; }
+
+function renderJadwalMingguan(rows) {
+  const wrap = document.getElementById('wrapJadwalMingguan');
+  if(!rows || rows.length === 0) { wrap.innerHTML = '<div class="empty">Belum ada jadwal mingguan.</div>'; return; }
+  
+  // 1. FILTER DATA: Buang baris yang kolom namanya kosong (sampah dari baris tanggal sheet)
+  const cleanRows = rows.filter(r => {
+    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
+    return nama !== '' && nama !== '-' && isNaN(nama); // Pastikan nama bukan cuma angka/tanggal
+  });
+
+  if(cleanRows.length === 0) { wrap.innerHTML = '<div class="empty">Data jadwal kosong.</div>'; return; }
+
+  // 2. AMBIL TANGGAL BUAT HEADER
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 Minggu, 1 Senin
+  const diffToMonday = today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+  const monday = new Date(today.setDate(diffToMonday));
+  
+  const dayMap = {'senin':0, 'selasa':1, 'rabu':2, 'kamis':3, 'jumat':4, 'sabtu':5, 'minggu':6};
+
+  // 3. BIKIN TABLE HEADER
+  let html = '<div style="overflow-x: auto; width: 100%; max-width: 100%;">';
+  html += '<table style="width:100%; border-collapse:collapse; text-align:left; min-width:1000px; font-size:13px;">';
+  html += '<thead><tr style="background:#f8fafc; border-bottom:2px solid #cbd5e1;">';
+  
+  // Kolom Sticky
+  html += `<th style="padding:12px; font-weight:700; color:#475569; position:sticky; left:0; background:#f8fafc; z-index:5; border-right:2px solid #cbd5e1; width:50px; text-align:center;">No</th>`;
+  html += `<th style="padding:12px; font-weight:700; color:#475569; position:sticky; left:50px; background:#f8fafc; z-index:5; border-right:2px solid #cbd5e1; min-width:180px;">Nama Teknisi</th>`;
+  
+  // Kolom Hari & Tanggal (Digabung pake <br>)
+  for(let key in cleanRows[0]) {
+    const cleanKey = key.toString().trim().toLowerCase();
+    if(cleanKey === 'no' || cleanKey === 'nama') continue;
+    
+    let tglText = '';
+    if(dayMap[cleanKey] !== undefined) {
+      const targetDate = new Date(monday);
+      targetDate.setDate(monday.getDate() + dayMap[cleanKey]);
+      tglText = targetDate.getDate();
+    }
+    
+    html += `<th style="padding:10px; font-weight:700; color:#475569; border-right:1px solid #cbd5e1; text-align:center; text-transform:uppercase; line-height:1.4;">
+      ${cleanKey}<br><span style="font-size:12px; color:#b45309;">${tglText}</span>
+    </th>`;
+  }
+  html += '</tr></thead><tbody>';
+
+  // 4. ISI DATA
+  cleanRows.forEach((row, idx) => {
+    html += `<tr style="border-bottom:1px solid #e2e8f0; ${idx % 2 === 0 ? 'background:#fff;' : 'background:#f8fafc;'}">`;
+    
+    // No & Nama (Sticky Kiri)
+    const noVal = row['no'] || (idx + 1);
+    const namaVal = row['nama'] || row[' nama'] || '-'; 
+    const bgColor = idx % 2 === 0 ? '#fff' : '#f8fafc';
+    
+    html += `<td style="padding:12px; border-right:1px solid #e2e8f0; position:sticky; left:0; background:${bgColor}; z-index:4; text-align:center; font-weight:600;">${noVal}</td>`;
+    html += `<td style="padding:12px; border-right:2px solid #cbd5e1; position:sticky; left:50px; background:${bgColor}; z-index:4; font-weight:700; color:#0f172a; white-space:nowrap;">${namaVal}</td>`;
+    
+    // Kolom Jadwal
+    for(let key in row) {
+      const cleanKey = key.toString().trim().toLowerCase();
+      if(cleanKey === 'no' || cleanKey === 'nama') continue;
+      
+      const val = row[key] || '-';
+      let badgeColor = '#f1f5f9', textColor = '#334155';
+      
+      if(val.toUpperCase().includes('CT')) { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
+      else if(val.toUpperCase().includes('TBS')) { badgeColor = '#cffafe'; textColor = '#0e7490'; }
+      else if(val.toUpperCase().includes('SW')) { badgeColor = '#bbf7d0'; textColor = '#166534'; }
+      else if(val.toUpperCase().includes('P3') || val.toUpperCase().includes('ARC')) { badgeColor = '#dcfce7'; textColor = '#15803d'; }
+      else if(val.toUpperCase().includes('LT')) { badgeColor = '#dbeafe'; textColor = '#1d4ed8'; }
+
+      // Tampilan isi sel (kotak warna)
+      html += `<td style="padding:12px; border-right:1px solid #e2e8f0; text-align:center;">
+        <span style="display:inline-block; padding:6px 14px; border-radius:8px; font-weight:700; font-size:12px; background:${badgeColor}; color:${textColor}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${val}</span>
+      </td>`;
+    }
+    html += '</tr>';
+  });
+  
+  html += '</tbody></table></div>';
+  wrap.innerHTML = html;
+}
 
 function renderLokasi(rows){
   const wrap = document.getElementById('wrapLokasi'); const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); const filter = document.getElementById('statusFilter').value; const onlyToday = document.getElementById('onlyToday').checked;
@@ -508,9 +665,6 @@ function renderUpcoming(rows){
   wrap.innerHTML = html + '</div>';
 }
 
-/* ============================================================
-   RENDER GRAFIK LEMBUR & REKAP
-   ============================================================ */
 async function renderGrafikLembur() {
   try {
     const res = await fetch(apiUrl('Lembur'));
@@ -552,186 +706,61 @@ async function renderGrafikLembur() {
       data: {
         labels: labels,
         datasets: [
-          { 
-            type: 'bar',
-            label: 'Total Jam Lembur', 
-            data: valuesJam, 
-            backgroundColor: gradientBiru, 
-            borderRadius: 6, 
-            yAxisID: 'y', 
-            barPercentage: 0.5 
-          },
-          { 
-            type: 'line',
-            label: 'Jumlah Lembur (Kali)', 
-            data: valuesJumlah, 
-            borderColor: '#f59e0b',
-            backgroundColor: '#f59e0b',
-            borderWidth: 3,
-            pointRadius: 6,
-            pointHoverRadius: 8,
-            pointBackgroundColor: '#fff',
-            pointBorderWidth: 3,
-            yAxisID: 'y1', 
-            tension: 0.3
-          }
+          { type: 'bar', label: 'Total Jam Lembur', data: valuesJam, backgroundColor: gradientBiru, borderRadius: 6, yAxisID: 'y', barPercentage: 0.5 },
+          { type: 'line', label: 'Jumlah Lembur (Kali)', data: valuesJumlah, borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 3, pointRadius: 6, pointHoverRadius: 8, pointBackgroundColor: '#fff', pointBorderWidth: 3, yAxisID: 'y1', tension: 0.3 }
         ]
       },
       options: {
-        responsive: true,
-        interaction: { mode: 'index', intersect: false },
+        responsive: true, interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Segoe UI', weight: 'bold'} } },
-          tooltip: { 
-            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-            titleFont: { size: 14, family: 'Segoe UI' },
-            bodyFont: { size: 13, family: 'Segoe UI' },
-            padding: 12,
-            cornerRadius: 8,
-            callbacks: { 
-              label: function(context) { 
-                if(context.datasetIndex === 0) return ` ⏱️ ${context.parsed.y} Jam Lembur`; 
-                return ` 📋 ${context.parsed.y} Kali Lembur`; 
-              } 
-            } 
-          }
+          tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: { size: 14, family: 'Segoe UI' }, bodyFont: { size: 13, family: 'Segoe UI' }, padding: 12, cornerRadius: 8, callbacks: { label: function(context) { if(context.datasetIndex === 0) return ` ⏱️ ${context.parsed.y} Jam Lembur`; return ` 📋 ${context.parsed.y} Kali Lembur`; } } }
         },
         scales: {
           x: { grid: { display: false }, ticks: { font: {family: 'Segoe UI', weight: 'bold'}, color: '#475569' } },
-          y: { 
-            type: 'linear', display: true, position: 'left', beginAtZero: true, 
-            title: { display: true, text: 'Total Jam', color: '#0284c7', font: {weight: 'bold'} },
-            grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' }
-          },
-          y1: { 
-            type: 'linear', display: true, position: 'right', beginAtZero: true, 
-            title: { display: true, text: 'Jumlah Lembur (Kali)', color: '#f59e0b', font: {weight: 'bold'} },
-            grid: { drawOnChartArea: false }, 
-            ticks: { stepSize: 1, color: '#64748b' } 
-          }
+          y: { type: 'linear', display: true, position: 'left', beginAtZero: true, title: { display: true, text: 'Total Jam', color: '#0284c7', font: {weight: 'bold'} }, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+          y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, title: { display: true, text: 'Jumlah Lembur (Kali)', color: '#f59e0b', font: {weight: 'bold'} }, grid: { drawOnChartArea: false }, ticks: { stepSize: 1, color: '#64748b' } }
         }
       }
     });
   } catch(err) { console.error('Gagal render grafik:', err); }
 }
 
-function openRekapLembur() {
-  document.getElementById('searchRekap').value = '';
-  renderTabelRekap(rawLembur);
-  document.getElementById('modalRekapLembur').classList.add('active');
-}
+function openRekapLembur() { document.getElementById('searchRekap').value = ''; renderTabelRekap(rawLembur); document.getElementById('modalRekapLembur').classList.add('active'); }
 
 function renderTabelRekap(data) {
-  const tbody = document.getElementById('tbodyRekap');
-  const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
-  
-  let filtered = data.filter(r => {
-    const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase();
-    const tek = (getFlex(r, ['teknisi']) || '').toLowerCase();
-    return !kw || keg.includes(kw) || tek.includes(kw);
-  });
+  const tbody = document.getElementById('tbodyRekap'); const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
+  let filtered = data.filter(r => { const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); return !kw || keg.includes(kw) || tek.includes(kw); });
+  filtered.sort((a,b) => { const da = parseTanggalValid(getFlex(a,['tanggal'])); const db = parseTanggalValid(getFlex(b,['tanggal'])); return (db || 0) - (da || 0); });
 
-  filtered.sort((a,b) => {
-    const da = parseTanggalValid(getFlex(a,['tanggal']));
-    const db = parseTanggalValid(getFlex(b,['tanggal']));
-    return (db || 0) - (da || 0);
-  });
-
-  if(!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Tidak ada data rekap.</td></tr>';
-    return;
-  }
+  if(!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Tidak ada data rekap.</td></tr>'; return; }
 
   let html = '';
   filtered.forEach(r => {
-    const tglRaw = getFlex(r, ['tanggal']);
-    const tglObj = parseTanggalValid(tglRaw);
-    const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
-    const tglAkhir = getFlex(r, ['tanggal akhir']);
-    const jMulai = getFlex(r, ['jam mulai']);
-    const jAkhir = getFlex(r, ['jam akhir']);
-    const keg = getFlex(r, ['kegiatan']);
-    const tek = getFlex(r, ['teknisi']);
-    const jam = getFlex(r, ['total jam']);
-    const tiket = getFlex(r, ['no tiket']);
-    
-    // Tampilkan jam dengan range, jika tanggal akhir beda kasih info
+    const tglRaw = getFlex(r, ['tanggal']); const tglObj = parseTanggalValid(tglRaw); const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
+    const tglAkhir = getFlex(r, ['tanggal akhir']); const jMulai = getFlex(r, ['jam mulai']); const jAkhir = getFlex(r, ['jam akhir']); const keg = getFlex(r, ['kegiatan']); const tek = getFlex(r, ['teknisi']); const jam = getFlex(r, ['total jam']); const tiket = getFlex(r, ['no tiket']);
     let jamStr = `${jMulai} - ${jAkhir}`;
-    if (tglAkhir !== '-' && tglAkhir) {
-      const tglAkhirObj = parseTanggalValid(tglAkhir);
-      if (tglAkhirObj && tglObj && tglAkhirObj.getTime() !== tglObj.getTime()) {
-        jamStr += ` (Beda Hari)`;
-      }
-    }
-    
-    html += `<tr>
-      <td style="white-space:nowrap;">${tgl}</td>
-      <td style="white-space:nowrap;">${jamStr}</td>
-      <td>${keg}</td>
-      <td>${tek}</td>
-      <td style="text-align:right; font-weight:700; color:#0284c7;">${jam} Jam</td>
-      <td>${tiket !== '-' ? `<span class="badge" style="background:#f1f5f9; color:#475569;">${tiket}</span>` : '-'}</td>
-    </tr>`;
+    if (tglAkhir !== '-' && tglAkhir) { const tglAkhirObj = parseTanggalValid(tglAkhir); if (tglAkhirObj && tglObj && tglAkhirObj.getTime() !== tglObj.getTime()) { jamStr += ` (Beda Hari)`; } }
+    html += `<tr><td style="white-space:nowrap;">${tgl}</td><td style="white-space:nowrap;">${jamStr}</td><td>${keg}</td><td>${tek}</td><td style="text-align:right; font-weight:700; color:#0284c7;">${jam} Jam</td><td>${tiket !== '-' ? `<span class="badge" style="background:#f1f5f9; color:#475569;">${tiket}</span>` : '-'}</td></tr>`;
   });
   tbody.innerHTML = html;
 }
-
 document.getElementById('searchRekap').addEventListener('input', () => renderTabelRekap(rawLembur));
 
-/* DOWNLOAD CSV REKAP LEMBUR LENGKAP */
 function downloadRekapCSV() {
   const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
-  
-  let filtered = rawLembur.filter(r => {
-    const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase();
-    const tek = (getFlex(r, ['teknisi']) || '').toLowerCase();
-    return !kw || keg.includes(kw) || tek.includes(kw);
-  });
+  let filtered = rawLembur.filter(r => { const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); return !kw || keg.includes(kw) || tek.includes(kw); });
+  filtered.sort((a,b) => { const da = parseTanggalValid(getFlex(a,['tanggal'])); const db = parseTanggalValid(getFlex(b,['tanggal'])); return (db || 0) - (da || 0); });
+  if(!filtered.length) { showToast('❌ Tidak ada data untuk di-download!'); return; }
 
-  filtered.sort((a,b) => {
-    const da = parseTanggalValid(getFlex(a,['tanggal']));
-    const db = parseTanggalValid(getFlex(b,['tanggal']));
-    return (db || 0) - (da || 0);
-  });
-
-  if(!filtered.length) {
-    showToast('❌ Tidak ada data untuk di-download!');
-    return;
-  }
-
-  // Header CSV diupdate lengkap
   let csvContent = "Tanggal Mulai,Jam Mulai,Tanggal Akhir,Jam Akhir,Kegiatan,Engineer,Teknisi,Total Jam,No Tiket\n";
-  
   filtered.forEach(r => {
-    const tglRaw = getFlex(r, ['tanggal']);
-    const tglObj = parseTanggalValid(tglRaw);
-    const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
-    
-    const tglAkhirRaw = getFlex(r, ['tanggal akhir']);
-    const tglAkhirObj = parseTanggalValid(tglAkhirRaw);
-    const tglAkhir = tglAkhirObj ? formatTanggalLengkap(tglAkhirObj) : tglAkhirRaw;
-
-    const jMulai = getFlex(r, ['jam mulai']);
-    const jAkhir = getFlex(r, ['jam akhir']);
-    const keg = getFlex(r, ['kegiatan']).replace(/"/g, '""');
-    const eng = getFlex(r, ['engineer']).replace(/"/g, '""');
-    const tek = getFlex(r, ['teknisi']).replace(/"/g, '""');
-    const jam = getFlex(r, ['total jam']);
-    const tiket = getFlex(r, ['no tiket']);
-    
-    // Bungkus dengan tanda kutip agar aman jika ada koma
+    const tglRaw = getFlex(r, ['tanggal']); const tglObj = parseTanggalValid(tglRaw); const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
+    const tglAkhirRaw = getFlex(r, ['tanggal akhir']); const tglAkhirObj = parseTanggalValid(tglAkhirRaw); const tglAkhir = tglAkhirObj ? formatTanggalLengkap(tglAkhirObj) : tglAkhirRaw;
+    const jMulai = getFlex(r, ['jam mulai']); const jAkhir = getFlex(r, ['jam akhir']); const keg = getFlex(r, ['kegiatan']).replace(/"/g, '""'); const eng = getFlex(r, ['engineer']).replace(/"/g, '""'); const tek = getFlex(r, ['teknisi']).replace(/"/g, '""'); const jam = getFlex(r, ['total jam']); const tiket = getFlex(r, ['no tiket']);
     csvContent += `"${tgl}","${jMulai}","${tglAkhir}","${jAkhir}","${keg}","${eng}","${tek}","${jam}","${tiket}"\n`;
   });
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', `Rekap_Lembur_Lengkap_${new Date().toISOString().slice(0,10)}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.setAttribute('href', url); link.setAttribute('download', `Rekap_Lembur_Lengkap_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
   showToast('✅ Berhasil download CSV Lengkap!');
 }
 
@@ -858,86 +887,39 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('
 function openFormLembur() {
   const wrap = document.getElementById('inpTeknisiList'); wrap.innerHTML = '';
   DAFTAR_TEKNISI.forEach(t => { wrap.innerHTML += `<label class="form-checkbox-label"><input type="checkbox" name="teknisi" value="${t}"> ${t}</label>`; });
-  document.getElementById('formLembur').reset(); 
-  document.getElementById('labelTotalJam').textContent = '0 Jam';
-  document.getElementById('modalFormLembur').classList.add('active');
+  document.getElementById('formLembur').reset(); document.getElementById('labelTotalJam').textContent = '0 Jam'; document.getElementById('modalFormLembur').classList.add('active');
 }
 
 function hitungTotalJam() {
-  const tglMulai = document.getElementById('inpTanggal').value;
-  const jamMulai = document.getElementById('inpJamMulai').value;
-  const tglAkhir = document.getElementById('inpTanggalAkhir').value;
-  const jamAkhir = document.getElementById('inpJamAkhir').value;
-  
+  const tglMulai = document.getElementById('inpTanggal').value; const jamMulai = document.getElementById('inpJamMulai').value; const tglAkhir = document.getElementById('inpTanggalAkhir').value; const jamAkhir = document.getElementById('inpJamAkhir').value;
   if(tglMulai && jamMulai && tglAkhir && jamAkhir) {
-    const start = new Date(`${tglMulai}T${jamMulai}:00`);
-    const end = new Date(`${tglAkhir}T${jamAkhir}:00`);
-    
-    if(end < start) {
-      document.getElementById('labelTotalJam').textContent = 'Error: Waktu akhir < mulai';
-      document.getElementById('labelTotalJam').style.color = '#dc2626';
-      return 0;
-    }
-
-    const diffMs = end - start;
-    const diffJam = diffMs / (1000 * 60 * 60);
-    
-    // Format ke 1 desimal, pakai koma
+    const start = new Date(`${tglMulai}T${jamMulai}:00`); const end = new Date(`${tglAkhir}T${jamAkhir}:00`);
+    if(end < start) { document.getElementById('labelTotalJam').textContent = 'Error: Waktu akhir < mulai'; document.getElementById('labelTotalJam').style.color = '#dc2626'; return 0; }
+    const diffMs = end - start; const diffJam = diffMs / (1000 * 60 * 60);
     const formatted = diffJam.toFixed(1).replace('.', ',');
-    document.getElementById('labelTotalJam').textContent = `${formatted} Jam`;
-    document.getElementById('labelTotalJam').style.color = '#0284c7';
-    return diffJam;
+    document.getElementById('labelTotalJam').textContent = `${formatted} Jam`; document.getElementById('labelTotalJam').style.color = '#0284c7'; return diffJam;
   }
   return 0;
 }
 
-// Event listener untuk otomatis hitung
-['inpTanggal', 'inpJamMulai', 'inpTanggalAkhir', 'inpJamAkhir'].forEach(id => {
-  document.getElementById(id).addEventListener('input', hitungTotalJam);
-});
+['inpTanggal', 'inpJamMulai', 'inpTanggalAkhir', 'inpJamAkhir'].forEach(id => { document.getElementById(id).addEventListener('input', hitungTotalJam); });
 
 async function submitLembur(e) {
   e.preventDefault(); const btn = document.getElementById('btnSubmitLembur'); const originalText = btn.textContent; btn.disabled = true; btn.textContent = '⏳ Mengirim...';
   const checkboxes = document.querySelectorAll('input[name="teknisi"]:checked'); const teknisiArr = Array.from(checkboxes).map(cb => cb.value);
   if(teknisiArr.length === 0) { showToast('❌ Pilih minimal 1 teknisi!'); btn.disabled = false; btn.textContent = originalText; return; }
-  
-  const totalJam = hitungTotalJam();
-  if(totalJam <= 0) {
-    showToast('❌ Tanggal/Jam tidak valid!'); btn.disabled = false; btn.textContent = originalText; return;
-  }
-
-  // Format total jam ke string dengan koma untuk dikirim ke Sheet
+  const totalJam = hitungTotalJam(); if(totalJam <= 0) { showToast('❌ Tanggal/Jam tidak valid!'); btn.disabled = false; btn.textContent = originalText; return; }
   const totalJamStr = totalJam.toFixed(1).replace('.', ',');
 
   const data = {
-    tanggal: document.getElementById('inpTanggal').value, 
-    tanggalAkhir: document.getElementById('inpTanggalAkhir').value, // Tambahan field
-    kegiatan: document.getElementById('inpKegiatan').value, 
-    engineer: document.getElementById('inpEngineer').value,
-    jamMulai: document.getElementById('inpJamMulai').value, 
-    jamAkhir: document.getElementById('inpJamAkhir').value,
-    totalJam: totalJamStr, 
-    teknisi: teknisiArr.join(', '), 
-    noTiket: document.getElementById('inpNoTiket').value
+    tanggal: document.getElementById('inpTanggal').value, tanggalAkhir: document.getElementById('inpTanggalAkhir').value, kegiatan: document.getElementById('inpKegiatan').value, engineer: document.getElementById('inpEngineer').value, jamMulai: document.getElementById('inpJamMulai').value, jamAkhir: document.getElementById('inpJamAkhir').value, totalJam: totalJamStr, teknisi: teknisiArr.join(', '), noTiket: document.getElementById('inpNoTiket').value
   };
 
   try {
     const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(data) });
     const result = await res.json();
-    
-    if(result.ok === true) { 
-      showToast('✅ Lembur berhasil disimpan!'); 
-      closeModal('modalFormLembur'); 
-      loadAll(); 
-    } else { 
-      showToast('❌ Gagal: ' + (result.error || 'Terjadi kesalahan')); 
-    }
-  } catch(err) { 
-    console.error(err); 
-    showToast('❌ Gagal terhubung ke server'); 
-  } finally { 
-    btn.disabled = false; btn.textContent = originalText; 
-  }
+    if(result.ok === true) { showToast('✅ Lembur berhasil disimpan!'); closeModal('modalFormLembur'); loadAll(); } else { showToast('❌ Gagal: ' + (result.error || 'Terjadi kesalahan')); }
+  } catch(err) { console.error(err); showToast('❌ Gagal terhubung ke server'); } finally { btn.disabled = false; btn.textContent = originalText; }
 }
 
 /* ============================================================
@@ -957,12 +939,15 @@ function updateCards(rows){
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4, r5] = await Promise.all([
+    const [r1, r2, r3, r4, r5, r6] = await Promise.all([
       fetch(apiUrl('Lokasi')).then(r => r.json()), fetch(apiUrl('kegiatan')).then(r => r.json()),
-      fetch(apiUrl('Links')).then(r => r.json()), fetch(apiUrl('WI')).then(r => r.json()), fetch(apiUrl('WifiGuest')).then(r => r.json())
+      fetch(apiUrl('Links')).then(r => r.json()), fetch(apiUrl('WI')).then(r => r.json()), fetch(apiUrl('WifiGuest')).then(r => r.json()),
+      fetch(apiUrl('JadwalMingguan')).then(r => r.json()) // Ambil jadwal mingguan
     ]);
-    rawLokasi = Array.isArray(r1) ? r1 : []; rawKegiatan = Array.isArray(r2) ? r2 : []; rawLinks = Array.isArray(r3) ? r3 : []; rawWI = Array.isArray(r4) ? r4 : []; rawWifi = Array.isArray(r5) ? r5 : [];
+    rawLokasi = Array.isArray(r1) ? r1 : []; rawKegiatan = Array.isArray(r2) ? r2 : []; rawLinks = Array.isArray(r3) ? r3 : []; rawWI = Array.isArray(r4) ? r4 : []; rawWifi = Array.isArray(r5) ? r5 : []; rawJadwal = Array.isArray(r6) ? r6 : [];
+    
     renderLokasi(rawLokasi); renderKegiatan(rawKegiatan); renderUpcoming(rawKegiatan); renderWifi(rawWifi); renderWISection(rawWI); renderLinks(rawLinks); updateCards(rawLokasi);
+    renderJadwalMingguan(rawJadwal); // Render tabel jadwal mingguan
     renderGrafikLembur(); 
     
     document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
