@@ -359,7 +359,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI •(.)• by acg</footer>
+<footer>SIKAT-TI • by acg</footer>
 
 <!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
@@ -451,6 +451,32 @@ let chartInstance = null;
 const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
 
 function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`; }
+
+/* ============================================================
+   KAMUS WARNA JADWAL (UBAH DI SINI BRO)
+   ============================================================ */
+const ATURAN_WARNA = [
+  { keywords: ['CT', 'CUTI'], bg: '#f3e8ff', text: '#7e22ce' },       // Cuti: Pink/Ungu
+  { keywords: ['TBS'], bg: '#cffafe', text: '#0e7490' },              // TBS: Cyan
+  { keywords: ['SW'], bg: '#bbf7d0', text: '#166534' },               // SW: Hijau Stabilo
+  { keywords: ['WFH'], bg: '#fef3c7', text: '#b45309' },              // WFH: Kuning
+  { keywords: ['P3'], bg: '#dcfce7', text: '#15803d' },               // P3: Hijau Daun
+  { keywords: ['ARC'], bg: '#86efac', text: '#14532d' },              // ARC: Hijau Stabilo
+  { keywords: ['11'], bg: '#ccfbf1', text: '#0f766e' },               // 11: Hijau Tosca
+  { keywords: ['12'], bg: '#bae6fd', text: '#0369a1' },               // 12: Biru Langit
+  { keywords: ['LT'], bg: '#dbeafe', text: '#1d4ed8' },               // LT: Biru Tua
+  { keywords: ['IZIN', 'PERMITTED'], bg: '#dbeafe', text: '#1d4ed8' },
+  { keywords: ['SAKIT'], bg: '#f3e8ff', text: '#7e22ce' }
+];
+
+function dapatkanWarna(val) {
+  const v = (val || '').toUpperCase();
+  if(v === '-' || v === '') return { bg: '#f1f5f9', text: '#334155' }; // Default abu-abu
+  for(let aturan of ATURAN_WARNA) {
+    if(aturan.keywords.some(k => v.includes(k))) return aturan;
+  }
+  return { bg: '#f1f5f9', text: '#334155' }; // Fallback
+}
 
 /* ============================================================
    HELPER FUNCTIONS
@@ -628,17 +654,12 @@ function renderJadwalMingguan(rows) {
       if(cleanKey === 'no' || cleanKey === 'nama') continue;
       
       const val = row[key] || '-';
-      let badgeColor = '#f1f5f9', textColor = '#334155';
       
-      if(val.toUpperCase().includes('CT')) { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
-      else if(val.toUpperCase().includes('TBS')) { badgeColor = '#cffafe'; textColor = '#0e7490'; }
-      else if(val.toUpperCase().includes('SW')) { badgeColor = '#bbf7d0'; textColor = '#166534'; }
-      else if(val.toUpperCase().includes('WFH')) { badgeColor = '#fef3c7'; textColor = '#b45309'; } // Warna WFH kuning
-      else if(val.toUpperCase().includes('P3') || val.toUpperCase().includes('ARC')) { badgeColor = '#dcfce7'; textColor = '#15803d'; }
-      else if(val.toUpperCase().includes('LT')) { badgeColor = '#dbeafe'; textColor = '#1d4ed8'; }
+      // Panggil fungsi kamus warna
+      const warna = dapatkanWarna(val);
 
       html += `<td style="padding:12px; border-right:1px solid #e2e8f0; text-align:center;">
-        <span style="display:inline-block; padding:6px 14px; border-radius:8px; font-weight:700; font-size:12px; background:${badgeColor}; color:${textColor}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${val}</span>
+        <span style="display:inline-block; padding:6px 14px; border-radius:8px; font-weight:700; font-size:12px; background:${warna.bg}; color:${warna.text}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${val}</span>
       </td>`;
     }
     html += '</tr>';
