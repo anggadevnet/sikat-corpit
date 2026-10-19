@@ -504,34 +504,48 @@ function downloadGambar(elementId, namaFile) {
   
   showToast('📸 Sedang memproses gambar...');
 
+  // Trik: Paksa lebar maksimal biar tabel gak kepotong di HP
+  const originalWidth = element.style.width;
+  const originalMaxWidth = element.style.maxWidth;
+  const originalOverflow = element.style.overflow;
+  
+  element.style.width = 'max-content'; // Paksa melebar sesuai isi tabel
+  element.style.maxWidth = 'none';
+  element.style.overflow = 'visible'; // Matiin scroll bar sementara
+
   // Simpan style background asli
   const originalBg = element.style.background;
-  
-  // Kasih background putih biar pas di-save gak transparan
   if (elementId === 'wrapKegiatan') {
-    element.style.background = '#fff'; // Card grid butuh bg biar rapi
+    element.style.background = '#fff'; 
     element.style.padding = '16px';
     element.style.borderRadius = '12px';
   }
 
-  // Kasih jeda dikit biar rendering CSS selesai
   setTimeout(() => {
+    // Hitung tinggi & lebar asli elemen
+    const targetWidth = element.scrollWidth;
+    const targetHeight = element.scrollHeight;
+
     html2canvas(element, {
-      scale: 2, // Scale 2x biar HD (gak pecah)
+      scale: 2, 
       useCORS: true,
-      backgroundColor: '#ffffff', // Background putih
+      backgroundColor: '#ffffff',
+      width: targetWidth,
+      height: targetHeight,
+      windowWidth: targetWidth,
       scrollX: 0,
-      scrollY: -window.scrollY, // Biar gak geser posisinya
-      windowWidth: document.documentElement.offsetWidth
+      scrollY: 0
     }).then(canvas => {
       // Balikin style semula
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      element.style.overflow = originalOverflow;
       element.style.background = originalBg;
       if (elementId === 'wrapKegiatan') {
         element.style.padding = '0';
         element.style.borderRadius = '0';
       }
 
-      // Convert canvas ke link download
       const image = canvas.toDataURL("image/png");
       const link = document.createElement('a');
       const tanggal = new Date().toISOString().slice(0,10);
@@ -543,6 +557,10 @@ function downloadGambar(elementId, namaFile) {
     }).catch(err => {
       console.error(err);
       showToast('❌ Gagal memproses gambar');
+      // Balikin style kalau error
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      element.style.overflow = originalOverflow;
     });
   }, 300);
 }
@@ -556,21 +574,27 @@ function renderJadwalMingguan(rows) {
   const wrap = document.getElementById('wrapJadwalMingguan');
   if(!rows || rows.length === 0) { wrap.innerHTML = '<div class="empty">Belum ada jadwal mingguan.</div>'; return; }
   
-  // 1. FILTER DATA: Buang baris yang kolom namanya kosong (sampah dari baris tanggal sheet)
-  const cleanRows = rows.filter(r => {
+  // 1. Ambil baris tanggal dari Sheet (Baris ke-2, index 1)
+  let tanggalRow = {};
+  if (rows.length > 1) {
+    for (let key in rows[1]) {
+      const cleanKey = key.toString().trim().toLowerCase();
+      if (cleanKey !== 'no' && cleanKey !== 'nama') {
+         const val = rows[1][key];
+         if (!isNaN(val) && val.trim() !== '') {
+            tanggalRow[cleanKey] = val;
+         }
+      }
+    }
+  }
+
+  // 2. Filter data: buang baris kosong / nama kosong
+  const validRows = rows.filter(r => {
     const nama = (r['nama'] || r[' nama'] || '').toString().trim();
-    return nama !== '' && nama !== '-' && isNaN(nama); // Pastikan nama bukan cuma angka/tanggal
+    return nama !== '' && nama !== '-' && isNaN(nama);
   });
 
-  if(cleanRows.length === 0) { wrap.innerHTML = '<div class="empty">Data jadwal kosong.</div>'; return; }
-
-  // 2. AMBIL TANGGAL BUAT HEADER
-  const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 Minggu, 1 Senin
-  const diffToMonday = today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
-  const monday = new Date(today.setDate(diffToMonday));
-  
-  const dayMap = {'senin':0, 'selasa':1, 'rabu':2, 'kamis':3, 'jumat':4, 'sabtu':5, 'minggu':6};
+  if(validRows.length === 0) { wrap.innerHTML = '<div class="empty">Data jadwal kosong.</div>'; return; }
 
   // 3. BIKIN TABLE HEADER
   let html = '<div style="overflow-x: auto; width: 100%; max-width: 100%;">';
@@ -581,17 +605,12 @@ function renderJadwalMingguan(rows) {
   html += `<th style="padding:12px; font-weight:700; color:#475569; position:sticky; left:0; background:#f8fafc; z-index:5; border-right:2px solid #cbd5e1; width:50px; text-align:center;">No</th>`;
   html += `<th style="padding:12px; font-weight:700; color:#475569; position:sticky; left:50px; background:#f8fafc; z-index:5; border-right:2px solid #cbd5e1; min-width:180px;">Nama Teknisi</th>`;
   
-  // Kolom Hari & Tanggal (Digabung pake <br>)
-  for(let key in cleanRows[0]) {
+  // Kolom Hari & Tanggal
+  for(let key in validRows[0]) {
     const cleanKey = key.toString().trim().toLowerCase();
     if(cleanKey === 'no' || cleanKey === 'nama') continue;
     
-    let tglText = '';
-    if(dayMap[cleanKey] !== undefined) {
-      const targetDate = new Date(monday);
-      targetDate.setDate(monday.getDate() + dayMap[cleanKey]);
-      tglText = targetDate.getDate();
-    }
+    let tglText = tanggalRow[cleanKey] || '-';
     
     html += `<th style="padding:10px; font-weight:700; color:#475569; border-right:1px solid #cbd5e1; text-align:center; text-transform:uppercase; line-height:1.4;">
       ${cleanKey}<br><span style="font-size:12px; color:#b45309;">${tglText}</span>
@@ -600,10 +619,9 @@ function renderJadwalMingguan(rows) {
   html += '</tr></thead><tbody>';
 
   // 4. ISI DATA
-  cleanRows.forEach((row, idx) => {
+  validRows.forEach((row, idx) => {
     html += `<tr style="border-bottom:1px solid #e2e8f0; ${idx % 2 === 0 ? 'background:#fff;' : 'background:#f8fafc;'}">`;
     
-    // No & Nama (Sticky Kiri)
     const noVal = row['no'] || (idx + 1);
     const namaVal = row['nama'] || row[' nama'] || '-'; 
     const bgColor = idx % 2 === 0 ? '#fff' : '#f8fafc';
@@ -625,7 +643,6 @@ function renderJadwalMingguan(rows) {
       else if(val.toUpperCase().includes('P3') || val.toUpperCase().includes('ARC')) { badgeColor = '#dcfce7'; textColor = '#15803d'; }
       else if(val.toUpperCase().includes('LT')) { badgeColor = '#dbeafe'; textColor = '#1d4ed8'; }
 
-      // Tampilan isi sel (kotak warna)
       html += `<td style="padding:12px; border-right:1px solid #e2e8f0; text-align:center;">
         <span style="display:inline-block; padding:6px 14px; border-radius:8px; font-weight:700; font-size:12px; background:${badgeColor}; color:${textColor}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${val}</span>
       </td>`;
