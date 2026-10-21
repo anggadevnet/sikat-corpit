@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIKAT-TI — Sistem Koordinasi Aktivitas Teknisi</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- LIBRARY UNTUK DOWNLOAD GAMBAR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -43,26 +42,6 @@ header{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 .card .value{font-size:30px;font-weight:800;margin-top:6px;color:#0f172a;line-height:1}
 .card .pct{font-size:11px;color:#94a3b8;margin-top:6px;font-weight:500}
 .card .icon{position:absolute;top:14px;right:14px;font-size:20px;opacity:.35}
-.progress-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px 20px;margin-bottom:28px;box-shadow:0 1px 3px rgba(15,23,42,.04)}
-.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.progress-header .title{font-size:13px;color:#334155;font-weight:700}
-.progress-header .val{font-size:13px;font-weight:800}
-.progress-bar{height:12px;background:#f1f5f9;border-radius:8px;overflow:hidden;display:flex}
-.progress-bar .seg{height:100%;transition:width .5s ease}
-.seg.on{background:linear-gradient(90deg,#16a34a,#4ade80)}
-.seg.wfh{background:linear-gradient(90deg,#0891b2,#22d3ee)}
-.seg.permitted{background:linear-gradient(90deg,#2563eb,#60a5fa)}
-.seg.sick{background:linear-gradient(90deg,#9333ea,#c084fc)}
-.seg.leave{background:linear-gradient(90deg,#4f46e5,#a5b4fc)}
-.seg.other{background:linear-gradient(90deg,#64748b,#94a3b8)}
-.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:#475569;font-weight:500}
-.legend span::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
-.legend .l-on::before{background:#16a34a}
-.legend .l-wfh::before{background:#0891b2}
-.legend .l-permit::before{background:#2563eb}
-.legend .l-sick::before{background:#9333ea}
-.legend .l-leave::before{background:#4f46e5}
-.legend .l-other::before{background:#64748b}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
 .toolbar input[type=text],.toolbar select{background:#fff;border:1px solid #e2e8f0;color:#1e293b;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03)}
 .toolbar input[type=text]:focus,.toolbar select:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
@@ -272,27 +251,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="marquee" id="marqueeText"></div>
 </div>
 
-<div class="cards">
-  <div class="card blue"><div class="icon">👥</div><div class="label">Total</div><div class="value" id="cTotal">0</div><div class="pct" id="pTotal">hari ini</div></div>
-  <div class="card green"><div class="icon">✅</div><div class="label">Onsite</div><div class="value" id="cOn">0</div><div class="pct" id="pOn">0%</div></div>
-  <div class="card cyan"><div class="icon">🏠</div><div class="label">WFH</div><div class="value" id="cWfh">0</div><div class="pct" id="pWfh">0%</div></div>
-  <div class="card indigo"><div class="icon">📝</div><div class="label">Izin</div><div class="value" id="cPermit">0</div><div class="pct" id="pPermit">0%</div></div>
-  <div class="card purple"><div class="icon">🤒</div><div class="label">Sakit</div><div class="value" id="cSick">0</div><div class="pct" id="pSick">0%</div></div>
-  <div class="card orange"><div class="icon">🏖️</div><div class="label">Cuti</div><div class="value" id="cLeave">0</div><div class="pct" id="pLeave">0%</div></div>
-  <div class="card gray"><div class="icon">❓</div><div class="label">Lainnya</div><div class="value" id="cOther">0</div><div class="pct" id="pOther">0%</div></div>
-</div>
-
-<div class="progress-wrap">
-  <div class="progress-header"><span class="title">📊 Distribusi Status Personil</span><span class="val" id="pTitle">0%</span></div>
-  <div class="progress-bar">
-    <div class="seg on" id="segOn" style="width:0%"></div><div class="seg wfh" id="segWfh" style="width:0%"></div>
-    <div class="seg permitted" id="segPermit" style="width:0%"></div><div class="seg sick" id="segSick" style="width:0%"></div>
-    <div class="seg leave" id="segLeave" style="width:0%"></div><div class="seg other" id="segOther" style="width:0%"></div>
-  </div>
-  <div class="legend"><span class="l-on">Onsite</span><span class="l-wfh">WFH</span><span class="l-permit">Izin</span><span class="l-sick">Sakit</span><span class="l-leave">Cuti</span><span class="l-other">Lainnya</span></div>
-</div>
-
-<!-- FITUR BARU: JADWAL MINGGUAN -->
+<!-- JADWAL MINGGUAN -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📅 Jadwal Mingguan (Senin - Minggu)</h2>
@@ -300,21 +259,38 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
       📸 Save Gambar
     </button>
   </div>
-  <div style="background:#fff; border-radius:12px; padding:18px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04); overflow-x:auto;">
+  <div style="background:#fff; border-radius:12px; padding:18px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04);">
     <div id="wrapJadwalMingguan"><div class="loading">⏳ Memuat jadwal mingguan...</div></div>
   </div>
 </section>
 
+<!-- LOKASI STANDBY HARIAN -->
 <section>
-  <h2>📍 Lokasi Standby Harian <span class="count" id="cntLokasi">0</span></h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <h2 style="margin: 0;">📍 Lokasi Standby Harian</h2>
+    <button onclick="downloadGambar('wrapLokasi', 'Jadwal_Harian')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
+      📸 Save Gambar
+    </button>
+  </div>
   <div class="toolbar">
     <input type="text" id="searchInput" placeholder="🔍 Cari nama teknisi atau lokasi...">
-    <select id="statusFilter"><option value="">Semua Status</option><option value="onduty">Onsite</option><option value="wfh">WFH</option><option value="permitted">Izin</option><option value="sick">Sakit</option><option value="onleave">Cuti</option><option value="unknown">Lainnya</option></select>
-    <label class="toggle-label"><input type="checkbox" id="onlyToday" checked>Hanya hari ini</label>
+    
+    <!-- FILTER HANYA HARI INI -->
+    <label class="toggle-label">
+      <input type="checkbox" id="onlyToday" checked onchange="toggleFilterTanggal()"> Hanya hari ini
+    </label>
+
+    <!-- DROPDOWN PILIH TANGGAL (MUNCUL KALAU ONLY TODAY DIMATIKAN) -->
+    <select id="filterTanggal" style="display:none; min-width:200px;" onchange="renderLokasi(rawLokasi)">
+      <option value="">Pilih Tanggal...</option>
+      <!-- Bakal diisi otomatis sama JS -->
+    </select>
+
   </div>
   <div id="wrapLokasi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<!-- CURRENT EVENT -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📋 Current Event <span class="count" id="cntKegiatan">0</span></h2>
@@ -325,12 +301,13 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapKegiatan"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<!-- UPCOMING EVENT -->
 <section>
   <h2>🚀 Upcoming Event <span class="count" id="cntUpcoming">0</span></h2>
   <div id="wrapUpcoming"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<!-- SECTION GRAFIK LEMBUR -->
+<!-- GRAFIK LEMBUR -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📊 Grafik Lembur Teknisi</h2>
@@ -340,6 +317,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   </div>
 </section>
 
+<!-- WIFI GUEST -->
 <section>
   <h2>📶 Wifi Guest <span class="count" id="cntWifi">0</span></h2>
   <div class="wifi-toolbar">
@@ -349,17 +327,19 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapWifi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<!-- WI -->
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
   <div id="wrapWISection"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
+<!-- LINK -->
 <section>
   <h2>🔗 Link Penting & Akses</h2>
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI • by acg</footer>
+<footer>SIKAT-TI • realtime • by acg</footer>
 
 <!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
@@ -450,10 +430,13 @@ let chartInstance = null;
 
 const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
 
+// DAFTAR BLACKLIST UNTUK LOKASI HARIAN (Mereka bukan teknisi)
+const BLACKLIST_HARIAN = ['nadine', 'nafira', 'imola'];
+
 function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`; }
 
 /* ============================================================
-   KAMUS WARNA JADWAL (UBAH DI SINI BRO)
+   KAMUS WARNA JADWAL
    ============================================================ */
 const ATURAN_WARNA = [
   { keywords: ['CT', 'CUTI'], bg: '#f3e8ff', text: '#7e22ce' },       // Cuti: Pink/Ungu
@@ -481,9 +464,6 @@ function dapatkanWarna(val) {
 /* ============================================================
    HELPER FUNCTIONS
    ============================================================ */
-const STATUS_RULES = { wfh: ['wfh', 'tbs'], permitted: ['ijin', 'izin', 'permitted'], sick: ['sakit', 'sick', 'mmr'], onleave: ['cuti', 'on leave', 'onleave', 'libur', 'ct'], onduty: ['onsite', 'on site', 'on-site', 'hadir', 'masuk', 'onduty', 'on duty', 'p3', 'arc', 'lt', '11', '12', 'sw'] };
-function statusClass(s){ const t = (s||'').toLowerCase().trim(); if(!t) return 'unknown'; const order = ['wfh', 'permitted', 'sick', 'onleave', 'onduty']; for(const cat of order){ for(const kw of STATUS_RULES[cat]){ if(t.includes(kw)) return cat; } } return 'unknown'; }
-function statusLabel(s){ const c = statusClass(s); if(c === 'onduty') return 'Onsite'; if(c === 'wfh') return 'WFH'; if(c === 'permitted') return 'Izin'; if(c === 'sick') return 'Sakit'; if(c === 'onleave') return 'Cuti'; if(c === 'unknown') return s ? s : 'Lainnya'; return s || '-'; }
 function getFlex(obj, keys){ if(!obj) return '-'; for(const k of keys){ if(obj[k] !== undefined && obj[k] !== '' && obj[k] !== null) return obj[k]; } const objKeys = Object.keys(obj); for(const k of keys){ const target = k.toLowerCase().replace(/[\s\/\[\]]/g,''); for(const ok of objKeys){ const normalized = ok.toLowerCase().replace(/[\s\/\[\]]/g,''); if(normalized === target || normalized.includes(target) || target.includes(normalized)){ if(obj[ok] !== undefined && obj[ok] !== '' && obj[ok] !== null) return obj[ok]; } } } return '-'; }
 
 const NAMA_BULAN_ID = {'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5, 'juli':6, 'agustus':7, 'september':8, 'oktober':9, 'november':10, 'desember':11, 'jan':0, 'feb':1, 'mar':2, 'apr':3, 'jun':5, 'jul':6, 'agu':7, 'ags':7, 'sep':8, 'okt':9, 'nov':10, 'des':11};
@@ -539,7 +519,7 @@ function downloadGambar(elementId, namaFile) {
   element.style.overflow = 'visible'; 
 
   const originalBg = element.style.background;
-  if (elementId === 'wrapKegiatan') {
+  if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi') {
     element.style.background = '#fff'; 
     element.style.padding = '16px';
     element.style.borderRadius = '12px';
@@ -563,7 +543,7 @@ function downloadGambar(elementId, namaFile) {
       element.style.maxWidth = originalMaxWidth;
       element.style.overflow = originalOverflow;
       element.style.background = originalBg;
-      if (elementId === 'wrapKegiatan') {
+      if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi') {
         element.style.padding = '0';
         element.style.borderRadius = '0';
       }
@@ -584,6 +564,21 @@ function downloadGambar(elementId, namaFile) {
       element.style.overflow = originalOverflow;
     });
   }, 300);
+}
+
+/* ============================================================
+   FUNGSI FILTER TANGGAL
+   ============================================================ */
+function toggleFilterTanggal() {
+  const onlyToday = document.getElementById('onlyToday').checked;
+  const filterTanggal = document.getElementById('filterTanggal');
+  
+  if (onlyToday) {
+    filterTanggal.style.display = 'none'; // Sembunyiin dropdown
+    filterTanggal.value = ''; // Reset
+  } else {
+    filterTanggal.style.display = 'block'; // Munculin dropdown
+  }
 }
 
 /* ============================================================
@@ -670,14 +665,163 @@ function renderJadwalMingguan(rows) {
 }
 
 function renderLokasi(rows){
-  const wrap = document.getElementById('wrapLokasi'); const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); const filter = document.getElementById('statusFilter').value; const onlyToday = document.getElementById('onlyToday').checked;
-  let filtered = rows.filter(r => !onlyToday || isToday(getFlex(r,['hari/tanggal','tanggal'])));
-  filtered = filtered.filter(r => { const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase(); const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase(); const cocok = !keyword || nama.includes(keyword) || lokasi.includes(keyword); const status = statusClass(getFlex(r,['status','keterangan'])); return cocok && (!filter || status === filter); });
-  document.getElementById('cntLokasi').textContent = filtered.length;
+  const wrap = document.getElementById('wrapLokasi'); 
+  const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); 
+  const onlyToday = document.getElementById('onlyToday').checked;
+  const filterTanggalVal = document.getElementById('filterTanggal').value;
+  
+  // KARENA DATA YANG MASUK ADALAH DATA MENTAH MINGGUAN, KITA HARUS FORMAT ULANG JADI HARIAN
+  const validRows = rows.filter(r => {
+    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
+    return nama !== '' && nama !== '-' && isNaN(nama);
+  });
+
+  // Ekstrak baris tanggal
+  let tanggalRow = {};
+  for(let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
+    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
+    if(isDateRow && keys.length > 0) {
+      keys.forEach(k => { tanggalRow[k.toLowerCase()] = r[k]; });
+      break;
+    }
+  }
+
+  // Bikin list harian
+  let dataHarian = [];
+  const today = new Date();
+  const dayIndex = today.getDay();
+  
+  validRows.forEach(row => {
+    // Loop tiap hari (senin-minggu)
+    for(let key in row) {
+      const cleanKey = key.toString().trim().toLowerCase();
+      if(cleanKey === 'no' || cleanKey === 'nama') continue;
+      
+      const val = row[key] || '-';
+      const tglText = tanggalRow[cleanKey] || '';
+      
+      // Tentukan tanggal lengkap buat hari ini
+      // Kita cuma butuh hari yang sesuai dengan tanggal di sheet
+      // Kita manipulasi aja tanggalnya pakai string
+      
+      if(tglText && !isNaN(tglText)) {
+         // Kita pake trik parsing tanggal berdasarkan hari ini (biar dapet bulannya)
+         let targetDate = new Date();
+         const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
+         if(dayMap[cleanKey] !== undefined) {
+            const diff = dayMap[cleanKey] - today.getDay();
+            targetDate.setDate(today.getDate() + diff); // Geser ke hari yang dimaksud
+         }
+         
+         // Override tanggalnya pake angka dari sheet (biar sinkron)
+         const dateStr = `${HARI_ID[targetDate.getDay()]}, ${tglText.padStart(2,'0')}/${(targetDate.getMonth()+1).toString().padStart(2,'0')}/${targetDate.getFullYear()}`;
+         
+         const dateObj = parseTanggalValid(dateStr);
+         
+         dataHarian.push({
+           "hari/tanggal": dateStr,
+           "nama teknisi": row['nama'] || row[' nama'] || '-',
+           "lokasi standby": val
+         });
+      }
+    }
+  });
+
+  // 1. FILTER BLACKLIST
+  let filtered = dataHarian.filter(r => {
+    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase();
+    const isBlacklisted = BLACKLIST_HARIAN.some(bl => nama.includes(bl));
+    return !isBlacklisted;
+  });
+
+  // 2. FILTER TANGGAL
+  filtered = filtered.filter(r => {
+    const tglRaw = getFlex(r,['hari/tanggal','tanggal']);
+    if (onlyToday) {
+      return isToday(tglRaw); // Default: Cuma hari ini
+    } else if (filterTanggalVal) {
+      // Cek apakah tanggal sama dengan pilihan dropdown
+      const dateObj = parseTanggalValid(tglRaw);
+      if(!dateObj) return false;
+      const tglFormatted = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getDate().toString().padStart(2,'0')}`;
+      return tglFormatted === filterTanggalVal;
+    }
+    return true; // Kalau neither, tampilin semua
+  });
+
+  // 3. FILTER PENCARIAN
+  filtered = filtered.filter(r => { 
+    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase(); 
+    const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase(); 
+    return !keyword || nama.includes(keyword) || lokasi.includes(keyword); 
+  });
+  
   if(!filtered.length){ wrap.innerHTML = '<div class="empty">Tidak ada data yang cocok</div>'; return; }
-  let html = '<div class="table-wrap"><table><thead><tr><th>Hari/Tanggal</th><th>Nama Teknisi</th><th>Lokasi Standby</th><th>Status</th></tr></thead><tbody>';
-  filtered.forEach(r=>{ const raw = getFlex(r,['status','keterangan']); const cls = statusClass(raw); const dateRaw = getFlex(r,['hari/tanggal','tanggal']); const dateObj = parseTanggalValid(dateRaw); const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; html += `<tr><td>${dateDisplay}</td><td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td><td>${getFlex(r,['lokasi standby','lokasi'])}</td><td><span class="badge ${cls}">${statusLabel(raw)}</span></td></tr>`; });
+  
+  let html = '<div class="table-wrap"><table><thead><tr><th>Hari/Tanggal</th><th>Nama Teknisi</th><th>Lokasi Standby</th></tr></thead><tbody>';
+  filtered.forEach(r=>{ 
+    const raw = getFlex(r,['lokasi standby','lokasi']); 
+    const warna = dapatkanWarna(raw); // Ambil warna dari kamus
+    const dateRaw = getFlex(r,['hari/tanggal','tanggal']); 
+    const dateObj = parseTanggalValid(dateRaw); 
+    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; 
+    html += `<tr><td>${dateDisplay}</td><td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td><td><span style="display:inline-block; padding:4px 12px; border-radius:8px; font-weight:700; font-size:12px; background:${warna.bg}; color:${warna.text}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${raw}</span></td></tr>`; 
+  });
   wrap.innerHTML = html + '</tbody></table></div>';
+}
+
+// Fungsi buat ngisi dropdown tanggal (dipanggil pas load data)
+function isiDropdownTanggal(rows) {
+  const select = document.getElementById('filterTanggal');
+  
+  // Kita pake dataHarian yang udah di-render di atas
+  // Tapi kita harus bikin ulang datanya buat ngedapetin tanggal unik
+  const validRows = rows.filter(r => {
+    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
+    return nama !== '' && nama !== '-' && isNaN(nama);
+  });
+
+  let tanggalRow = {};
+  for(let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
+    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
+    if(isDateRow && keys.length > 0) {
+      keys.forEach(k => { tanggalRow[k.toLowerCase()] = r[k]; });
+      break;
+    }
+  }
+
+  const uniqueDates = new Set();
+  const today = new Date();
+
+  for(let key in tanggalRow) {
+    const tglText = tanggalRow[key];
+    const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
+    if(dayMap[key] !== undefined && tglText) {
+       let targetDate = new Date();
+       const diff = dayMap[key] - today.getDay();
+       targetDate.setDate(today.getDate() + diff); // Geser ke hari yang dimaksud
+       
+       const yyyy = targetDate.getFullYear();
+       const mm = (targetDate.getMonth()+1).toString().padStart(2,'0');
+       const dd = tglText.padStart(2,'0');
+       uniqueDates.add(`${yyyy}-${mm}-${dd}`);
+    }
+  }
+
+  const sortedDates = Array.from(uniqueDates).sort();
+  
+  let html = '<option value="">Pilih Tanggal...</option>';
+  sortedDates.forEach(d => {
+    const dateObj = new Date(d);
+    const display = formatTanggalLengkap(dateObj);
+    html += `<option value="${d}">${display}</option>`;
+  });
+  
+  select.innerHTML = html;
 }
 
 function renderKegiatan(rows){
@@ -957,38 +1101,56 @@ async function submitLembur(e) {
 /* ============================================================
    UPDATE CARDS & LOAD ALL
    ============================================================ */
-function updateCards(rows){
-  const today = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal']))); const total = today.length;
-  const count = k => today.filter(r => statusClass(getFlex(r,['status','keterangan']))===k).length;
-  const on = count('onduty'), permit = count('permitted'), sick = count('sick'), leave = count('onleave'), wfh = count('wfh'), other = count('unknown');
-  document.getElementById('cTotal').textContent = total; document.getElementById('cOn').textContent = on; document.getElementById('cWfh').textContent = wfh; document.getElementById('cPermit').textContent = permit; document.getElementById('cSick').textContent = sick; document.getElementById('cLeave').textContent = leave; document.getElementById('cOther').textContent = other;
-  const pct = n => total ? Math.round(n/total*100) : 0;
-  document.getElementById('pTotal').textContent = `hari ini (${total} baris)`; document.getElementById('pOn').textContent = pct(on) + '%'; document.getElementById('pWfh').textContent = pct(wfh) + '%'; document.getElementById('pPermit').textContent = pct(permit) + '%'; document.getElementById('pSick').textContent = pct(sick) + '%'; document.getElementById('pLeave').textContent = pct(leave) + '%'; document.getElementById('pOther').textContent = pct(other) + '%';
-  document.getElementById('segOn').style.width = pct(on) + '%'; document.getElementById('segWfh').style.width = pct(wfh) + '%'; document.getElementById('segPermit').style.width = pct(permit) + '%'; document.getElementById('segSick').style.width = pct(sick) + '%'; document.getElementById('segLeave').style.width = pct(leave) + '%'; document.getElementById('segOther').style.width = pct(other) + '%';
-  const onPct = pct(on); document.getElementById('pTitle').textContent = onPct + '% Onsite'; document.getElementById('pTitle').style.color = onPct >= 70 ? '#16a34a' : onPct >= 40 ? '#ea580c' : '#dc2626';
-}
+// Cards dihapus, jadi fungsi updateCards juga gak dipanggil lagi
 
 async function loadAll(){
   const now = new Date();
   try {
     const [r1, r2, r3, r4, r5, r6] = await Promise.all([
-      fetch(apiUrl('Lokasi')).then(r => r.json()), fetch(apiUrl('kegiatan')).then(r => r.json()),
-      fetch(apiUrl('Links')).then(r => r.json()), fetch(apiUrl('WI')).then(r => r.json()), fetch(apiUrl('WifiGuest')).then(r => r.json()),
-      fetch(apiUrl('JadwalMingguan')).then(r => r.json()) // Ambil jadwal mingguan
+      fetch(apiUrl('Lokasi')).then(r => r.json()), 
+      fetch(apiUrl('kegiatan')).then(r => r.json()),
+      fetch(apiUrl('Links')).then(r => r.json()), 
+      fetch(apiUrl('WI')).then(r => r.json()), 
+      fetch(apiUrl('WifiGuest')).then(r => r.json()),
+      fetch(apiUrl('JadwalMingguan')).then(r => r.json())
     ]);
-    rawLokasi = Array.isArray(r1) ? r1 : []; rawKegiatan = Array.isArray(r2) ? r2 : []; rawLinks = Array.isArray(r3) ? r3 : []; rawWI = Array.isArray(r4) ? r4 : []; rawWifi = Array.isArray(r5) ? r5 : []; rawJadwal = Array.isArray(r6) ? r6 : [];
+    rawLokasi = Array.isArray(r1) ? r1 : []; 
+    rawKegiatan = Array.isArray(r2) ? r2 : []; 
+    rawLinks = Array.isArray(r3) ? r3 : []; 
+    rawWI = Array.isArray(r4) ? r4 : []; 
+    rawWifi = Array.isArray(r5) ? r5 : []; 
+    rawJadwal = Array.isArray(r6) ? r6 : [];
     
-    renderLokasi(rawLokasi); renderKegiatan(rawKegiatan); renderUpcoming(rawKegiatan); renderWifi(rawWifi); renderWISection(rawWI); renderLinks(rawLinks); updateCards(rawLokasi);
-    renderJadwalMingguan(rawJadwal); // Render tabel jadwal mingguan
+    // RESET FILTER KE DEFAULT (HANYA HARI INI)
+    const chkOnlyToday = document.getElementById('onlyToday');
+    chkOnlyToday.checked = true;
+    const selectTanggal = document.getElementById('filterTanggal');
+    selectTanggal.value = '';
+    selectTanggal.style.display = 'none'; // Sembunyiin lagi
+
+    // Render semua data yang diperlukan
+    renderLokasi(rawLokasi); 
+    isiDropdownTanggal(rawLokasi); // Isi dropdown tanggal
+    renderKegiatan(rawKegiatan); 
+    renderUpcoming(rawKegiatan); 
+    renderWifi(rawWifi); 
+    renderWISection(rawWI); 
+    renderLinks(rawLinks);
+    renderJadwalMingguan(rawJadwal); 
     renderGrafikLembur(); 
     
     document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
-  } catch(err) { console.error(err); document.getElementById('wrapLokasi').innerHTML = '<div class="empty">❌ Gagal memuat. Cek URL Apps Script & nama sheet.</div>'; }
+  } catch(err) { 
+    console.error(err); 
+    document.getElementById('wrapLokasi').innerHTML = '<div class="empty">❌ Gagal memuat. Cek URL Apps Script & nama sheet.</div>'; 
+  }
 }
 
 function tickClock(){ const now = new Date(); document.getElementById('clock').textContent = now.toLocaleTimeString('id-ID'); document.getElementById('today').textContent = now.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' }); }
 tickClock(); setInterval(tickClock, 1000);
-document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi)); document.getElementById('statusFilter').addEventListener('change', () => renderLokasi(rawLokasi)); document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
+document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi)); 
+document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
+document.getElementById('filterTanggal').addEventListener('change', () => renderLokasi(rawLokasi));
 document.getElementById('wifiSearch').addEventListener('input', () => renderWifi(rawWifi)); document.getElementById('wifiFilter').addEventListener('change', () => renderWifi(rawWifi));
 renderMarquee(); loadAll(); setInterval(loadAll, 30000);
 </script>
