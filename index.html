@@ -309,11 +309,21 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 
 <!-- GRAFIK LEMBUR -->
 <section>
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
     <h2 style="margin: 0;">📊 Grafik Lembur Teknisi</h2>
+    <!-- Tombol Fullscreen -->
+    <button onclick="toggleFullScreenChart()" style="background:#fff; color:#0284c7; border:1px solid #bae6fd; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.1);">
+      ⛶ Fullscreen
+    </button>
   </div>
-  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04);">
-    <canvas id="chartLembur" height="90"></canvas>
+  <!-- Container Chart (Id chartContainer buat Fullscreen) -->
+  <div id="chartContainer" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); transition: all .3s; position:relative;">
+    <!-- Wrapper buat Scroll (khusus mobile) -->
+    <div style="overflow-x: auto; width: 100%;">
+      <div id="canvasWrapper" style="min-width: 100%; height: 350px;">
+        <canvas id="chartLembur"></canvas>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -500,6 +510,41 @@ function isFuture(dateStr){ const d = parseTanggalValid(dateStr); if(!d) return 
 
 let toastTimer = null;
 function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg || '✅ Copied!'; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
+
+/* ============================================================
+   FUNGSI FULLSCREEN CHART
+   ============================================================ */
+function toggleFullScreenChart() {
+  const el = document.getElementById('chartContainer');
+  const wrapper = document.getElementById('canvasWrapper');
+  
+  if (!document.fullscreenElement) {
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) { /* Safari */
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) { /* IE11 */
+      el.msRequestFullscreen();
+    }
+    // Naikin tinggi canvas pas fullscreen biar proporsional
+    wrapper.style.height = '100vh';
+    el.style.padding = '40px'; // Kasih space dikit
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+// Deteksi kalau keluar dari fullscreen
+document.addEventListener('fullscreenchange', () => {
+  const wrapper = document.getElementById('canvasWrapper');
+  const el = document.getElementById('chartContainer');
+  if (!document.fullscreenElement) {
+    wrapper.style.height = '350px'; // Balikin ke tinggi semula
+    el.style.padding = '20px';
+  }
+});
 
 /* ============================================================
    FUNGSI DOWNLOAD GAMBAR (html2canvas)
@@ -702,12 +747,7 @@ function renderLokasi(rows){
       const val = row[key] || '-';
       const tglText = tanggalRow[cleanKey] || '';
       
-      // Tentukan tanggal lengkap buat hari ini
-      // Kita cuma butuh hari yang sesuai dengan tanggal di sheet
-      // Kita manipulasi aja tanggalnya pakai string
-      
       if(tglText && !isNaN(tglText)) {
-         // Kita pake trik parsing tanggal berdasarkan hari ini (biar dapet bulannya)
          let targetDate = new Date();
          const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
          if(dayMap[cleanKey] !== undefined) {
@@ -715,7 +755,6 @@ function renderLokasi(rows){
             targetDate.setDate(today.getDate() + diff); // Geser ke hari yang dimaksud
          }
          
-         // Override tanggalnya pake angka dari sheet (biar sinkron)
          const dateStr = `${HARI_ID[targetDate.getDay()]}, ${tglText.padStart(2,'0')}/${(targetDate.getMonth()+1).toString().padStart(2,'0')}/${targetDate.getFullYear()}`;
          
          const dateObj = parseTanggalValid(dateStr);
@@ -742,7 +781,6 @@ function renderLokasi(rows){
     if (onlyToday) {
       return isToday(tglRaw); // Default: Cuma hari ini
     } else if (filterTanggalVal) {
-      // Cek apakah tanggal sama dengan pilihan dropdown
       const dateObj = parseTanggalValid(tglRaw);
       if(!dateObj) return false;
       const tglFormatted = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getDate().toString().padStart(2,'0')}`;
@@ -776,8 +814,6 @@ function renderLokasi(rows){
 function isiDropdownTanggal(rows) {
   const select = document.getElementById('filterTanggal');
   
-  // Kita pake dataHarian yang udah di-render di atas
-  // Tapi kita harus bikin ulang datanya buat ngedapetin tanggal unik
   const validRows = rows.filter(r => {
     const nama = (r['nama'] || r[' nama'] || '').toString().trim();
     return nama !== '' && nama !== '-' && isNaN(nama);
@@ -803,7 +839,7 @@ function isiDropdownTanggal(rows) {
     if(dayMap[key] !== undefined && tglText) {
        let targetDate = new Date();
        const diff = dayMap[key] - today.getDay();
-       targetDate.setDate(today.getDate() + diff); // Geser ke hari yang dimaksud
+       targetDate.setDate(today.getDate() + diff);
        
        const yyyy = targetDate.getFullYear();
        const mm = (targetDate.getMonth()+1).toString().padStart(2,'0');
@@ -864,6 +900,7 @@ async function renderGrafikLembur() {
       }
     });
 
+    // Urutkan dari yang paling banyak lembur
     const sortedData = Object.entries(dataPerTeknisi).sort((a, b) => b[1].jam - a[1].jam).filter(item => item[1].jam > 0);
     if (sortedData.length === 0) return;
 
@@ -871,36 +908,83 @@ async function renderGrafikLembur() {
     const valuesJam = sortedData.map(item => item[1].jam);
     const valuesJumlah = sortedData.map(item => item[1].jumlah);
 
+    // Lebarin canvas kalau datanya banyak di HP biar gak gepeng
+    const isMobile = window.innerWidth < 768;
+    const wrapper = document.getElementById('canvasWrapper');
+    wrapper.style.minWidth = isMobile && labels.length > 5 ? (labels.length * 70) + 'px' : '100%';
+
     const ctx = document.getElementById('chartLembur').getContext('2d');
     if (chartInstance) chartInstance.destroy();
 
-    const gradientBiru = ctx.createLinearGradient(0, 0, 0, 400);
+    // Gradient biru
+    const gradientBiru = ctx.createLinearGradient(0, 0, 400, 0);
     gradientBiru.addColorStop(0, 'rgba(2, 132, 199, 0.9)');
-    gradientBiru.addColorStop(1, 'rgba(56, 189, 248, 0.4)');
+    gradientBiru.addColorStop(1, 'rgba(56, 189, 248, 0.6)');
 
     chartInstance = new Chart(ctx, {
+      type: 'bar', 
       data: {
         labels: labels,
         datasets: [
-          { type: 'bar', label: 'Total Jam Lembur', data: valuesJam, backgroundColor: gradientBiru, borderRadius: 6, yAxisID: 'y', barPercentage: 0.5 },
-          { type: 'line', label: 'Jumlah Lembur (Kali)', data: valuesJumlah, borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 3, pointRadius: 6, pointHoverRadius: 8, pointBackgroundColor: '#fff', pointBorderWidth: 3, yAxisID: 'y1', tension: 0.3 }
+          { 
+            label: 'Total Jam Lembur', 
+            data: valuesJam, 
+            backgroundColor: gradientBiru, 
+            borderRadius: 6, 
+            barPercentage: 0.7 
+          }
         ]
       },
       options: {
-        responsive: true, interaction: { mode: 'index', intersect: false },
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false, // <-- PENTING BIAR PROPORSIONAL DI HP
         plugins: {
-          legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Segoe UI', weight: 'bold'} } },
-          tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: { size: 14, family: 'Segoe UI' }, bodyFont: { size: 13, family: 'Segoe UI' }, padding: 12, cornerRadius: 8, callbacks: { label: function(context) { if(context.datasetIndex === 0) return ` ⏱️ ${context.parsed.y} Jam Lembur`; return ` 📋 ${context.parsed.y} Kali Lembur`; } } }
+          legend: { display: false },
+          tooltip: { 
+            backgroundColor: 'rgba(15, 23, 42, 0.9)', 
+            titleFont: { size: 14, family: 'Segoe UI' }, 
+            bodyFont: { size: 13, family: 'Segoe UI' }, 
+            padding: 12, 
+            cornerRadius: 8, 
+            callbacks: { 
+              label: function(context) { 
+                const idx = context.dataIndex;
+                const jam = valuesJam[idx];
+                const kali = valuesJumlah[idx];
+                return [` ⏱️ Total: ${jam} Jam`, ` 📋 Kegiatan: ${kali} Kali`]; 
+              } 
+            } 
+          }
         },
         scales: {
-          x: { grid: { display: false }, ticks: { font: {family: 'Segoe UI', weight: 'bold'}, color: '#475569' } },
-          y: { type: 'linear', display: true, position: 'left', beginAtZero: true, title: { display: true, text: 'Total Jam', color: '#0284c7', font: {weight: 'bold'} }, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
-          y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, title: { display: true, text: 'Jumlah Lembur (Kali)', color: '#f59e0b', font: {weight: 'bold'} }, grid: { drawOnChartArea: false }, ticks: { stepSize: 1, color: '#64748b' } }
+          x: { 
+            beginAtZero: true,
+            title: { display: true, text: 'Total Jam Lembur', color: '#0284c7', font: {weight: 'bold'} },
+            grid: { color: '#f1f5f9' }, 
+            ticks: { color: '#64748b', font: {family: 'Segoe UI'} } 
+          },
+          y: { 
+            grid: { display: false }, 
+            ticks: { font: {family: 'Segoe UI', weight: 'bold'}, color: '#475569' } 
+          }
         }
       }
     });
   } catch(err) { console.error('Gagal render grafik:', err); }
 }
+
+// Re-render chart saat layar di-resize (biar responsif)
+window.addEventListener('resize', () => {
+  if(chartInstance) {
+    const isMobile = window.innerWidth < 768;
+    const labelsCount = chartInstance.data.labels.length;
+    const wrapper = document.getElementById('canvasWrapper');
+    if(!document.fullscreenElement) {
+      wrapper.style.minWidth = isMobile && labelsCount > 5 ? (labelsCount * 70) + 'px' : '100%';
+    }
+  }
+});
 
 function openRekapLembur() { document.getElementById('searchRekap').value = ''; renderTabelRekap(rawLembur); document.getElementById('modalRekapLembur').classList.add('active'); }
 
@@ -1058,6 +1142,266 @@ document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener(
 document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('modalPDF'); closeModal('modalWifi'); closeModal('modalGaji'); closeModal('modalFormLembur'); closeModal('modalRekapLembur'); } });
 
 /* ============================================================
+   LOGIKA KALKULATOR GAJI (LENGKAP)
+   ============================================================ */
+let gajiHariCounter = 0;
+
+function formatRupiah(n){
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+
+function openGajiCalculator() {
+  const body = document.getElementById('gajiBody');
+  body.innerHTML = `
+    <div class="gaji-section">
+      <div class="gaji-section-title">💰 Data Gaji</div>
+      <div class="gaji-field">
+        <label class="gaji-label">Gaji Pokok (Rp)</label>
+        <input type="number" class="gaji-input" id="gajiPokok" placeholder="5000000" min="0" step="100000">
+        <div class="gaji-hint">Upah/jam otomatis = Gaji Pokok ÷ 173 (PP 35/2021)</div>
+      </div>
+    </div>
+
+    <div class="gaji-section">
+      <div class="gaji-section-title">⏰ Lembur (Jam Mulai - Selesai)</div>
+      <div class="gaji-hint" style="margin-bottom:10px;">
+        Setiap <b>kelipatan 5 jam</b> dipotong <b>1 jam</b> untuk istirahat.
+        Contoh: 17:00-24:00 = 7 jam → 6 jam efektif.
+      </div>
+      <div id="gajiHariList"></div>
+      <button class="gaji-add-btn" onclick="addGajiHari()">+ Tambah Hari</button>
+    </div>
+
+    <button class="gaji-calc-btn" onclick="hitungGaji()">🧮 Hitung Gaji & Lembur</button>
+
+    <div id="gajiHasil"></div>
+  `;
+
+  gajiHariCounter = 0;
+  addGajiHari();
+  document.getElementById('modalGaji').classList.add('active');
+}
+
+function addGajiHari(){
+  gajiHariCounter++;
+  const id = gajiHariCounter;
+  const list = document.getElementById('gajiHariList');
+  const row = document.createElement('div');
+  row.className = 'gaji-hari-row';
+  row.setAttribute('data-id', id);
+  row.innerHTML = `
+    <div>
+      <label>Hari</label>
+      <select class="gaji-hari-select">
+        <option value="senin">Senin</option>
+        <option value="selasa">Selasa</option>
+        <option value="rabu">Rabu</option>
+        <option value="kamis">Kamis</option>
+        <option value="jumat">Jumat</option>
+        <option value="sabtu">Sabtu</option>
+        <option value="minggu">Minggu</option>
+      </select>
+    </div>
+    <div>
+      <label>Mulai</label>
+      <input type="time" class="gaji-jam-mulai" value="17:00">
+    </div>
+    <div>
+      <label>Selesai</label>
+      <input type="time" class="gaji-jam-selesai" value="20:00">
+    </div>
+    <button class="gaji-hapus-btn" onclick="hapusGajiHari(this)" title="Hapus">✕</button>
+  `;
+  list.appendChild(row);
+}
+
+function hapusGajiHari(btn){
+  const rows = document.querySelectorAll('#gajiHariList .gaji-hari-row');
+  if(rows.length <= 1){ alert('Minimal 1 hari harus ada'); return; }
+  btn.closest('.gaji-hari-row').remove();
+}
+
+function hitungJamLembur(mulai, selesai){
+  const [h1, m1] = mulai.split(':').map(Number);
+  const [h2, m2] = selesai.split(':').map(Number);
+  let totalMenit = (h2 * 60 + m2) - (h1 * 60 + m1);
+  if(totalMenit < 0) totalMenit += 24 * 60;
+  const totalJam = totalMenit / 60;
+  const istirahat = Math.floor(totalJam / 5);
+  const efektif = totalJam - istirahat;
+  return { totalJam, istirahat, efektif };
+}
+
+function hitungLemburWeekday(jamEfektif, upahPerJam){
+  let total = 0, detail = [];
+  for(let i = 1; i <= jamEfektif; i++){
+    const rate = (i === 1) ? 1.5 : 2;
+    const jumlah = rate * upahPerJam;
+    total += jumlah;
+    detail.push({ jam: i, rate, jumlah });
+  }
+  return { total, detail };
+}
+
+function hitungLemburWeekend(jamEfektif, upahPerJam){
+  let total = 0, detail = [];
+  for(let i = 1; i <= jamEfektif; i++){
+    const rate = 2;
+    const jumlah = rate * upahPerJam;
+    total += jumlah;
+    detail.push({ jam: i, rate, jumlah });
+  }
+  return { total, detail };
+}
+
+function hitungGaji() {
+  const gajiPokok = parseFloat(document.getElementById('gajiPokok').value) || 0;
+  if(gajiPokok <= 0){ alert('Isi gaji pokok dulu bro'); return; }
+
+  const upahPerJam = gajiPokok / 173;
+  const rows = document.querySelectorAll('#gajiHariList .gaji-hari-row');
+
+  let totalLembur = 0;
+  let perHari = [];
+
+  rows.forEach(row => {
+    const hari = row.querySelector('.gaji-hari-select').value;
+    const mulai = row.querySelector('.gaji-jam-mulai').value;
+    const selesai = row.querySelector('.gaji-jam-selesai').value;
+    if(!mulai || !selesai) return;
+
+    const { totalJam, istirahat, efektif } = hitungJamLembur(mulai, selesai);
+    const isWeekend = (hari === 'sabtu' || hari === 'minggu');
+    const lembur = isWeekend
+      ? hitungLemburWeekend(efektif, upahPerJam)
+      : hitungLemburWeekday(efektif, upahPerJam);
+
+    totalLembur += lembur.total;
+    perHari.push({
+      hari, mulai, selesai,
+      totalJam, istirahat, efektif,
+      isWeekend, detail: lembur.detail,
+      total: lembur.total
+    });
+  });
+
+  const jht = gajiPokok * 0.02;
+  const jp = gajiPokok * 0.01;
+  const totalPotongan = jht + jp;
+  const gajiKotor = gajiPokok + totalLembur;
+  const thp = gajiKotor - totalPotongan;
+
+  window._gajiResult = {
+    gajiPokok, upahPerJam, totalLembur, perHari,
+    jht, jp, totalPotongan, gajiKotor, thp
+  };
+
+  const hasil = document.getElementById('gajiHasil');
+  let html = `
+    <div class="gaji-result">
+      <div class="gaji-result-title">📊 Hasil Perhitungan</div>
+      <div class="gaji-result-row">
+        <span class="label">Gaji Pokok</span>
+        <span class="value">${formatRupiah(gajiPokok)}</span>
+      </div>
+      <div class="gaji-result-row">
+        <span class="label">Upah/jam (÷ 173)</span>
+        <span class="value">${formatRupiah(upahPerJam)}</span>
+      </div>
+    </div>
+  `;
+
+  html += `<div class="gaji-result"><div class="gaji-result-title">⏰ Detail Lembur</div>`;
+  perHari.forEach(h => {
+    const hariNama = h.hari.charAt(0).toUpperCase() + h.hari.slice(1);
+    const tipe = h.isWeekend ? 'Weekend (2×)' : 'Weekday (1.5× & 2×)';
+    html += `
+      <div class="gaji-hari-item">
+        <div class="gaji-hari-item-title">${hariNama} • ${h.mulai}-${h.selesai} • ${tipe}</div>
+        <div class="gaji-result-row"><span class="label">Durasi total</span><span class="value">${h.totalJam} jam</span></div>
+        <div class="gaji-result-row"><span class="label">Istirahat (per 5 jam)</span><span class="value">-${h.istirahat} jam</span></div>
+        <div class="gaji-result-row"><span class="label">Jam efektif</span><span class="value">${h.efektif} jam</span></div>
+        <div class="gaji-result-row big"><span class="label">Subtotal lembur</span><span class="value">${formatRupiah(h.total)}</span></div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  html += `
+    <div class="gaji-result">
+      <div class="gaji-result-title">💰 Total Perhitungan</div>
+      <div class="gaji-result-row"><span class="label">Total Lembur</span><span class="value">${formatRupiah(totalLembur)}</span></div>
+      <div class="gaji-result-row big"><span class="label">GAJI KOTOR</span><span class="value">${formatRupiah(gajiKotor)}</span></div>
+      <div class="gaji-result-row" style="margin-top:12px;"><span class="label">JHT (2%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jht)}</span></div>
+      <div class="gaji-result-row"><span class="label">JP (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jp)}</span></div>
+      <div class="gaji-result-row"><span class="label">Total Potongan</span><span class="value" style="color:#dc2626;">-${formatRupiah(totalPotongan)}</span></div>
+      <div class="gaji-result-row total"><span class="label">THP (Take Home Pay)</span><span class="value">${formatRupiah(thp)}</span></div>
+      <button class="gaji-download-btn" onclick="downloadGajiCSV()">📥 Download Detail (.csv)</button>
+    </div>
+  `;
+
+  hasil.innerHTML = html;
+  setTimeout(() => hasil.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function downloadGajiCSV(){
+  const r = window._gajiResult;
+  if(!r){ alert('Hitung dulu bro'); return; }
+
+  let csv = '';
+  const sep = ';';
+  const nl = '\n';
+
+  csv += `KALKULATOR GAJI & LEMBUR${nl}`;
+  csv += `Tanggal cetak${sep}${new Date().toLocaleString('id-ID')}${nl}${nl}`;
+
+  csv += `RINGKASAN GAJI${nl}`;
+  csv += `Komponen${sep}Jumlah (Rp)${nl}`;
+  csv += `Gaji Pokok${sep}${Math.round(r.gajiPokok)}${nl}`;
+  csv += `Upah/jam (÷173)${sep}${Math.round(r.upahPerJam)}${nl}`;
+  csv += `Total Lembur${sep}${Math.round(r.totalLembur)}${nl}`;
+  csv += `GAJI KOTOR${sep}${Math.round(r.gajiKotor)}${nl}`;
+  csv += `JHT 2%${sep}-${Math.round(r.jht)}${nl}`;
+  csv += `JP 1%${sep}-${Math.round(r.jp)}${nl}`;
+  csv += `THP (Take Home Pay)${sep}${Math.round(r.thp)}${nl}${nl}`;
+
+  csv += `DETAIL LEMBUR PER HARI${nl}`;
+  csv += `Hari${sep}Mulai${sep}Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
+  r.perHari.forEach(h => {
+    csv += `${h.hari}${sep}${h.mulai}${sep}${h.selesai}${sep}${h.isWeekend ? 'Weekend' : 'Weekday'}${sep}${h.totalJam}${sep}${h.istirahat}${sep}${h.efektif}${sep}${Math.round(h.total)}${nl}`;
+  });
+  csv += nl;
+
+  csv += `DETAIL PER JAM LEMBUR${nl}`;
+  r.perHari.forEach(h => {
+    csv += nl;
+    csv += `${h.hari.toUpperCase()} - ${h.mulai} sampai ${h.selesai}${nl}`;
+    csv += `Jam ke${sep}Rate${sep}Jumlah (Rp)${nl}`;
+    h.detail.forEach(d => { csv += `${d.jam}${sep}${d.rate}x${sep}${Math.round(d.jumlah)}${nl}`; });
+    csv += `Subtotal${sep}${sep}${Math.round(h.total)}${nl}`;
+  });
+
+  csv += `${nl}Catatan:${nl}`;
+  csv += `- Upah per jam = Gaji Pokok / 173 (PP 35/2021)${nl}`;
+  csv += `- Lembur weekday: jam ke-1 = 1.5x, jam ke-2 dst = 2x${nl}`;
+  csv += `- Lembur weekend: semua jam = 2x${nl}`;
+  csv += `- Setiap kelipatan 5 jam lembur dipotong 1 jam istirahat${nl}`;
+  csv += `- Potongan BPJS Ketenagakerjaan: JHT 2% + JP 1% = 3%${nl}`;
+
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gaji-lembur-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast('📥 File CSV berhasil didownload!');
+}
+
+/* ============================================================
    LOGIKA FORM LEMBUR
    ============================================================ */
 function openFormLembur() {
@@ -1101,8 +1445,6 @@ async function submitLembur(e) {
 /* ============================================================
    UPDATE CARDS & LOAD ALL
    ============================================================ */
-// Cards dihapus, jadi fungsi updateCards juga gak dipanggil lagi
-
 async function loadAll(){
   const now = new Date();
   try {
@@ -1126,11 +1468,11 @@ async function loadAll(){
     chkOnlyToday.checked = true;
     const selectTanggal = document.getElementById('filterTanggal');
     selectTanggal.value = '';
-    selectTanggal.style.display = 'none'; // Sembunyiin lagi
+    selectTanggal.style.display = 'none';
 
     // Render semua data yang diperlukan
     renderLokasi(rawLokasi); 
-    isiDropdownTanggal(rawLokasi); // Isi dropdown tanggal
+    isiDropdownTanggal(rawLokasi);
     renderKegiatan(rawKegiatan); 
     renderUpcoming(rawKegiatan); 
     renderWifi(rawWifi); 
