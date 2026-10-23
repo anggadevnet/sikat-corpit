@@ -225,6 +225,21 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-download-btn{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit;width:100%;margin-top:16px;transition:all .2s;box-shadow:0 4px 12px rgba(22,163,74,.3)}
 .gaji-download-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(22,163,74,.4)}
 @media(max-width:600px){body{padding:14px}.brand h1{font-size:22px}.card .value{font-size:24px}.clock{font-size:12px;padding:8px 12px}.modal-box{max-height:95vh}.modal-pdf-body iframe{min-height:60vh}.marquee{font-size:12px}.marquee-icon{width:26px;height:26px;font-size:14px;left:10px}.gaji-hari-row{grid-template-columns:1fr 1fr 1fr auto}.gaji-body{padding:18px 16px}}
+
+/* Style Fullscreen buat Chart */
+#chartContainer:fullscreen {
+  padding: 20px !important;
+  background: #fff !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+#chartContainer:fullscreen #canvasWrapper {
+  height: 100% !important;
+  width: 100% !important;
+}
 </style>
 </head>
 <body>
@@ -268,9 +283,14 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📍 Lokasi Standby Harian</h2>
-    <button onclick="downloadGambar('wrapLokasi', 'Jadwal_Harian')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
-      📸 Save Gambar
-    </button>
+    <div style="display: flex; gap: 8px;">
+      <button onclick="copyFormasi()" style="background:#16a34a; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(22,163,74,.3);">
+        📋 Copy Teks
+      </button>
+      <button onclick="downloadGambar('wrapLokasi', 'Jadwal_Harian')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
+        📸 Save Gambar
+      </button>
+    </div>
   </div>
   <div class="toolbar">
     <input type="text" id="searchInput" placeholder="🔍 Cari nama teknisi atau lokasi...">
@@ -319,8 +339,8 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <!-- Container Chart (Id chartContainer buat Fullscreen) -->
   <div id="chartContainer" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); transition: all .3s; position:relative;">
     <!-- Wrapper buat Scroll (khusus mobile) -->
-    <div style="overflow-x: auto; width: 100%;">
-      <div id="canvasWrapper" style="min-width: 100%; height: 350px;">
+    <div style="overflow-x: hidden; width: 100%;">
+      <div id="canvasWrapper" style="width: 100%; height: 350px;">
         <canvas id="chartLembur"></canvas>
       </div>
     </div>
@@ -349,7 +369,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
 
-<footer>SIKAT-TI • realtime • by acg</footer>
+<footer>SIKAT-TI • by acg</footer>
 
 <!-- MODAL PDF -->
 <div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
@@ -365,7 +385,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="modal-box modal-wide">
     <div class="modal-header"><h3>📝 Input Form Lembur</h3><button class="modal-close" onclick="closeModal('modalFormLembur')">✕</button></div>
     <div class="gaji-body" style="padding:24px 26px">
-      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, abis lembur → H+1 langsung input ya biar gak lupa!<br><i>(ipul juga bakal bawel sih :v)</i></p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, abis lembur → H+1 langsung input ya biar gak lupa!<br><i>(minta tiket ke mba HD)</i></p>
       <form id="formLembur" onsubmit="submitLembur(event)">
         <div class="form-group"><label class="form-label">1. Nama Kegiatan Lembur <span style="color:red">*</span></label><textarea class="form-textarea" id="inpKegiatan" required placeholder="Contoh: Standby Weekend / Implementasi LogRhythm"></textarea></div>
         <div class="form-group"><label class="form-label">2. Engineer Penanggung Jawab <span style="color:red">*</span></label><select class="form-select" id="inpEngineer" required><option value="">-- Pilih Engineer --</option><option value="MUH. GHOFARUDIN FALAH">MUH. GHOFARUDIN FALAH</option><option value="MUHAMMAD LAZUARDI WILDAN">MUHAMMAD LAZUARDI WILDAN</option><option value="ANDI KURNIAWAN">ANDI KURNIAWAN</option><option value="DARWIN PRASETYA EKA GUNAWAN">DARWIN PRASETYA EKA GUNAWAN</option><option value="ACHMAD FAUZI FERDIANSYAH">ACHMAD FAUZI FERDIANSYAH</option><option value="DEZA NUR QHODBI">DEZA NUR QHODBI</option><option value="YULIANDARI PRATIWI">YULIANDARI PRATIWI</option></select></div>
@@ -512,11 +532,10 @@ let toastTimer = null;
 function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg || '✅ Copied!'; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
 
 /* ============================================================
-   FUNGSI FULLSCREEN CHART
+   FUNGSI FULLSCREEN CHART (FIX MOBILE)
    ============================================================ */
 function toggleFullScreenChart() {
   const el = document.getElementById('chartContainer');
-  const wrapper = document.getElementById('canvasWrapper');
   
   if (!document.fullscreenElement) {
     if (el.requestFullscreen) {
@@ -526,9 +545,6 @@ function toggleFullScreenChart() {
     } else if (el.msRequestFullscreen) { /* IE11 */
       el.msRequestFullscreen();
     }
-    // Naikin tinggi canvas pas fullscreen biar proporsional
-    wrapper.style.height = '100vh';
-    el.style.padding = '40px'; // Kasih space dikit
   } else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
@@ -536,13 +552,13 @@ function toggleFullScreenChart() {
   }
 }
 
-// Deteksi kalau keluar dari fullscreen
+// Event listener pas masuk/keluar fullscreen
 document.addEventListener('fullscreenchange', () => {
-  const wrapper = document.getElementById('canvasWrapper');
-  const el = document.getElementById('chartContainer');
-  if (!document.fullscreenElement) {
-    wrapper.style.height = '350px'; // Balikin ke tinggi semula
-    el.style.padding = '20px';
+  if (chartInstance) {
+    // Kasih delay dikit biar browser nge-render ukuran layar baru
+    setTimeout(() => {
+      chartInstance.resize();
+    }, 200);
   }
 });
 
@@ -860,6 +876,208 @@ function isiDropdownTanggal(rows) {
   select.innerHTML = html;
 }
 
+/* ============================================================
+   FUNGSI COPY FORMASI (PENGURUTAN KHUSUS ARC)
+   ============================================================ */
+function copyFormasi() {
+  // Ambil data yang sedang tampil di tabel (sesuai search & filter tanggal)
+  const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); 
+  const onlyToday = document.getElementById('onlyToday').checked;
+  const filterTanggalVal = document.getElementById('filterTanggal').value;
+
+  const validRows = rawLokasi.filter(r => {
+    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
+    return nama !== '' && nama !== '-' && isNaN(nama);
+  });
+
+  let tanggalRow = {};
+  for(let i = 0; i < rawLokasi.length; i++) {
+    const r = rawLokasi[i];
+    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
+    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
+    if(isDateRow && keys.length > 0) {
+      keys.forEach(k => { tanggalRow[k.toLowerCase()] = r[k]; });
+      break;
+    }
+  }
+
+  let dataHarian = [];
+  const today = new Date();
+  
+  validRows.forEach(row => {
+    for(let key in row) {
+      const cleanKey = key.toString().trim().toLowerCase();
+      if(cleanKey === 'no' || cleanKey === 'nama') continue;
+      
+      const val = row[key] || '-';
+      const tglText = tanggalRow[cleanKey] || '';
+      
+      if(tglText && !isNaN(tglText)) {
+         let targetDate = new Date();
+         const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
+         if(dayMap[cleanKey] !== undefined) {
+            const diff = dayMap[cleanKey] - today.getDay();
+            targetDate.setDate(today.getDate() + diff); 
+         }
+         
+         const dateStr = `${HARI_ID[targetDate.getDay()]}, ${tglText.padStart(2,'0')}/${(targetDate.getMonth()+1).toString().padStart(2,'0')}/${targetDate.getFullYear()}`;
+         
+         dataHarian.push({
+           "hari/tanggal": dateStr,
+           "nama teknisi": row['nama'] || row[' nama'] || '-',
+           "lokasi standby": val
+         });
+      }
+    }
+  });
+
+  // Filter sama persis kayak yang di layar
+  let filtered = dataHarian.filter(r => {
+    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase();
+    const isBlacklisted = BLACKLIST_HARIAN.some(bl => nama.includes(bl));
+    return !isBlacklisted;
+  });
+
+  filtered = filtered.filter(r => {
+    const tglRaw = getFlex(r,['hari/tanggal','tanggal']);
+    if (onlyToday) return isToday(tglRaw); 
+    else if (filterTanggalVal) {
+      const dateObj = parseTanggalValid(tglRaw);
+      if(!dateObj) return false;
+      const tglFormatted = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getDate().toString().padStart(2,'0')}`;
+      return tglFormatted === filterTanggalVal;
+    }
+    return true;
+  });
+
+  filtered = filtered.filter(r => { 
+    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase(); 
+    const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase(); 
+    return !keyword || nama.includes(keyword) || lokasi.includes(keyword); 
+  });
+
+  if (!filtered.length) {
+    showToast('❌ Tidak ada data untuk dicopy');
+    return;
+  }
+
+  // --- FUNGSI POTONG NAMA (SESUAI REQUEST) ---
+  function potongNama(namaLengkap) {
+    let n = namaLengkap.trim().toLowerCase();
+    
+    if (n.includes('zaid alif')) return 'alif';
+    if (n.includes('rivaldy')) return 'rivaldy';
+    if (n.includes('rizalfa')) return 'rizalfa';
+    if (n.includes('naufal')) return 'naufal';
+    if (n.includes('syaiful')) return 'syaiful';
+    if (n.includes('difa')) return 'difa';
+    if (n.includes('angga')) return 'angga';
+    if (n.includes('qhean')) return 'qhean';
+    
+    let parts = n.split(' ');
+    if(parts[0] === 'm.' || parts[0] === 'm') {
+      return parts[1] || n;
+    }
+    return parts[0];
+  }
+
+  // --- PROSES PENGGABUNGAN TEKS & KATEGORISASI LOKASI ---
+  let headerTanggal = filtered.length > 0 ? getFlex(filtered[0], ['hari/tanggal']) : '';
+  
+  const grouped = {}; // Nyimpen data lokasi (termasuk Arc yang udah digabung)
+  const cutiArr = [];
+  const sakitArr = [];
+
+  filtered.forEach(r => {
+    let lok = getFlex(r, ['lokasi standby', 'lokasi']).trim().toUpperCase();
+    let nama = getFlex(r, ['nama teknisi', 'nama']);
+    let namaSingkat = potongNama(nama);
+    
+    // 1. CEK CUTI / SAKIT DULU
+    if (lok.includes('CT') || lok.includes('CUTI')) {
+      if(!cutiArr.includes(namaSingkat)) cutiArr.push(namaSingkat);
+    } else if (lok.includes('SAKIT')) {
+      if(!sakitArr.includes(namaSingkat)) sakitArr.push(namaSingkat);
+    } 
+    // 2. LOGIKA KHUSUS ARC & P1/P3
+    else {
+      let finalKey = lok;
+      
+      // Kalau ada kata "ARC"
+      if (lok.includes('ARC')) {
+        finalKey = lok; // Biarin apa adanya (nanti digabung)
+      } 
+      // Kalau cuma ada P1 / P3 doang
+      else if (lok === 'P1' || lok.includes('P1')) {
+        finalKey = 'ARC P1';
+      } else if (lok === 'P3' || lok.includes('P3')) {
+        finalKey = 'ARC P3';
+      }
+
+      if (!grouped[finalKey]) grouped[finalKey] = [];
+      if (!grouped[finalKey].includes(namaSingkat)) {
+        grouped[finalKey].push(namaSingkat);
+      }
+    }
+  });
+
+  // --- LOGIKA PENGURUTAN LOKASI ---
+  const urutanPrioritas = ['11', '12', 'TBS']; // Urutan utama paling atas
+  
+  // Tarik semua key, lalu urutkan
+  let semuaLokasi = Object.keys(grouped);
+  semuaLokasi.sort((a, b) => {
+    // 1. Cek apakah masuk urutan prioritas utama
+    let idxA = urutanPrioritas.indexOf(a);
+    let idxB = urutanPrioritas.indexOf(b);
+    
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB; // Dua-duanya prioritas, urutin sesuai array
+    if (idxA !== -1) return -1; // A prioritas, taruh di atas
+    if (idxB !== -1) return 1;  // B prioritas, taruh di atas
+    
+    // 2. Kalau sama-sama ARC, urutin abjad (ARC dulu, ARC P1, ARC LT4, dll)
+    let isArcA = a.includes('ARC');
+    let isArcB = b.includes('ARC');
+    if (isArcA && isArcB) return a.localeCompare(b);
+    if (isArcA) return 1; // ARC selalu di bawah (sebelum Cuti/Sakit)
+    if (isArcB) return -1;
+    
+    // 3. Sisanya (SW, WFH, LT, dll) urutin abjad
+    return a.localeCompare(b);
+  });
+
+  let teksKesimpulan = `Formasi ${headerTanggal}\n\n`;
+
+  // Cetak Lokasi & Nama (di-sort A-Z)
+  semuaLokasi.forEach(lok => {
+    let namaArr = grouped[lok];
+    namaArr.sort((a, b) => a.localeCompare(b)); // Sortir nama teknisi A-Z
+    teksKesimpulan += `${lok}: ${namaArr.join(', ')}\n`;
+  });
+
+  // --- CETAK CUTI / SAKIT PALING BAWAH ---
+  if (cutiArr.length > 0 || sakitArr.length > 0) {
+    teksKesimpulan += `\n`; // Spasi 1 baris
+    
+    if (sakitArr.length > 0) {
+      sakitArr.sort((a, b) => a.localeCompare(b));
+      teksKesimpulan += `Sakit: ${sakitArr.join(', ')}\n`;
+    }
+    if (cutiArr.length > 0) {
+      cutiArr.sort((a, b) => a.localeCompare(b));
+      teksKesimpulan += `Cuti: ${cutiArr.join(', ')}\n`;
+    }
+  }
+
+  // --- EKSEKUSI COPY ---
+  navigator.clipboard.writeText(teksKesimpulan.trim()).then(() => {
+    showToast('✅ Teks formasi berhasil dicopy!');
+  }).catch(err => {
+    console.error('Gagal copy: ', err);
+    showToast('❌ Gagal copy teks');
+  });
+}
+
 function renderKegiatan(rows){
   const wrap = document.getElementById('wrapKegiatan'); const current = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
   document.getElementById('cntKegiatan').textContent = current.length; if(!current.length){ wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>'; return; }
@@ -908,10 +1126,8 @@ async function renderGrafikLembur() {
     const valuesJam = sortedData.map(item => item[1].jam);
     const valuesJumlah = sortedData.map(item => item[1].jumlah);
 
-    // Lebarin canvas kalau datanya banyak di HP biar gak gepeng
-    const isMobile = window.innerWidth < 768;
     const wrapper = document.getElementById('canvasWrapper');
-    wrapper.style.minWidth = isMobile && labels.length > 5 ? (labels.length * 70) + 'px' : '100%';
+    wrapper.style.minWidth = '100%'; // Gak ada lebar paksa, ngikutin layar
 
     const ctx = document.getElementById('chartLembur').getContext('2d');
     if (chartInstance) chartInstance.destroy();
@@ -938,7 +1154,10 @@ async function renderGrafikLembur() {
       options: {
         indexAxis: 'y',
         responsive: true,
-        maintainAspectRatio: false, // <-- PENTING BIAR PROPORSIONAL DI HP
+        maintainAspectRatio: false, 
+        layout: {
+          padding: { left: 0, right: 10, top: 0, bottom: 0 } 
+        },
         plugins: {
           legend: { display: false },
           tooltip: { 
@@ -960,13 +1179,17 @@ async function renderGrafikLembur() {
         scales: {
           x: { 
             beginAtZero: true,
-            title: { display: true, text: 'Total Jam Lembur', color: '#0284c7', font: {weight: 'bold'} },
+            title: { display: false }, // Sumbu X dimatiin biar gak makan tempat di HP
             grid: { color: '#f1f5f9' }, 
-            ticks: { color: '#64748b', font: {family: 'Segoe UI'} } 
+            ticks: { color: '#64748b', font: {family: 'Segoe UI', size: 10} } 
           },
           y: { 
             grid: { display: false }, 
-            ticks: { font: {family: 'Segoe UI', weight: 'bold'}, color: '#475569' } 
+            ticks: { 
+              font: {family: 'Segoe UI', weight: 'bold', size: 11}, 
+              color: '#475569',
+              autoSkip: false // Biar nama teknisi gak ada yang kelewat
+            } 
           }
         }
       }
@@ -976,13 +1199,8 @@ async function renderGrafikLembur() {
 
 // Re-render chart saat layar di-resize (biar responsif)
 window.addEventListener('resize', () => {
-  if(chartInstance) {
-    const isMobile = window.innerWidth < 768;
-    const labelsCount = chartInstance.data.labels.length;
-    const wrapper = document.getElementById('canvasWrapper');
-    if(!document.fullscreenElement) {
-      wrapper.style.minWidth = isMobile && labelsCount > 5 ? (labelsCount * 70) + 'px' : '100%';
-    }
+  if(chartInstance && !document.fullscreenElement) {
+    chartInstance.resize();
   }
 });
 
