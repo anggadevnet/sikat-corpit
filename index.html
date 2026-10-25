@@ -80,6 +80,12 @@ tr:hover td{background:#f8fafc}
 .kegiatan-item.upcoming-item .k-date{color:#d97706}
 .kegiatan-item.upcoming-item .k-lokasi{color:#b45309}
 .kegiatan-item.upcoming-item .k-tech{color:#b45309}
+
+/* Tombol Save Per Item */
+.btn-save-item {position: absolute; top: 12px; right: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px 8px; font-size: 14px; cursor: pointer; opacity: 0; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+.kegiatan-item:hover .btn-save-item {opacity: 1;}
+.btn-save-item:hover {background: #f0f9ff; border-color: #0284c7; transform: scale(1.1);}
+
 .wifi-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .wifi-toolbar input,.wifi-toolbar select{background:#fff;border:1px solid #e2e8f0;color:#1e293b;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03)}
 .wifi-toolbar input:focus,.wifi-toolbar select:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
@@ -266,10 +272,10 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="marquee" id="marqueeText"></div>
 </div>
 
-<!-- JADWAL MINGGUAN -->
+<!-- JADWAL MINGGUAN (Dibaca dari sheet Bulanan) -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-    <h2 style="margin: 0;">📅 Jadwal Mingguan (Senin - Minggu)</h2>
+    <h2 style="margin: 0;">📅 Jadwal BULANAN</h2>
     <button onclick="downloadGambar('wrapJadwalMingguan', 'Jadwal_Mingguan')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
       📸 Save Gambar
     </button>
@@ -279,7 +285,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   </div>
 </section>
 
-<!-- LOKASI STANDBY HARIAN -->
+<!-- LOKASI STANDBY HARIAN (Dibaca dari sheet Bulanan) -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📍 Lokasi Standby Harian</h2>
@@ -314,9 +320,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📋 Current Event <span class="count" id="cntKegiatan">0</span></h2>
-    <button onclick="downloadGambar('wrapKegiatan', 'Current_Event')" style="background:#4f46e5; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(79,70,229,.3);">
-      📸 Save Gambar
-    </button>
+    <!-- Tombol Save Current Event DIHAPUS -->
   </div>
   <div id="wrapKegiatan"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
 </section>
@@ -385,7 +389,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="modal-box modal-wide">
     <div class="modal-header"><h3>📝 Input Form Lembur</h3><button class="modal-close" onclick="closeModal('modalFormLembur')">✕</button></div>
     <div class="gaji-body" style="padding:24px 26px">
-      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, abis lembur → H+1 langsung input ya biar gak lupa!<br><i>(minta tiket ke mba HD)</i></p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, abis lembur → H+1 langsung input ya biar gak lupa!<br><i>(ipul juga bakal bawel sih :v)</i></p>
       <form id="formLembur" onsubmit="submitLembur(event)">
         <div class="form-group"><label class="form-label">1. Nama Kegiatan Lembur <span style="color:red">*</span></label><textarea class="form-textarea" id="inpKegiatan" required placeholder="Contoh: Standby Weekend / Implementasi LogRhythm"></textarea></div>
         <div class="form-group"><label class="form-label">2. Engineer Penanggung Jawab <span style="color:red">*</span></label><select class="form-select" id="inpEngineer" required><option value="">-- Pilih Engineer --</option><option value="MUH. GHOFARUDIN FALAH">MUH. GHOFARUDIN FALAH</option><option value="MUHAMMAD LAZUARDI WILDAN">MUHAMMAD LAZUARDI WILDAN</option><option value="ANDI KURNIAWAN">ANDI KURNIAWAN</option><option value="DARWIN PRASETYA EKA GUNAWAN">DARWIN PRASETYA EKA GUNAWAN</option><option value="ACHMAD FAUZI FERDIANSYAH">ACHMAD FAUZI FERDIANSYAH</option><option value="DEZA NUR QHODBI">DEZA NUR QHODBI</option><option value="YULIANDARI PRATIWI">YULIANDARI PRATIWI</option></select></div>
@@ -452,15 +456,12 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 /* ============================================================
    KONFIGURASI & VARIABEL GLOBAL
    ============================================================ */
-// GANTI URL DI BAWAH INI DENGAN URL WEB APP APPS SCRIPT LO YANG BARU!
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
 const PENGUMUMAN = ['Jangan lupa isi absensi hari ini','Close tiket SDP kalau udah selesai','Input Lembur H+1 - biar gak lupa!'];
 let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawWifi = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
 
 const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
-
-// DAFTAR BLACKLIST UNTUK LOKASI HARIAN (Mereka bukan teknisi)
 const BLACKLIST_HARIAN = ['nadine', 'nafira', 'imola'];
 
 function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`; }
@@ -469,26 +470,26 @@ function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sh
    KAMUS WARNA JADWAL
    ============================================================ */
 const ATURAN_WARNA = [
-  { keywords: ['CT', 'CUTI'], bg: '#f3e8ff', text: '#7e22ce' },       // Cuti: Pink/Ungu
-  { keywords: ['TBS'], bg: '#cffafe', text: '#0e7490' },              // TBS: Cyan
-  { keywords: ['SW'], bg: '#bbf7d0', text: '#166534' },               // SW: Hijau Stabilo
-  { keywords: ['WFH'], bg: '#fef3c7', text: '#b45309' },              // WFH: Kuning
-  { keywords: ['P3'], bg: '#dcfce7', text: '#15803d' },               // P3: Hijau Daun
-  { keywords: ['ARC'], bg: '#86efac', text: '#14532d' },              // ARC: Hijau Stabilo
-  { keywords: ['11'], bg: '#ccfbf1', text: '#0f766e' },               // 11: Hijau Tosca
-  { keywords: ['12'], bg: '#bae6fd', text: '#0369a1' },               // 12: Biru Langit
-  { keywords: ['LT'], bg: '#dbeafe', text: '#1d4ed8' },               // LT: Biru Tua
+  { keywords: ['CT', 'CUTI'], bg: '#f3e8ff', text: '#7e22ce' },
+  { keywords: ['TBS'], bg: '#cffafe', text: '#0e7490' },
+  { keywords: ['SW'], bg: '#bbf7d0', text: '#166534' },
+  { keywords: ['WFH'], bg: '#fef3c7', text: '#b45309' },
+  { keywords: ['P3'], bg: '#dcfce7', text: '#15803d' },
+  { keywords: ['ARC'], bg: '#86efac', text: '#14532d' },
+  { keywords: ['11'], bg: '#ccfbf1', text: '#0f766e' },
+  { keywords: ['12'], bg: '#bae6fd', text: '#0369a1' },
+  { keywords: ['LT'], bg: '#dbeafe', text: '#1d4ed8' },
   { keywords: ['IZIN', 'PERMITTED'], bg: '#dbeafe', text: '#1d4ed8' },
   { keywords: ['SAKIT'], bg: '#f3e8ff', text: '#7e22ce' }
 ];
 
 function dapatkanWarna(val) {
   const v = (val || '').toUpperCase();
-  if(v === '-' || v === '') return { bg: '#f1f5f9', text: '#334155' }; // Default abu-abu
+  if(v === '-' || v === '') return { bg: '#f1f5f9', text: '#334155' };
   for(let aturan of ATURAN_WARNA) {
     if(aturan.keywords.some(k => v.includes(k))) return aturan;
   }
-  return { bg: '#f1f5f9', text: '#334155' }; // Fallback
+  return { bg: '#f1f5f9', text: '#334155' };
 }
 
 /* ============================================================
@@ -501,9 +502,21 @@ const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
 function parseTanggalID(str){ 
   if(!str || str === '-') return null; 
-  const s = str.toString().toLowerCase().trim(); 
+  let s = str.toString().toLowerCase().trim(); 
+  
+  // 1. Deteksi format rentang (contoh: "4/11/2026 - 6/11/2026")
+  if (s.includes('-') && s.match(/\d/)) {
+    const parts = s.split('-');
+    if(parts.length > 1 && parts[0].trim()) {
+       s = parts[0].trim(); // Ambil bagian kiri (tanggal mulai)
+    }
+  }
+
+  // 2. Parsing Format YYYY-MM-DD
   const matchYMD = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if(matchYMD){ return new Date(parseInt(matchYMD[1]), parseInt(matchYMD[2])-1, parseInt(matchYMD[3])); }
+  
+  // 3. Parsing Format DD/MM/YYYY atau DD-MM-YYYY
   const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/); 
   if(matchAngka){ 
     const tgl = parseInt(matchAngka[1]); const bln = parseInt(matchAngka[2]) - 1; 
@@ -511,6 +524,8 @@ function parseTanggalID(str){
     if(thn < 100) thn += 2000; 
     if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11) return new Date(thn, bln, tgl); 
   } 
+  
+  // 4. Parsing Format DD NamaBulan YYYY
   const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/); 
   if(matchNama){ 
     const tgl = parseInt(matchNama[1]); const bln = NAMA_BULAN_ID[matchNama[2]]; 
@@ -532,73 +547,48 @@ let toastTimer = null;
 function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg || '✅ Copied!'; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
 
 /* ============================================================
-   FUNGSI FULLSCREEN CHART (FIX MOBILE)
+   FUNGSI FULLSCREEN CHART
    ============================================================ */
 function toggleFullScreenChart() {
   const el = document.getElementById('chartContainer');
-  
   if (!document.fullscreenElement) {
-    if (el.requestFullscreen) {
-      el.requestFullscreen();
-    } else if (el.webkitRequestFullscreen) { /* Safari */
-      el.webkitRequestFullscreen();
-    } else if (el.msRequestFullscreen) { /* IE11 */
-      el.msRequestFullscreen();
-    }
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
   } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
+    if (document.exitFullscreen) document.exitFullscreen();
   }
 }
 
-// Event listener pas masuk/keluar fullscreen
 document.addEventListener('fullscreenchange', () => {
-  if (chartInstance) {
-    // Kasih delay dikit biar browser nge-render ukuran layar baru
-    setTimeout(() => {
-      chartInstance.resize();
-    }, 200);
-  }
+  if (chartInstance) setTimeout(() => chartInstance.resize(), 200);
 });
 
 /* ============================================================
-   FUNGSI DOWNLOAD GAMBAR (html2canvas)
+   FUNGSI DOWNLOAD GAMBAR (html2canvas) - ALL / TABLE
    ============================================================ */
 function downloadGambar(elementId, namaFile) {
   const element = document.getElementById(elementId);
   if (!element) return;
-  
   showToast('📸 Sedang memproses gambar...');
-
   const originalWidth = element.style.width;
   const originalMaxWidth = element.style.maxWidth;
   const originalOverflow = element.style.overflow;
-  
   element.style.width = 'max-content'; 
   element.style.maxWidth = 'none';
   element.style.overflow = 'visible'; 
-
   const originalBg = element.style.background;
   if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi') {
     element.style.background = '#fff'; 
     element.style.padding = '16px';
     element.style.borderRadius = '12px';
   }
-
   setTimeout(() => {
     const targetWidth = element.scrollWidth;
     const targetHeight = element.scrollHeight;
-
     html2canvas(element, {
-      scale: 2, 
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      width: targetWidth,
-      height: targetHeight,
-      windowWidth: targetWidth,
-      scrollX: 0,
-      scrollY: 0
+      scale: 2, useCORS: true, backgroundColor: '#ffffff',
+      width: targetWidth, height: targetHeight, windowWidth: targetWidth, scrollX: 0, scrollY: 0
     }).then(canvas => {
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
@@ -608,14 +598,12 @@ function downloadGambar(elementId, namaFile) {
         element.style.padding = '0';
         element.style.borderRadius = '0';
       }
-
       const image = canvas.toDataURL("image/png");
       const link = document.createElement('a');
       const tanggal = new Date().toISOString().slice(0,10);
       link.download = `${namaFile}_${tanggal}.png`;
       link.href = image;
       link.click();
-      
       showToast('✅ Gambar berhasil didownload!');
     }).catch(err => {
       console.error(err);
@@ -627,18 +615,48 @@ function downloadGambar(elementId, namaFile) {
   }, 300);
 }
 
+/* FUNGSI DOWNLOAD PER ITEM / EVENT */
+function downloadItem(elementId, namaFile) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  showToast('📸 Memproses gambar...');
+  
+  // Sembunyikan tombol save sementara biar ga ke-screenshot
+  const btn = element.querySelector('.btn-save-item');
+  if(btn) btn.style.display = 'none';
+
+  html2canvas(element, {
+    scale: 3, // Resolusi tinggi
+    useCORS: true, 
+    backgroundColor: '#ffffff',
+  }).then(canvas => {
+    if(btn) btn.style.display = ''; // Munculin lagi tombolnya
+    const image = canvas.toDataURL("image/png");
+    const link = document.createElement('a');
+    // Bersihin nama file dari karakter aneh
+    const safeName = namaFile.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
+    link.download = `${safeName}.png`;
+    link.href = image;
+    link.click();
+    showToast('✅ Gambar berhasil didownload!');
+  }).catch(err => {
+    console.error(err);
+    if(btn) btn.style.display = '';
+    showToast('❌ Gagal memproses gambar');
+  });
+}
+
 /* ============================================================
    FUNGSI FILTER TANGGAL
    ============================================================ */
 function toggleFilterTanggal() {
   const onlyToday = document.getElementById('onlyToday').checked;
   const filterTanggal = document.getElementById('filterTanggal');
-  
   if (onlyToday) {
-    filterTanggal.style.display = 'none'; // Sembunyiin dropdown
-    filterTanggal.value = ''; // Reset
+    filterTanggal.style.display = 'none';
+    filterTanggal.value = '';
   } else {
-    filterTanggal.style.display = 'block'; // Munculin dropdown
+    filterTanggal.style.display = 'block';
   }
 }
 
@@ -647,71 +665,90 @@ function toggleFilterTanggal() {
    ============================================================ */
 function renderMarquee(){ const txt = document.getElementById('marqueeText'); const wrap = document.getElementById('marqueeWrap'); if(!PENGUMUMAN.length){ wrap.style.display = 'none'; return; } const sep = ' <span class="sep">•</span> '; const combined = PENGUMUMAN.join(sep); txt.innerHTML = combined + sep + combined + sep; const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8)); txt.style.animationDuration = duration + 's'; wrap.style.display = 'block'; }
 
-function renderJadwalMingguan(rows) {
+// === PARSING DATA SHEET BULANAN (Menerima object {bulan, tahun, rows}) ===
+function parseDataBulanan(data) {
+  const rows = (data && data.rows) ? data.rows : (Array.isArray(data) ? data : []);
+  const bulan = (data && data.bulan) ? data.bulan : (new Date().getMonth() + 1);
+  const tahun = (data && data.tahun) ? data.tahun : new Date().getFullYear();
+
+  if (!rows || rows.length < 4) return [];
+
+  let headerHari = rows[1] || [];
+  let rowTanggal = rows[2] || [];
+
+  let dataMentah = [];
+
+  for(let i = 3; i < rows.length; i++) {
+    const row = rows[i];
+    let namaTeknisi = (row[1] || '').trim();
+    
+    if (!namaTeknisi || namaTeknisi === '-') continue;
+
+    for(let j = 2; j < row.length; j++) {
+      let tglText = rowTanggal[j] ? rowTanggal[j].toString().trim() : '';
+      
+      if (tglText && !isNaN(tglText)) {
+        let val = row[j] || '-';
+        let namaHari = headerHari[j] ? headerHari[j].toString().trim() : '';
+
+        dataMentah.push({
+          nama: namaTeknisi,
+          tanggal: tglText,
+          hari: namaHari,
+          lokasi: val,
+          bulan: bulan,
+          tahun: tahun
+        });
+      }
+    }
+  }
+  return dataMentah;
+}
+
+function renderJadwalMingguan(data) {
+  const rows = (data && data.rows) ? data.rows : (Array.isArray(data) ? data : []);
   const wrap = document.getElementById('wrapJadwalMingguan');
-  if(!rows || rows.length === 0) { wrap.innerHTML = '<div class="empty">Belum ada jadwal mingguan.</div>'; return; }
   
-  // 1. Filter data: buang baris kosong / nama kosong
-  const validRows = rows.filter(r => {
-    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
-    return nama !== '' && nama !== '-' && isNaN(nama);
+  if(!rows || rows.length < 4) { wrap.innerHTML = '<div class="empty">Data jadwal kosong.</div>'; return; }
+  
+  let headerRow = rows[1] || [];
+  let rowTanggal = rows[2] || [];
+  
+  const validRows = rows.slice(3).filter(r => {
+    const nama = (r[1] || '').toString().trim();
+    return nama !== '' && nama !== '-';
   });
 
   if(validRows.length === 0) { wrap.innerHTML = '<div class="empty">Data jadwal kosong.</div>'; return; }
 
-  // 2. Ambil tanggal yang bener dengan trik ngecek baris angka
-  let tanggalAsli = {};
-  for(let i = 0; i < rows.length; i++) {
-    const r = rows[i];
-    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
-    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
-    if(isDateRow && keys.length > 0) {
-      keys.forEach(k => { tanggalAsli[k.toLowerCase()] = r[k]; });
-      break;
-    }
-  }
-
-  // 3. BIKIN TABLE HEADER
   let html = '<div style="overflow-x: auto; width: 100%; max-width: 100%;">';
   html += '<table style="width:100%; border-collapse:collapse; text-align:left; min-width:1000px; font-size:13px;">';
   html += '<thead><tr style="background:#f8fafc; border-bottom:2px solid #cbd5e1;">';
   
-  // Kolom Sticky
   html += `<th style="padding:12px; font-weight:700; color:#475569; position:sticky; left:0; background:#f8fafc; z-index:5; border-right:2px solid #cbd5e1; width:50px; text-align:center;">No</th>`;
   html += `<th style="padding:12px; font-weight:700; color:#475569; position:sticky; left:50px; background:#f8fafc; z-index:5; border-right:2px solid #cbd5e1; min-width:180px;">Nama Teknisi</th>`;
   
-  // Kolom Hari & Tanggal
-  for(let key in validRows[0]) {
-    const cleanKey = key.toString().trim().toLowerCase();
-    if(cleanKey === 'no' || cleanKey === 'nama') continue;
-    
-    let tglText = tanggalAsli[cleanKey] || '-';
+  for(let j = 2; j < headerRow.length; j++) {
+    let hari = headerRow[j] || '-';
+    let tgl = rowTanggal[j] || '-';
     
     html += `<th style="padding:10px; font-weight:700; color:#475569; border-right:1px solid #cbd5e1; text-align:center; text-transform:uppercase; line-height:1.4;">
-      ${cleanKey}<br><span style="font-size:12px; color:#b45309;">${tglText}</span>
+      ${hari}<br><span style="font-size:12px; color:#b45309;">${tgl}</span>
     </th>`;
   }
   html += '</tr></thead><tbody>';
 
-  // 4. ISI DATA
   validRows.forEach((row, idx) => {
     html += `<tr style="border-bottom:1px solid #e2e8f0; ${idx % 2 === 0 ? 'background:#fff;' : 'background:#f8fafc;'}">`;
-    
-    const noVal = row['no'] || (idx + 1);
-    const namaVal = row['nama'] || row[' nama'] || '-'; 
+    const noVal = idx + 1;
+    const namaVal = row[1] || '-'; 
     const bgColor = idx % 2 === 0 ? '#fff' : '#f8fafc';
     
     html += `<td style="padding:12px; border-right:1px solid #e2e8f0; position:sticky; left:0; background:${bgColor}; z-index:4; text-align:center; font-weight:600;">${noVal}</td>`;
     html += `<td style="padding:12px; border-right:2px solid #cbd5e1; position:sticky; left:50px; background:${bgColor}; z-index:4; font-weight:700; color:#0f172a; white-space:nowrap;">${namaVal}</td>`;
     
-    // Kolom Jadwal
-    for(let key in row) {
-      const cleanKey = key.toString().trim().toLowerCase();
-      if(cleanKey === 'no' || cleanKey === 'nama') continue;
-      
-      const val = row[key] || '-';
-      
-      // Panggil fungsi kamus warna
+    for(let j = 2; j < row.length; j++) {
+      const val = row[j] || '-';
       const warna = dapatkanWarna(val);
 
       html += `<td style="padding:12px; border-right:1px solid #e2e8f0; text-align:center;">
@@ -725,144 +762,67 @@ function renderJadwalMingguan(rows) {
   wrap.innerHTML = html;
 }
 
-function renderLokasi(rows){
+function renderLokasi(data){
   const wrap = document.getElementById('wrapLokasi'); 
   const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); 
   const onlyToday = document.getElementById('onlyToday').checked;
   const filterTanggalVal = document.getElementById('filterTanggal').value;
   
-  // KARENA DATA YANG MASUK ADALAH DATA MENTAH MINGGUAN, KITA HARUS FORMAT ULANG JADI HARIAN
-  const validRows = rows.filter(r => {
-    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
-    return nama !== '' && nama !== '-' && isNaN(nama);
-  });
+  const dataHarian = parseDataBulanan(data);
 
-  // Ekstrak baris tanggal
-  let tanggalRow = {};
-  for(let i = 0; i < rows.length; i++) {
-    const r = rows[i];
-    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
-    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
-    if(isDateRow && keys.length > 0) {
-      keys.forEach(k => { tanggalRow[k.toLowerCase()] = r[k]; });
-      break;
-    }
-  }
-
-  // Bikin list harian
-  let dataHarian = [];
-  const today = new Date();
-  const dayIndex = today.getDay();
-  
-  validRows.forEach(row => {
-    // Loop tiap hari (senin-minggu)
-    for(let key in row) {
-      const cleanKey = key.toString().trim().toLowerCase();
-      if(cleanKey === 'no' || cleanKey === 'nama') continue;
-      
-      const val = row[key] || '-';
-      const tglText = tanggalRow[cleanKey] || '';
-      
-      if(tglText && !isNaN(tglText)) {
-         let targetDate = new Date();
-         const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
-         if(dayMap[cleanKey] !== undefined) {
-            const diff = dayMap[cleanKey] - today.getDay();
-            targetDate.setDate(today.getDate() + diff); // Geser ke hari yang dimaksud
-         }
-         
-         const dateStr = `${HARI_ID[targetDate.getDay()]}, ${tglText.padStart(2,'0')}/${(targetDate.getMonth()+1).toString().padStart(2,'0')}/${targetDate.getFullYear()}`;
-         
-         const dateObj = parseTanggalValid(dateStr);
-         
-         dataHarian.push({
-           "hari/tanggal": dateStr,
-           "nama teknisi": row['nama'] || row[' nama'] || '-',
-           "lokasi standby": val
-         });
-      }
-    }
-  });
-
-  // 1. FILTER BLACKLIST
   let filtered = dataHarian.filter(r => {
-    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase();
-    const isBlacklisted = BLACKLIST_HARIAN.some(bl => nama.includes(bl));
-    return !isBlacklisted;
+    const nama = r.nama.toLowerCase();
+    return !BLACKLIST_HARIAN.some(bl => nama.includes(bl));
   });
 
-  // 2. FILTER TANGGAL
   filtered = filtered.filter(r => {
-    const tglRaw = getFlex(r,['hari/tanggal','tanggal']);
-    if (onlyToday) {
-      return isToday(tglRaw); // Default: Cuma hari ini
-    } else if (filterTanggalVal) {
-      const dateObj = parseTanggalValid(tglRaw);
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+
+    if (onlyToday) return isToday(dateStr); 
+    else if (filterTanggalVal) {
       if(!dateObj) return false;
       const tglFormatted = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getDate().toString().padStart(2,'0')}`;
       return tglFormatted === filterTanggalVal;
     }
-    return true; // Kalau neither, tampilin semua
+    return true;
   });
 
-  // 3. FILTER PENCARIAN
   filtered = filtered.filter(r => { 
-    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase(); 
-    const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase(); 
-    return !keyword || nama.includes(keyword) || lokasi.includes(keyword); 
+    return !keyword || r.nama.toLowerCase().includes(keyword) || r.lokasi.toLowerCase().includes(keyword); 
   });
   
   if(!filtered.length){ wrap.innerHTML = '<div class="empty">Tidak ada data yang cocok</div>'; return; }
   
   let html = '<div class="table-wrap"><table><thead><tr><th>Hari/Tanggal</th><th>Nama Teknisi</th><th>Lokasi Standby</th></tr></thead><tbody>';
   filtered.forEach(r=>{ 
-    const raw = getFlex(r,['lokasi standby','lokasi']); 
-    const warna = dapatkanWarna(raw); // Ambil warna dari kamus
-    const dateRaw = getFlex(r,['hari/tanggal','tanggal']); 
-    const dateObj = parseTanggalValid(dateRaw); 
-    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; 
-    html += `<tr><td>${dateDisplay}</td><td><strong>${getFlex(r,['nama teknisi','nama','teknisi'])}</strong></td><td><span style="display:inline-block; padding:4px 12px; border-radius:8px; font-weight:700; font-size:12px; background:${warna.bg}; color:${warna.text}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${raw}</span></td></tr>`; 
+    const raw = r.lokasi; 
+    const warna = dapatkanWarna(raw); 
+    
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+    const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateStr;
+
+    html += `<tr><td>${dateDisplay}</td><td><strong>${r.nama}</strong></td><td><span style="display:inline-block; padding:4px 12px; border-radius:8px; font-weight:700; font-size:12px; background:${warna.bg}; color:${warna.text}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${raw}</span></td></tr>`; 
   });
   wrap.innerHTML = html + '</tbody></table></div>';
 }
 
-// Fungsi buat ngisi dropdown tanggal (dipanggil pas load data)
-function isiDropdownTanggal(rows) {
+function isiDropdownTanggal(data) {
   const select = document.getElementById('filterTanggal');
-  
-  const validRows = rows.filter(r => {
-    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
-    return nama !== '' && nama !== '-' && isNaN(nama);
-  });
-
-  let tanggalRow = {};
-  for(let i = 0; i < rows.length; i++) {
-    const r = rows[i];
-    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
-    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
-    if(isDateRow && keys.length > 0) {
-      keys.forEach(k => { tanggalRow[k.toLowerCase()] = r[k]; });
-      break;
-    }
-  }
-
+  const dataHarian = parseDataBulanan(data);
   const uniqueDates = new Set();
-  const today = new Date();
 
-  for(let key in tanggalRow) {
-    const tglText = tanggalRow[key];
-    const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
-    if(dayMap[key] !== undefined && tglText) {
-       let targetDate = new Date();
-       const diff = dayMap[key] - today.getDay();
-       targetDate.setDate(today.getDate() + diff);
-       
-       const yyyy = targetDate.getFullYear();
-       const mm = (targetDate.getMonth()+1).toString().padStart(2,'0');
-       const dd = tglText.padStart(2,'0');
-       uniqueDates.add(`${yyyy}-${mm}-${dd}`);
+  dataHarian.forEach(r => {
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+    if(dateObj) {
+      const yyyy = dateObj.getFullYear();
+      const mm = (dateObj.getMonth()+1).toString().padStart(2,'0');
+      const dd = dateObj.getDate().toString().padStart(2,'0');
+      uniqueDates.add(`${yyyy}-${mm}-${dd}`);
     }
-  }
+  });
 
   const sortedDates = Array.from(uniqueDates).sort();
   
@@ -877,72 +837,26 @@ function isiDropdownTanggal(rows) {
 }
 
 /* ============================================================
-   FUNGSI COPY FORMASI (PENGURUTAN KHUSUS ARC)
+   FUNGSI COPY FORMASI
    ============================================================ */
 function copyFormasi() {
-  // Ambil data yang sedang tampil di tabel (sesuai search & filter tanggal)
   const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); 
   const onlyToday = document.getElementById('onlyToday').checked;
   const filterTanggalVal = document.getElementById('filterTanggal').value;
 
-  const validRows = rawLokasi.filter(r => {
-    const nama = (r['nama'] || r[' nama'] || '').toString().trim();
-    return nama !== '' && nama !== '-' && isNaN(nama);
-  });
+  const dataHarian = parseDataBulanan(rawLokasi);
 
-  let tanggalRow = {};
-  for(let i = 0; i < rawLokasi.length; i++) {
-    const r = rawLokasi[i];
-    const keys = Object.keys(r).filter(k => k !== 'no' && k.toLowerCase() !== 'nama');
-    const isDateRow = keys.every(k => !isNaN(r[k]) && r[k].trim() !== '');
-    if(isDateRow && keys.length > 0) {
-      keys.forEach(k => { tanggalRow[k.toLowerCase()] = r[k]; });
-      break;
-    }
-  }
-
-  let dataHarian = [];
-  const today = new Date();
-  
-  validRows.forEach(row => {
-    for(let key in row) {
-      const cleanKey = key.toString().trim().toLowerCase();
-      if(cleanKey === 'no' || cleanKey === 'nama') continue;
-      
-      const val = row[key] || '-';
-      const tglText = tanggalRow[cleanKey] || '';
-      
-      if(tglText && !isNaN(tglText)) {
-         let targetDate = new Date();
-         const dayMap = {'senin':1, 'selasa':2, 'rabu':3, 'kamis':4, 'jumat':5, 'sabtu':6, 'minggu':0};
-         if(dayMap[cleanKey] !== undefined) {
-            const diff = dayMap[cleanKey] - today.getDay();
-            targetDate.setDate(today.getDate() + diff); 
-         }
-         
-         const dateStr = `${HARI_ID[targetDate.getDay()]}, ${tglText.padStart(2,'0')}/${(targetDate.getMonth()+1).toString().padStart(2,'0')}/${targetDate.getFullYear()}`;
-         
-         dataHarian.push({
-           "hari/tanggal": dateStr,
-           "nama teknisi": row['nama'] || row[' nama'] || '-',
-           "lokasi standby": val
-         });
-      }
-    }
-  });
-
-  // Filter sama persis kayak yang di layar
   let filtered = dataHarian.filter(r => {
-    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase();
-    const isBlacklisted = BLACKLIST_HARIAN.some(bl => nama.includes(bl));
-    return !isBlacklisted;
+    const nama = r.nama.toLowerCase();
+    return !BLACKLIST_HARIAN.some(bl => nama.includes(bl));
   });
 
   filtered = filtered.filter(r => {
-    const tglRaw = getFlex(r,['hari/tanggal','tanggal']);
-    if (onlyToday) return isToday(tglRaw); 
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+
+    if (onlyToday) return isToday(dateStr); 
     else if (filterTanggalVal) {
-      const dateObj = parseTanggalValid(tglRaw);
       if(!dateObj) return false;
       const tglFormatted = `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getDate().toString().padStart(2,'0')}`;
       return tglFormatted === filterTanggalVal;
@@ -951,9 +865,7 @@ function copyFormasi() {
   });
 
   filtered = filtered.filter(r => { 
-    const nama = getFlex(r,['nama teknisi','nama','teknisi']).toLowerCase(); 
-    const lokasi = getFlex(r,['lokasi standby','lokasi']).toLowerCase(); 
-    return !keyword || nama.includes(keyword) || lokasi.includes(keyword); 
+    return !keyword || r.nama.toLowerCase().includes(keyword) || r.lokasi.toLowerCase().includes(keyword); 
   });
 
   if (!filtered.length) {
@@ -961,10 +873,8 @@ function copyFormasi() {
     return;
   }
 
-  // --- FUNGSI POTONG NAMA (SESUAI REQUEST) ---
   function potongNama(namaLengkap) {
     let n = namaLengkap.trim().toLowerCase();
-    
     if (n.includes('zaid alif')) return 'alif';
     if (n.includes('rivaldy')) return 'rivaldy';
     if (n.includes('rizalfa')) return 'rizalfa';
@@ -973,103 +883,71 @@ function copyFormasi() {
     if (n.includes('difa')) return 'difa';
     if (n.includes('angga')) return 'angga';
     if (n.includes('qhean')) return 'qhean';
-    
     let parts = n.split(' ');
-    if(parts[0] === 'm.' || parts[0] === 'm') {
-      return parts[1] || n;
-    }
+    if(parts[0] === 'm.' || parts[0] === 'm') return parts[1] || n;
     return parts[0];
   }
 
-  // --- PROSES PENGGABUNGAN TEKS & KATEGORISASI LOKASI ---
-  let headerTanggal = filtered.length > 0 ? getFlex(filtered[0], ['hari/tanggal']) : '';
+  let headerTanggal = '';
+  if (filtered.length > 0) {
+    const r = filtered[0];
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+    headerTanggal = dateObj ? formatTanggalLengkap(dateObj) : dateStr;
+  }
   
-  const grouped = {}; // Nyimpen data lokasi (termasuk Arc yang udah digabung)
+  const grouped = {}; 
   const cutiArr = [];
   const sakitArr = [];
 
   filtered.forEach(r => {
-    let lok = getFlex(r, ['lokasi standby', 'lokasi']).trim().toUpperCase();
-    let nama = getFlex(r, ['nama teknisi', 'nama']);
-    let namaSingkat = potongNama(nama);
+    let lok = r.lokasi.trim().toUpperCase();
+    let namaSingkat = potongNama(r.nama);
     
-    // 1. CEK CUTI / SAKIT DULU
     if (lok.includes('CT') || lok.includes('CUTI')) {
       if(!cutiArr.includes(namaSingkat)) cutiArr.push(namaSingkat);
     } else if (lok.includes('SAKIT')) {
       if(!sakitArr.includes(namaSingkat)) sakitArr.push(namaSingkat);
-    } 
-    // 2. LOGIKA KHUSUS ARC & P1/P3
-    else {
+    } else {
       let finalKey = lok;
-      
-      // Kalau ada kata "ARC"
-      if (lok.includes('ARC')) {
-        finalKey = lok; // Biarin apa adanya (nanti digabung)
-      } 
-      // Kalau cuma ada P1 / P3 doang
-      else if (lok === 'P1' || lok.includes('P1')) {
-        finalKey = 'ARC P1';
-      } else if (lok === 'P3' || lok.includes('P3')) {
-        finalKey = 'ARC P3';
-      }
+      if (lok.includes('ARC')) finalKey = lok; 
+      else if (lok === 'P1' || lok.includes('P1')) finalKey = 'ARC P1';
+      else if (lok === 'P3' || lok.includes('P3')) finalKey = 'ARC P3';
 
       if (!grouped[finalKey]) grouped[finalKey] = [];
-      if (!grouped[finalKey].includes(namaSingkat)) {
-        grouped[finalKey].push(namaSingkat);
-      }
+      if (!grouped[finalKey].includes(namaSingkat)) grouped[finalKey].push(namaSingkat);
     }
   });
 
-  // --- LOGIKA PENGURUTAN LOKASI ---
-  const urutanPrioritas = ['11', '12', 'TBS']; // Urutan utama paling atas
-  
-  // Tarik semua key, lalu urutkan
+  const urutanPrioritas = ['11', '12', 'TBS']; 
   let semuaLokasi = Object.keys(grouped);
   semuaLokasi.sort((a, b) => {
-    // 1. Cek apakah masuk urutan prioritas utama
     let idxA = urutanPrioritas.indexOf(a);
     let idxB = urutanPrioritas.indexOf(b);
-    
-    if (idxA !== -1 && idxB !== -1) return idxA - idxB; // Dua-duanya prioritas, urutin sesuai array
-    if (idxA !== -1) return -1; // A prioritas, taruh di atas
-    if (idxB !== -1) return 1;  // B prioritas, taruh di atas
-    
-    // 2. Kalau sama-sama ARC, urutin abjad (ARC dulu, ARC P1, ARC LT4, dll)
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB; 
+    if (idxA !== -1) return -1; 
+    if (idxB !== -1) return 1;  
     let isArcA = a.includes('ARC');
     let isArcB = b.includes('ARC');
     if (isArcA && isArcB) return a.localeCompare(b);
-    if (isArcA) return 1; // ARC selalu di bawah (sebelum Cuti/Sakit)
+    if (isArcA) return 1; 
     if (isArcB) return -1;
-    
-    // 3. Sisanya (SW, WFH, LT, dll) urutin abjad
     return a.localeCompare(b);
   });
 
   let teksKesimpulan = `Formasi ${headerTanggal}\n\n`;
-
-  // Cetak Lokasi & Nama (di-sort A-Z)
   semuaLokasi.forEach(lok => {
     let namaArr = grouped[lok];
-    namaArr.sort((a, b) => a.localeCompare(b)); // Sortir nama teknisi A-Z
+    namaArr.sort((a, b) => a.localeCompare(b)); 
     teksKesimpulan += `${lok}: ${namaArr.join(', ')}\n`;
   });
 
-  // --- CETAK CUTI / SAKIT PALING BAWAH ---
   if (cutiArr.length > 0 || sakitArr.length > 0) {
-    teksKesimpulan += `\n`; // Spasi 1 baris
-    
-    if (sakitArr.length > 0) {
-      sakitArr.sort((a, b) => a.localeCompare(b));
-      teksKesimpulan += `Sakit: ${sakitArr.join(', ')}\n`;
-    }
-    if (cutiArr.length > 0) {
-      cutiArr.sort((a, b) => a.localeCompare(b));
-      teksKesimpulan += `Cuti: ${cutiArr.join(', ')}\n`;
-    }
+    teksKesimpulan += `\n`; 
+    if (sakitArr.length > 0) { sakitArr.sort((a, b) => a.localeCompare(b)); teksKesimpulan += `Sakit: ${sakitArr.join(', ')}\n`; }
+    if (cutiArr.length > 0) { cutiArr.sort((a, b) => a.localeCompare(b)); teksKesimpulan += `Cuti: ${cutiArr.join(', ')}\n`; }
   }
 
-  // --- EKSEKUSI COPY ---
   navigator.clipboard.writeText(teksKesimpulan.trim()).then(() => {
     showToast('✅ Teks formasi berhasil dicopy!');
   }).catch(err => {
@@ -1079,19 +957,63 @@ function copyFormasi() {
 }
 
 function renderKegiatan(rows){
-  const wrap = document.getElementById('wrapKegiatan'); const current = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
-  document.getElementById('cntKegiatan').textContent = current.length; if(!current.length){ wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>'; return; }
+  const wrap = document.getElementById('wrapKegiatan'); 
+  const current = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
+  document.getElementById('cntKegiatan').textContent = current.length; 
+  if(!current.length){ wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>'; return; }
+  
   let html = '<div class="kegiatan-list">';
-  current.forEach(r=>{ const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); const dateObj = parseTanggalValid(dateRaw); const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); const lokasi = getFlex(r,['lokasi']); const tech = getFlex(r,['teknisi','nama teknisi','nama']); html += `<div class="kegiatan-item"><div class="k-date">📅 ${dateDisplay}</div><div class="k-name">${name}</div>${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}<div class="k-tech">${tech}</div></div>`; });
+  current.forEach((r, idx)=>{ 
+    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); 
+    const dateObj = parseTanggalValid(dateRaw); 
+    // Cek jika format rentang (contoh 4/11/2026 - 6/11/2026)
+    const isRentang = dateRaw.includes('-') && dateRaw.match(/\d/);
+    const dateDisplay = isRentang ? dateRaw : (dateObj ? formatTanggalLengkap(dateObj) : dateRaw); 
+    
+    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); 
+    const lokasi = getFlex(r,['lokasi']); 
+    const tech = getFlex(r,['teknisi','nama teknisi','nama']); 
+    
+    html += `
+      <div class="kegiatan-item" style="position:relative;" id="kegiatan-item-${idx}">
+        <button class="btn-save-item" onclick="downloadItem('kegiatan-item-${idx}', 'Event_${dateDisplay.replace(/[\/\s,]/g, '_')}_${name}')" title="Save Gambar">📸</button>
+        <div class="k-date">📅 ${dateDisplay}</div>
+        <div class="k-name">${name}</div>
+        ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
+        <div class="k-tech">${tech}</div>
+      </div>`; 
+  });
   wrap.innerHTML = html + '</div>';
 }
 
 function renderUpcoming(rows){
-  const wrap = document.getElementById('wrapUpcoming'); const upcoming = rows.filter(r => isFuture(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
-  document.getElementById('cntUpcoming').textContent = upcoming.length; if(!upcoming.length){ wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>'; return; }
+  const wrap = document.getElementById('wrapUpcoming'); 
+  const upcoming = rows.filter(r => isFuture(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
+  document.getElementById('cntUpcoming').textContent = upcoming.length; 
+  if(!upcoming.length){ wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>'; return; }
+  
   upcoming.sort((a, b) => { const da = parseTanggalValid(getFlex(a,['hari/tanggal','tanggal'])); const db = parseTanggalValid(getFlex(b,['hari/tanggal','tanggal'])); if(!da) return 1; if(!db) return -1; return da - db; });
+  
   let html = '<div class="kegiatan-list">';
-  upcoming.forEach(r=>{ const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); const dateObj = parseTanggalValid(dateRaw); const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateRaw; const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); const lokasi = getFlex(r,['lokasi']); const tech = getFlex(r,['teknisi','nama teknisi','nama']); html += `<div class="kegiatan-item upcoming-item"><div class="k-date">📅 ${dateDisplay}</div><div class="k-name">${name}</div>${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}<div class="k-tech">${tech}</div></div>`; });
+  upcoming.forEach((r, idx)=>{ 
+    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); 
+    const dateObj = parseTanggalValid(dateRaw); 
+    const isRentang = dateRaw.includes('-') && dateRaw.match(/\d/);
+    const dateDisplay = isRentang ? dateRaw : (dateObj ? formatTanggalLengkap(dateObj) : dateRaw); 
+    
+    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); 
+    const lokasi = getFlex(r,['lokasi']); 
+    const tech = getFlex(r,['teknisi','nama teknisi','nama']); 
+    
+    html += `
+      <div class="kegiatan-item upcoming-item" style="position:relative;" id="upcoming-item-${idx}">
+        <button class="btn-save-item" onclick="downloadItem('upcoming-item-${idx}', 'Upcoming_${dateDisplay.replace(/[\/\s,]/g, '_')}_${name}')" title="Save Gambar">📸</button>
+        <div class="k-date">📅 ${dateDisplay}</div>
+        <div class="k-name">${name}</div>
+        ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
+        <div class="k-tech">${tech}</div>
+      </div>`; 
+  });
   wrap.innerHTML = html + '</div>';
 }
 
@@ -1118,7 +1040,6 @@ async function renderGrafikLembur() {
       }
     });
 
-    // Urutkan dari yang paling banyak lembur
     const sortedData = Object.entries(dataPerTeknisi).sort((a, b) => b[1].jam - a[1].jam).filter(item => item[1].jam > 0);
     if (sortedData.length === 0) return;
 
@@ -1127,12 +1048,11 @@ async function renderGrafikLembur() {
     const valuesJumlah = sortedData.map(item => item[1].jumlah);
 
     const wrapper = document.getElementById('canvasWrapper');
-    wrapper.style.minWidth = '100%'; // Gak ada lebar paksa, ngikutin layar
+    wrapper.style.minWidth = '100%'; 
 
     const ctx = document.getElementById('chartLembur').getContext('2d');
     if (chartInstance) chartInstance.destroy();
 
-    // Gradient biru
     const gradientBiru = ctx.createLinearGradient(0, 0, 400, 0);
     gradientBiru.addColorStop(0, 'rgba(2, 132, 199, 0.9)');
     gradientBiru.addColorStop(1, 'rgba(56, 189, 248, 0.6)');
@@ -1142,66 +1062,27 @@ async function renderGrafikLembur() {
       data: {
         labels: labels,
         datasets: [
-          { 
-            label: 'Total Jam Lembur', 
-            data: valuesJam, 
-            backgroundColor: gradientBiru, 
-            borderRadius: 6, 
-            barPercentage: 0.7 
-          }
+          { label: 'Total Jam Lembur', data: valuesJam, backgroundColor: gradientBiru, borderRadius: 6, barPercentage: 0.7 }
         ]
       },
       options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false, 
-        layout: {
-          padding: { left: 0, right: 10, top: 0, bottom: 0 } 
-        },
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
+        layout: { padding: { left: 0, right: 10, top: 0, bottom: 0 } },
         plugins: {
           legend: { display: false },
-          tooltip: { 
-            backgroundColor: 'rgba(15, 23, 42, 0.9)', 
-            titleFont: { size: 14, family: 'Segoe UI' }, 
-            bodyFont: { size: 13, family: 'Segoe UI' }, 
-            padding: 12, 
-            cornerRadius: 8, 
-            callbacks: { 
-              label: function(context) { 
-                const idx = context.dataIndex;
-                const jam = valuesJam[idx];
-                const kali = valuesJumlah[idx];
-                return [` ⏱️ Total: ${jam} Jam`, ` 📋 Kegiatan: ${kali} Kali`]; 
-              } 
-            } 
-          }
+          tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: { size: 14, family: 'Segoe UI' }, bodyFont: { size: 13, family: 'Segoe UI' }, padding: 12, cornerRadius: 8, callbacks: { label: function(context) { const idx = context.dataIndex; return [` ⏱️ Total: ${valuesJam[idx]} Jam`, ` 📋 Kegiatan: ${valuesJumlah[idx]} Kali`]; } } }
         },
         scales: {
-          x: { 
-            beginAtZero: true,
-            title: { display: false }, // Sumbu X dimatiin biar gak makan tempat di HP
-            grid: { color: '#f1f5f9' }, 
-            ticks: { color: '#64748b', font: {family: 'Segoe UI', size: 10} } 
-          },
-          y: { 
-            grid: { display: false }, 
-            ticks: { 
-              font: {family: 'Segoe UI', weight: 'bold', size: 11}, 
-              color: '#475569',
-              autoSkip: false // Biar nama teknisi gak ada yang kelewat
-            } 
-          }
+          x: { beginAtZero: true, title: { display: false }, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: {family: 'Segoe UI', size: 10} } },
+          y: { grid: { display: false }, ticks: { font: {family: 'Segoe UI', weight: 'bold', size: 11}, color: '#475569', autoSkip: false } }
         }
       }
     });
   } catch(err) { console.error('Gagal render grafik:', err); }
 }
 
-// Re-render chart saat layar di-resize (biar responsif)
 window.addEventListener('resize', () => {
-  if(chartInstance && !document.fullscreenElement) {
-    chartInstance.resize();
-  }
+  if(chartInstance && !document.fullscreenElement) chartInstance.resize();
 });
 
 function openRekapLembur() { document.getElementById('searchRekap').value = ''; renderTabelRekap(rawLembur); document.getElementById('modalRekapLembur').classList.add('active'); }
@@ -1363,10 +1244,7 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('
    LOGIKA KALKULATOR GAJI (LENGKAP)
    ============================================================ */
 let gajiHariCounter = 0;
-
-function formatRupiah(n){
-  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
-}
+function formatRupiah(n){ return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
 
 function openGajiCalculator() {
   const body = document.getElementById('gajiBody');
@@ -1666,21 +1544,21 @@ async function submitLembur(e) {
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4, r5, r6] = await Promise.all([
-      fetch(apiUrl('Lokasi')).then(r => r.json()), 
+    const [r1, r2, r3, r4, r5] = await Promise.all([
+      fetch(apiUrl('JadwalBulanan')).then(r => r.json()), 
       fetch(apiUrl('kegiatan')).then(r => r.json()),
       fetch(apiUrl('Links')).then(r => r.json()), 
       fetch(apiUrl('WI')).then(r => r.json()), 
-      fetch(apiUrl('WifiGuest')).then(r => r.json()),
-      fetch(apiUrl('JadwalMingguan')).then(r => r.json())
+      fetch(apiUrl('WifiGuest')).then(r => r.json())
     ]);
-    rawLokasi = Array.isArray(r1) ? r1 : []; 
+    
+    rawLokasi = r1; 
+    rawJadwal = r1; 
     rawKegiatan = Array.isArray(r2) ? r2 : []; 
     rawLinks = Array.isArray(r3) ? r3 : []; 
     rawWI = Array.isArray(r4) ? r4 : []; 
     rawWifi = Array.isArray(r5) ? r5 : []; 
-    rawJadwal = Array.isArray(r6) ? r6 : [];
-    
+
     // RESET FILTER KE DEFAULT (HANYA HARI INI)
     const chkOnlyToday = document.getElementById('onlyToday');
     chkOnlyToday.checked = true;
@@ -1702,7 +1580,7 @@ async function loadAll(){
     document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
   } catch(err) { 
     console.error(err); 
-    document.getElementById('wrapLokasi').innerHTML = '<div class="empty">❌ Gagal memuat. Cek URL Apps Script & nama sheet.</div>'; 
+    document.getElementById('wrapLokasi').innerHTML = '<div class="empty">❌ Gagal memuat. Cek Console (F12).</div>'; 
   }
 }
 
