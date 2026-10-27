@@ -86,38 +86,6 @@ tr:hover td{background:#f8fafc}
 .kegiatan-item:hover .btn-save-item {opacity: 1;}
 .btn-save-item:hover {background: #f0f9ff; border-color: #0284c7; transform: scale(1.1);}
 
-.wifi-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
-.wifi-toolbar input,.wifi-toolbar select{background:#fff;border:1px solid #e2e8f0;color:#1e293b;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:all .2s;box-shadow:0 1px 2px rgba(15,23,42,.03)}
-.wifi-toolbar input:focus,.wifi-toolbar select:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
-.wifi-toolbar input{flex:1;min-width:180px}
-.wifi-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-.wifi-card{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #0891b2;border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(15,23,42,.04);position:relative;overflow:hidden}
-.wifi-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(8,145,178,.15);border-left-color:#0284c7}
-.wifi-card.inactive{border-left-color:#94a3b8;opacity:.7}
-.wifi-card.inactive:hover{box-shadow:0 8px 20px rgba(100,116,139,.15);border-left-color:#64748b}
-.wifi-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.wifi-card-minggu{font-size:11px;font-weight:800;color:#0891b2;text-transform:uppercase;letter-spacing:.8px}
-.wifi-card-status{font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
-.wifi-card-status.active{background:#dcfce7;color:#15803d}
-.wifi-card-status.inactive{background:#f1f5f9;color:#64748b}
-.wifi-card-user{font-size:14px;font-weight:700;color:#0f172a;margin-bottom:6px;word-break:break-all}
-.wifi-card-pass{font-size:12px;color:#64748b;font-family:monospace;letter-spacing:1px;margin-bottom:10px}
-.wifi-card-hint{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:4px;font-weight:600}
-.wifi-card-hint::before{content:'👆';font-size:12px}
-.wifi-modal-content{padding:24px 26px}
-.wifi-modal-minggu{font-size:12px;font-weight:800;color:#0891b2;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.wifi-modal-title{font-size:20px;font-weight:800;color:#0f172a;margin-bottom:20px}
-.wifi-modal-field{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:12px}
-.wifi-modal-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:4px}
-.wifi-modal-value{font-size:16px;font-family:monospace;font-weight:700;color:#0f172a;letter-spacing:1px;word-break:break-all}
-.wifi-modal-status{display:flex;align-items:center;gap:8px;margin-top:16px;margin-bottom:18px;font-size:13px;font-weight:700}
-.wifi-modal-status.active{color:#15803d}
-.wifi-modal-status.inactive{color:#64748b}
-.wifi-modal-status::before{content:'';width:10px;height:10px;border-radius:50%;background:currentColor}
-.wifi-modal-actions{display:flex;gap:10px;margin-top:20px}
-.wifi-btn-copy{flex:1;background:linear-gradient(90deg,#0891b2,#0284c7);color:#fff;border:none;padding:14px 20px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 12px rgba(8,145,178,.3)}
-.wifi-btn-copy:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(8,145,178,.4)}
-.wifi-btn-copy.copied{background:linear-gradient(90deg,#16a34a,#22c55e)}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(15,23,42,.4);z-index:99999;opacity:0;transition:all .3s;pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .wi-accordion{display:flex;flex-direction:column;gap:10px}
@@ -183,8 +151,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .modal-header h3 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .modal-close{background:#f1f5f9;border:none;width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:18px;color:#64748b;font-weight:700;transition:all .2s;flex-shrink:0}
 .modal-close:hover{background:#fee2e2;color:#dc2626}
-.modal-pdf-body{padding:0;background:#525659;flex:1;min-height:0;display:flex}
-.modal-pdf-body iframe{width:100%;height:100%;border:none;display:block;min-height:70vh}
+.modal-pdf-body{padding:0;background:#f8fafc;flex:1;min-height:0;display:flex;flex-direction:column}
 .form-group{margin-bottom:16px}
 .form-label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px}
 .form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:13.5px;outline:none;transition:all .2s;background:#fff;color:#1e293b}
@@ -205,7 +172,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-input{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:border .2s;background:#fff}
 .gaji-input:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.15)}
 .gaji-hint{font-size:11px;color:#94a3b8;margin-top:4px}
-.gaji-hari-row{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px}
+.gaji-hari-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:12px;padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px}
 .gaji-hari-row select,.gaji-hari-row input{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff}
 .gaji-hari-row select:focus,.gaji-hari-row input:focus{border-color:#0284c7;box-shadow:0 0 0 2px rgba(2,132,199,.15)}
 .gaji-hari-row label{font-size:11px;color:#64748b;font-weight:600;display:block;margin-bottom:4px}
@@ -230,7 +197,30 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-hari-item .gaji-result-row{font-size:12px;padding:4px 0}
 .gaji-download-btn{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit;width:100%;margin-top:16px;transition:all .2s;box-shadow:0 4px 12px rgba(22,163,74,.3)}
 .gaji-download-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(22,163,74,.4)}
-@media(max-width:600px){body{padding:14px}.brand h1{font-size:22px}.card .value{font-size:24px}.clock{font-size:12px;padding:8px 12px}.modal-box{max-height:95vh}.modal-pdf-body iframe{min-height:60vh}.marquee{font-size:12px}.marquee-icon{width:26px;height:26px;font-size:14px;left:10px}.gaji-hari-row{grid-template-columns:1fr 1fr 1fr auto}.gaji-body{padding:18px 16px}}
+
+/* Mobile Responsive */
+@media(max-width:600px){
+  body{padding:14px}
+  .brand h1{font-size:22px}
+  .card .value{font-size:24px}
+  .clock{font-size:12px;padding:8px 12px}
+  .modal-box{max-height:95vh}
+  .marquee{font-size:12px}
+  .marquee-icon{width:26px;height:26px;font-size:14px;left:10px}
+  
+  /* HP Tampilan Kalkulator */
+  .gaji-body{padding:16px}
+  .gaji-hari-row { grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px; position: relative; padding-bottom: 40px; }
+  .gaji-hari-row > div:nth-child(1) { grid-column: span 2; } /* Hari Mulai full width */
+  .gaji-hari-row > div:nth-child(2) { grid-column: span 1; } /* Jam Mulai setengah */
+  .gaji-hari-row > div:nth-child(3) { grid-column: span 2; } /* Hari Selesai full width */
+  .gaji-hari-row > div:nth-child(4) { grid-column: span 1; } /* Jam Selesai setengah */
+  .gaji-hapus-btn { position: absolute; bottom: 10px; right: 10px; width: 100%; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; }
+  .gaji-add-btn { padding: 14px; font-size: 14px; }
+  .gaji-calc-btn { padding: 16px; font-size: 16px; }
+  .gaji-result-row { font-size: 12px; }
+  .gaji-result-row.total .value { font-size: 16px; }
+}
 
 /* Style Fullscreen buat Chart */
 #chartContainer:fullscreen {
@@ -351,16 +341,6 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   </div>
 </section>
 
-<!-- WIFI GUEST -->
-<section>
-  <h2>📶 Wifi Guest <span class="count" id="cntWifi">0</span></h2>
-  <div class="wifi-toolbar">
-    <input type="text" id="wifiSearch" placeholder="🔍 Cari username atau minggu...">
-    <select id="wifiFilter"><option value="">Semua Status</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
-  </div>
-  <div id="wrapWifi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
-</section>
-
 <!-- WI -->
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
@@ -375,11 +355,19 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 
 <footer>SIKAT-TI • by acg</footer>
 
-<!-- MODAL PDF -->
-<div class="modal-overlay" id="modalPDF"><div class="modal-box modal-wide"><div class="modal-header"><h3>📄 <span id="pdfTitle">Dokumen</span></h3><a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener">↗ Buka di tab baru</a><button class="modal-close" onclick="closeModal('modalPDF')">✕</button></div><div class="modal-pdf-body"><iframe id="pdfFrame" src="about:blank"></iframe></div></div></div>
-
-<!-- MODAL WIFI -->
-<div class="modal-overlay" id="modalWifi"><div class="modal-box modal-small"><div class="modal-header"><h3>📶 <span id="wifiModalTitle">Wifi Guest</span></h3><button class="modal-close" onclick="closeModal('modalWifi')">✕</button></div><div class="wifi-modal-content" id="wifiModalContent"></div></div></div>
+<!-- MODAL PDF (Walaupun namanya PDF, ini bakal jadi modal pesan redirect) -->
+<div class="modal-overlay" id="modalPDF">
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <h3>📄 <span id="pdfTitle">Dokumen</span></h3>
+      <a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener" style="background:linear-gradient(90deg,#0284c7,#4f46e5); color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:all .2s; box-shadow:0 4px 12px rgba(2,132,199,.3);">🔗 Buka Dokumen</a>
+      <button class="modal-close" onclick="closeModal('modalPDF')">✕</button>
+    </div>
+    <div class="modal-pdf-body" id="pdfBodyMessage">
+      <!-- Tempat naruh pesan login 365 -->
+    </div>
+  </div>
+</div>
 
 <!-- MODAL GAJI -->
 <div class="modal-overlay" id="modalGaji"><div class="modal-box modal-wide"><div class="modal-header"><h3>🧮 Kalkulator Gaji & Lembur</h3><button class="modal-close" onclick="closeModal('modalGaji')">✕</button></div><div class="gaji-body" id="gajiBody"></div></div></div>
@@ -425,22 +413,35 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
       <button class="modal-close" onclick="closeModal('modalRekapLembur')">✕</button>
     </div>
     <div class="gaji-body" style="padding:0; display:flex; flex-direction:column;">
-      <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; display: flex; gap: 10px; flex-wrap: wrap;">
-        <input type="text" id="searchRekap" class="form-input" placeholder="🔍 Cari nama teknisi atau kegiatan..." style="flex:1; min-width: 200px;">
-        <button onclick="downloadRekapCSV()" class="form-submit-btn" style="display: none;width:auto; margin-top:0; padding: 0 20px; background: linear-gradient(90deg,#16a34a,#22c55e); align-items:center; gap:8px;">
-          📥 Download CSV
-        </button>
+      <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column; gap: 10px;">
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <input type="text" id="searchRekap" class="form-input" placeholder="🔍 Cari kegiatan, teknisi, atau engineer..." style="flex:1; min-width: 200px;">
+          <button onclick="downloadRekapCSV()" class="form-submit-btn" style="display: none;width:auto; margin-top:0; padding: 0 20px; background: linear-gradient(90deg,#16a34a,#22c55e); align-items:center; gap:8px;">
+            📥 Download CSV
+          </button>
+        </div>
+
+        <!-- Tambahan Tombol Filter Status -->
+        <div style="display:flex; gap:8px; flex-wrap: wrap;">
+          <button id="btnFilterAll" onclick="setFilterRekap('all')" style="background:#0284c7; color:#fff; border:none; padding:6px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; transition:all .2s;">Tampilkan Semua</button>
+          <button id="btnFilterPending" onclick="setFilterRekap('pending')" style="background:#fff; color:#b45309; border:1px solid #fcd34d; padding:6px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; transition:all .2s;">🟡 Pending</button>
+          <button id="btnFilterConfirmed" onclick="setFilterRekap('confirmed')" style="background:#fff; color:#15803d; border:1px solid #bbf7d0; padding:6px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; transition:all .2s;">🟢 Confirmed</button>
+        </div>
       </div>
+
       <div style="overflow-y: auto; flex:1;">
-        <table style="min-width: 800px; width: 100%; border-collapse: collapse;">
+        <!-- Hapus min-width agar tidak perlu scroll horizontal di HP -->
+        <table style="width: 100%; border-collapse: collapse;">
           <thead style="position: sticky; top: 0; background: #fff; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
             <tr>
-              <th>Tanggal</th>
-              <th>Jam</th>
-              <th>Kegiatan</th>
-              <th>Teknisi</th>
-              <th style="text-align: right;">Total Jam</th>
-              <th>No Tiket</th>
+              <th style="width: 15%;">Tanggal</th>
+              <th style="width: 18%;">Jam</th>
+              <th style="width: 22%;">Kegiatan</th>
+              <th style="width: 20%;">Engineer</th>
+              <th style="width: 15%;">Teknisi</th>
+              <th style="width: 5%; text-align: right;">Jam</th>
+              <th style="width: 5%; text-align: center;">Tiket</th>
             </tr>
           </thead>
           <tbody id="tbodyRekap"></tbody>
@@ -458,8 +459,9 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
    ============================================================ */
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
 const PENGUMUMAN = ['Jangan lupa isi absensi hari ini','Close tiket SDP kalau udah selesai','Input Lembur H+1 - biar gak lupa!'];
-let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawWifi = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
+let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
+let filterRekapStatus = 'all'; // Variabel buat filter
 
 const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
 const BLACKLIST_HARIAN = ['nadine', 'nafira', 'imola'];
@@ -504,19 +506,14 @@ function parseTanggalID(str){
   if(!str || str === '-') return null; 
   let s = str.toString().toLowerCase().trim(); 
   
-  // 1. Deteksi format rentang (contoh: "4/11/2026 - 6/11/2026")
   if (s.includes('-') && s.match(/\d/)) {
     const parts = s.split('-');
-    if(parts.length > 1 && parts[0].trim()) {
-       s = parts[0].trim(); // Ambil bagian kiri (tanggal mulai)
-    }
+    if(parts.length > 1 && parts[0].trim()) { s = parts[0].trim(); }
   }
 
-  // 2. Parsing Format YYYY-MM-DD
   const matchYMD = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if(matchYMD){ return new Date(parseInt(matchYMD[1]), parseInt(matchYMD[2])-1, parseInt(matchYMD[3])); }
   
-  // 3. Parsing Format DD/MM/YYYY atau DD-MM-YYYY
   const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/); 
   if(matchAngka){ 
     const tgl = parseInt(matchAngka[1]); const bln = parseInt(matchAngka[2]) - 1; 
@@ -525,7 +522,6 @@ function parseTanggalID(str){
     if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11) return new Date(thn, bln, tgl); 
   } 
   
-  // 4. Parsing Format DD NamaBulan YYYY
   const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/); 
   if(matchNama){ 
     const tgl = parseInt(matchNama[1]); const bln = NAMA_BULAN_ID[matchNama[2]]; 
@@ -538,7 +534,15 @@ function parseTanggalID(str){
 }
 
 function detectHariDitulis(str){ if(!str) return null; const s = str.toString().toLowerCase(); for(const h of HARI_ID){ if(s.includes(h.toLowerCase())) return h; } return null; }
-function formatTanggalLengkap(date){ if(!date) return '-'; const hari = HARI_ID[date.getDay()]; const tgl = date.getDate().toString().padStart(2,'0'); const bln = (date.getMonth()+1).toString().padStart(2,'0'); const thn = date.getFullYear(); return `${hari}, ${tgl}/${bln}/${thn}`; }
+function formatTanggalLengkap(date){ 
+  if(!date) return '-'; 
+  const hari = HARI_ID[date.getDay()]; 
+  const tgl = date.getDate().toString().padStart(2,'0'); 
+  const bln = (date.getMonth()+1).toString().padStart(2,'0'); 
+  const thn = date.getFullYear(); 
+  // Format dd/mm/YYYY
+  return `${hari}, ${tgl}/${bln}/${thn}`; 
+}
 function parseTanggalValid(str){ const date = parseTanggalID(str); if(!date) return null; const hariDitulis = detectHariDitulis(str); if(hariDitulis){ const hariAsli = HARI_ID[date.getDay()]; if(hariDitulis.toLowerCase() !== hariAsli.toLowerCase()) return null; } return date; }
 function isToday(dateStr){ const d = parseTanggalValid(dateStr); if(!d) return false; const t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0); return d.getTime() === t.getTime(); }
 function isFuture(dateStr){ const d = parseTanggalValid(dateStr); if(!d) return false; const t = new Date(); t.setHours(0,0,0,0); d.setHours(0,0,0,0); return d.getTime() > t.getTime(); }
@@ -621,19 +625,17 @@ function downloadItem(elementId, namaFile) {
   if (!element) return;
   showToast('📸 Memproses gambar...');
   
-  // Sembunyikan tombol save sementara biar ga ke-screenshot
   const btn = element.querySelector('.btn-save-item');
   if(btn) btn.style.display = 'none';
 
   html2canvas(element, {
-    scale: 3, // Resolusi tinggi
+    scale: 3, 
     useCORS: true, 
     backgroundColor: '#ffffff',
   }).then(canvas => {
-    if(btn) btn.style.display = ''; // Munculin lagi tombolnya
+    if(btn) btn.style.display = ''; 
     const image = canvas.toDataURL("image/png");
     const link = document.createElement('a');
-    // Bersihin nama file dari karakter aneh
     const safeName = namaFile.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
     link.download = `${safeName}.png`;
     link.href = image;
@@ -966,7 +968,6 @@ function renderKegiatan(rows){
   current.forEach((r, idx)=>{ 
     const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); 
     const dateObj = parseTanggalValid(dateRaw); 
-    // Cek jika format rentang (contoh 4/11/2026 - 6/11/2026)
     const isRentang = dateRaw.includes('-') && dateRaw.match(/\d/);
     const dateDisplay = isRentang ? dateRaw : (dateObj ? formatTanggalLengkap(dateObj) : dateRaw); 
     
@@ -1085,22 +1086,134 @@ window.addEventListener('resize', () => {
   if(chartInstance && !document.fullscreenElement) chartInstance.resize();
 });
 
-function openRekapLembur() { document.getElementById('searchRekap').value = ''; renderTabelRekap(rawLembur); document.getElementById('modalRekapLembur').classList.add('active'); }
+function openRekapLembur() { 
+  document.getElementById('searchRekap').value = ''; 
+  setFilterRekap('all'); 
+  document.getElementById('modalRekapLembur').classList.add('active'); 
+}
+
+function setFilterRekap(status) {
+  filterRekapStatus = status;
+  
+  // Reset semua button style
+  document.getElementById('btnFilterAll').style.background = '#fff';
+  document.getElementById('btnFilterAll').style.color = '#475569';
+  document.getElementById('btnFilterAll').style.border = '1px solid #cbd5e1';
+  
+  document.getElementById('btnFilterPending').style.background = '#fff';
+  document.getElementById('btnFilterPending').style.color = '#b45309';
+  document.getElementById('btnFilterPending').style.border = '1px solid #fcd34d';
+  
+  document.getElementById('btnFilterConfirmed').style.background = '#fff';
+  document.getElementById('btnFilterConfirmed').style.color = '#15803d';
+  document.getElementById('btnFilterConfirmed').style.border = '1px solid #bbf7d0';
+
+  // Set active style
+  if(status === 'all') {
+    document.getElementById('btnFilterAll').style.background = '#0284c7';
+    document.getElementById('btnFilterAll').style.color = '#fff';
+    document.getElementById('btnFilterAll').style.border = '1px solid #0284c7';
+  } else if(status === 'pending') {
+    document.getElementById('btnFilterPending').style.background = '#fef3c7';
+    document.getElementById('btnFilterPending').style.color = '#b45309';
+    document.getElementById('btnFilterPending').style.border = '1px solid #fcd34d';
+  } else if(status === 'confirmed') {
+    document.getElementById('btnFilterConfirmed').style.background = '#dcfce7';
+    document.getElementById('btnFilterConfirmed').style.color = '#15803d';
+    document.getElementById('btnFilterConfirmed').style.border = '1px solid #bbf7d0';
+  }
+
+  renderTabelRekap(rawLembur);
+}
 
 function renderTabelRekap(data) {
-  const tbody = document.getElementById('tbodyRekap'); const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
-  let filtered = data.filter(r => { const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); return !kw || keg.includes(kw) || tek.includes(kw); });
-  filtered.sort((a,b) => { const da = parseTanggalValid(getFlex(a,['tanggal'])); const db = parseTanggalValid(getFlex(b,['tanggal'])); return (db || 0) - (da || 0); });
+  const tbody = document.getElementById('tbodyRekap'); 
+  const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
+  
+  // 1. Filter Keyword
+  let filtered = data.filter(r => { 
+    const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); 
+    const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); 
+    const eng = (getFlex(r, ['engineer']) || '').toLowerCase(); 
+    return !kw || keg.includes(kw) || tek.includes(kw) || eng.includes(kw); 
+  });
 
-  if(!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#94a3b8;">Tidak ada data rekap.</td></tr>'; return; }
+  // 2. Filter Status (Kuning / Hijau)
+  if (filterRekapStatus === 'pending') {
+    filtered = filtered.filter(r => {
+      const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
+      return statusRaw !== 'v' && statusRaw !== 'done';
+    });
+  } else if (filterRekapStatus === 'confirmed') {
+    filtered = filtered.filter(r => {
+      const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
+      return statusRaw === 'v' || statusRaw === 'done';
+    });
+  }
+
+  // 3. URUTKAN BERDASARKAN TANGGAL (Terbaru ke Terlama)
+  filtered.sort((a,b) => { 
+    const da = parseTanggalValid(getFlex(a,['tanggal'])); 
+    const db = parseTanggalValid(getFlex(b,['tanggal'])); 
+    
+    // Kalau tanggal beda, urutkan dari yang paling baru
+    if (da && db && da.getTime() !== db.getTime()) {
+      return db.getTime() - da.getTime(); 
+    }
+    // Kalau tanggal sama, urutkan berdasarkan Kegiatan (biar stabil)
+    const kegA = (getFlex(a,['kegiatan']) || '').toLowerCase();
+    const kegB = (getFlex(b,['kegiatan']) || '').toLowerCase();
+    return kegA.localeCompare(kegB);
+  });
+
+  if(!filtered.length) { 
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#94a3b8;">Tidak ada data rekap.</td></tr>'; 
+    return; 
+  }
 
   let html = '';
   filtered.forEach(r => {
-    const tglRaw = getFlex(r, ['tanggal']); const tglObj = parseTanggalValid(tglRaw); const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
-    const tglAkhir = getFlex(r, ['tanggal akhir']); const jMulai = getFlex(r, ['jam mulai']); const jAkhir = getFlex(r, ['jam akhir']); const keg = getFlex(r, ['kegiatan']); const tek = getFlex(r, ['teknisi']); const jam = getFlex(r, ['total jam']); const tiket = getFlex(r, ['no tiket']);
+    const tglRaw = getFlex(r, ['tanggal']); 
+    const tglObj = parseTanggalValid(tglRaw); 
+    const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
+    const tglAkhir = getFlex(r, ['tanggal akhir']); 
+    const jMulai = getFlex(r, ['jam mulai']); 
+    const jAkhir = getFlex(r, ['jam akhir']); 
+    const keg = getFlex(r, ['kegiatan']); 
+    const eng = getFlex(r, ['engineer']); 
+    const tek = getFlex(r, ['teknisi']); 
+    const jam = getFlex(r, ['total jam']); 
+    const tiket = getFlex(r, ['no tiket']);
+    
+    const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
+    
+    // Logic Warna: Kalau isinya 'v', 'done', berarti hijau. Selain itu kuning.
+    let bgColor = '#fef3c7'; // Kuning
+    let textColor = '#b45309';
+    let badgeBg = '#fde68a';
+    
+    if (statusRaw === 'v' || statusRaw === 'done') {
+      bgColor = '#dcfce7'; // Hijau
+      textColor = '#15803d';
+      badgeBg = '#bbf7d0';
+    }
+
     let jamStr = `${jMulai} - ${jAkhir}`;
-    if (tglAkhir !== '-' && tglAkhir) { const tglAkhirObj = parseTanggalValid(tglAkhir); if (tglAkhirObj && tglObj && tglAkhirObj.getTime() !== tglObj.getTime()) { jamStr += ` (Beda Hari)`; } }
-    html += `<tr><td style="white-space:nowrap;">${tgl}</td><td style="white-space:nowrap;">${jamStr}</td><td>${keg}</td><td>${tek}</td><td style="text-align:right; font-weight:700; color:#0284c7;">${jam} Jam</td><td>${tiket !== '-' ? `<span class="badge" style="background:#f1f5f9; color:#475569;">${tiket}</span>` : '-'}</td></tr>`;
+    if (tglAkhir !== '-' && tglAkhir) { 
+      const tglAkhirObj = parseTanggalValid(tglAkhir); 
+      if (tglAkhirObj && tglObj && tglAkhirObj.getTime() !== tglObj.getTime()) { jamStr += `<br><small>(Beda Hari)</small>`; } 
+    }
+    
+    // Baris <tr> kita kasih style background color
+    html += `<tr style="background-color:${bgColor}; transition: background-color 0.3s; font-size: 12px;">
+      <td style="white-space:normal; color:${textColor}; font-weight:600; padding:8px;">${tgl}</td>
+      <td style="white-space:normal; color:${textColor}; padding:8px;">${jamStr}</td>
+      <td style="white-space:normal; color:${textColor}; padding:8px;">${keg}</td>
+      <td style="white-space:normal; color:${textColor}; padding:8px;">${eng}</td>
+      <td style="white-space:normal; color:${textColor}; padding:8px;">${tek}</td>
+      <td style="text-align:right; font-weight:800; color:#0284c7; padding:8px;">${jam}</td>
+      <td style="text-align:center; padding:8px;">${tiket !== '-' ? `<span class="badge" style="background:${badgeBg}; color:${textColor}; border:1px solid rgba(0,0,0,0.05); padding:2px 6px; font-size:10px;">${tiket}</span>` : '-'}</td>
+    </tr>`;
   });
   tbody.innerHTML = html;
 }
@@ -1108,45 +1221,43 @@ document.getElementById('searchRekap').addEventListener('input', () => renderTab
 
 function downloadRekapCSV() {
   const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
-  let filtered = rawLembur.filter(r => { const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); return !kw || keg.includes(kw) || tek.includes(kw); });
-  filtered.sort((a,b) => { const da = parseTanggalValid(getFlex(a,['tanggal'])); const db = parseTanggalValid(getFlex(b,['tanggal'])); return (db || 0) - (da || 0); });
+  let filtered = rawLembur.filter(r => { 
+    const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); 
+    const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); 
+    const eng = (getFlex(r, ['engineer']) || '').toLowerCase(); 
+    return !kw || keg.includes(kw) || tek.includes(kw) || eng.includes(kw); 
+  });
+  
+  // Filter status juga kalau lagi nge-download
+  if (filterRekapStatus === 'pending') {
+    filtered = filtered.filter(r => {
+      const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
+      return statusRaw !== 'v' && statusRaw !== 'done';
+    });
+  } else if (filterRekapStatus === 'confirmed') {
+    filtered = filtered.filter(r => {
+      const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
+      return statusRaw === 'v' || statusRaw === 'done';
+    });
+  }
+
+  filtered.sort((a,b) => { 
+    const da = parseTanggalValid(getFlex(a,['tanggal'])); 
+    const db = parseTanggalValid(getFlex(b,['tanggal'])); 
+    return (db || 0) - (da || 0); 
+  });
+  
   if(!filtered.length) { showToast('❌ Tidak ada data untuk di-download!'); return; }
 
-  let csvContent = "Tanggal Mulai,Jam Mulai,Tanggal Akhir,Jam Akhir,Kegiatan,Engineer,Teknisi,Total Jam,No Tiket\n";
+  let csvContent = "Tanggal Mulai,Jam Mulai,Tanggal Akhir,Jam Akhir,Kegiatan,Engineer,Teknisi,Total Jam,No Tiket,Status\n";
   filtered.forEach(r => {
     const tglRaw = getFlex(r, ['tanggal']); const tglObj = parseTanggalValid(tglRaw); const tgl = tglObj ? formatTanggalLengkap(tglObj) : tglRaw;
     const tglAkhirRaw = getFlex(r, ['tanggal akhir']); const tglAkhirObj = parseTanggalValid(tglAkhirRaw); const tglAkhir = tglAkhirObj ? formatTanggalLengkap(tglAkhirObj) : tglAkhirRaw;
-    const jMulai = getFlex(r, ['jam mulai']); const jAkhir = getFlex(r, ['jam akhir']); const keg = getFlex(r, ['kegiatan']).replace(/"/g, '""'); const eng = getFlex(r, ['engineer']).replace(/"/g, '""'); const tek = getFlex(r, ['teknisi']).replace(/"/g, '""'); const jam = getFlex(r, ['total jam']); const tiket = getFlex(r, ['no tiket']);
-    csvContent += `"${tgl}","${jMulai}","${tglAkhir}","${jAkhir}","${keg}","${eng}","${tek}","${jam}","${tiket}"\n`;
+    const jMulai = getFlex(r, ['jam mulai']); const jAkhir = getFlex(r, ['jam akhir']); const keg = getFlex(r, ['kegiatan']).replace(/"/g, '""'); const eng = getFlex(r, ['engineer']).replace(/"/g, '""'); const tek = getFlex(r, ['teknisi']).replace(/"/g, '""'); const jam = getFlex(r, ['total jam']); const tiket = getFlex(r, ['no tiket']); const status = getFlex(r, ['status']) || '-';
+    csvContent += `"${tgl}","${jMulai}","${tglAkhir}","${jAkhir}","${keg}","${eng}","${tek}","${jam}","${tiket}","${status}"\n`;
   });
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.setAttribute('href', url); link.setAttribute('download', `Rekap_Lembur_Lengkap_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
   showToast('✅ Berhasil download CSV Lengkap!');
-}
-
-function renderWifi(rows){
-  const wrap = document.getElementById('wrapWifi'); const keyword = (document.getElementById('wifiSearch').value || '').toLowerCase(); const filter = document.getElementById('wifiFilter').value;
-  document.getElementById('cntWifi').textContent = rows.length;
-  let filtered = rows.filter(r => { const minggu = (r['minggu'] || '').toLowerCase(); const username = (r['username'] || '').toLowerCase(); const cocok = !keyword || minggu.includes(keyword) || username.includes(keyword); const statusRaw = (r['status'] || '').toLowerCase(); const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive'); return cocok && (!filter || (filter === 'active' && isActive) || (filter === 'inactive' && !isActive)); });
-  if(!filtered.length){ wrap.innerHTML = '<div class="empty">Belum ada data wifi guest</div>'; return; }
-  let html = '<div class="wifi-grid">';
-  filtered.forEach((r, idx) => { const minggu = (r['minggu'] || '-').trim(); const username = (r['username'] || '-').trim(); const password = (r['password'] || '-').trim(); const statusRaw = (r['status'] || '').toLowerCase(); const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive'); const passMasked = password ? '•'.repeat(Math.min(password.length, 12)) : '-'; html += `<div class="wifi-card ${isActive ? '' : 'inactive'}" onclick="openWifiDetail(${idx})" data-idx="${idx}"><div class="wifi-card-header"><span class="wifi-card-minggu">${minggu}</span><span class="wifi-card-status ${isActive ? 'active' : 'inactive'}">${isActive ? 'Active' : 'Inactive'}</span></div><div class="wifi-card-user">${username}</div><div class="wifi-card-pass">${passMasked}</div><div class="wifi-card-hint">Klik untuk lihat & copy</div></div>`; });
-  wrap.innerHTML = html + '</div>'; window._wifiFiltered = filtered;
-}
-
-function openWifiDetail(idx){
-  const r = window._wifiFiltered[idx]; if(!r) return;
-  const minggu = (r['minggu'] || '-').trim(); const username = (r['username'] || '-').trim(); const password = (r['password'] || '-').trim(); const statusRaw = (r['status'] || '').toLowerCase(); const isActive = statusRaw.includes('active') && !statusRaw.includes('inactive');
-  document.getElementById('wifiModalTitle').textContent = minggu;
-  document.getElementById('wifiModalContent').innerHTML = `<div class="wifi-modal-minggu">📶 Wifi Guest</div><div class="wifi-modal-title">${minggu}</div><div class="wifi-modal-field"><div class="wifi-modal-label">Username</div><div class="wifi-modal-value">${username}</div></div><div class="wifi-modal-field"><div class="wifi-modal-label">Password</div><div class="wifi-modal-value">${password}</div></div><div class="wifi-modal-status ${isActive ? 'active' : 'inactive'}">${isActive ? 'Active' : 'Inactive'}</div><div class="wifi-modal-actions"><button class="wifi-btn-copy" id="wifiCopyBtn" onclick="copyWifiDetail()">📋 Copy Semua</button></div>`;
-  window._wifiDetail = { username, password, minggu }; document.getElementById('modalWifi').classList.add('active');
-}
-
-async function copyWifiDetail(){
-  const d = window._wifiDetail; if(!d) return;
-  const text = `Wifi Guest ${d.minggu}\nUsername: ${d.username}\nPassword: ${d.password}`;
-  try { await navigator.clipboard.writeText(text); showToast('✅ Wifi Guest berhasil dicopy!'); } catch(e){ showToast('❌ Gagal copy'); }
-  const btn = document.getElementById('wifiCopyBtn');
-  if(btn){ btn.classList.add('copied'); btn.textContent='✅ Berhasil!'; setTimeout(()=>{btn.classList.remove('copied');btn.textContent='📋 Copy Semua';},2500); }
 }
 
 function renderWISection(rows){
@@ -1157,7 +1268,15 @@ function renderWISection(rows){
   Object.keys(grouped).forEach(kat => {
     const isOpen = !!openState[kat];
     html += `<div class="wi-accordion-item ${isOpen ? 'open' : ''}" data-kat="${kat.replace(/"/g,'&quot;')}"><div class="wi-accordion-header" onclick="toggleWIAccordion(this)"><span class="wi-accordion-icon">▶</span><span class="wi-accordion-title">📂 ${kat}</span><span class="wi-accordion-count">${grouped[kat].length}</span></div><div class="wi-accordion-body"><div class="wi-accordion-content">`;
-    grouped[kat].forEach(r => { const nama = (r['nama'] || '').trim(); const url = (r['url_pdf'] || '').trim(); const escapedNama = nama.replace(/'/g, "\\'").replace(/"/g, '&quot;'); const escapedUrl = url.replace(/'/g, "\\'"); if(!nama || !url) return; html += `<div class="wi-cat-item" onclick="openWIPDF('${escapedNama}', '${escapedUrl}')"><span class="wi-cat-name">${nama}</span><span class="link-arrow">→</span></div>`; });
+    grouped[kat].forEach(r => { 
+      const nama = (r['nama'] || '').trim(); 
+      const url = (r['url_pdf'] || '').trim(); 
+      const escapedNama = nama.replace(/'/g, "\\'").replace(/"/g, '&quot;'); 
+      const escapedUrl = url.replace(/'/g, "\\'"); 
+      if(!nama || !url) return; 
+      
+      html += `<div class="wi-cat-item" onclick="openWIPDF('${escapedNama}', '${escapedUrl}')"><span class="wi-cat-name">${nama}</span><span class="link-arrow">→</span></div>`; 
+    });
     html += `</div></div></div>`;
   });
   html += '</div>'; wrap.innerHTML = html;
@@ -1168,6 +1287,26 @@ function toggleWIAccordion(headerEl){
   const kat = item.getAttribute('data-kat'); const isOpen = item.classList.toggle('open');
   let openState = {}; try { openState = JSON.parse(localStorage.getItem('wiOpenState') || '{}'); } catch(e){ openState = {}; }
   openState[kat] = isOpen; localStorage.setItem('wiOpenState', JSON.stringify(openState));
+}
+
+function openWIPDF(nama, url){
+  document.getElementById('pdfTitle').textContent = nama || 'Dokumen';
+  const btnOpen = document.getElementById('btnOpenOriginal');
+  
+  btnOpen.href = url; 
+  btnOpen.textContent = '🔗 Buka Dokumen (Login 365)'; 
+  
+  document.getElementById('pdfBodyMessage').innerHTML = `
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:60vh; background:#f8fafc; text-align:center; padding:30px;">
+      <div style="font-size:56px; margin-bottom:16px;">🔒</div>
+      <h3 style="font-size:20px; color:#0f172a; margin-bottom:8px;">Akses Terbatas (Lintasarta)</h3>
+      <p style="color:#64748b; font-size:14px; max-width:420px; line-height:1.6; margin-bottom:24px;">
+        Dokumen ini disimpan di SharePoint dan memerlukan login akun <b>Microsoft 365</b> kantor. Silakan klik tombol di atas untuk membukanya di tab baru.
+      </p>
+    </div>
+  `;
+  
+  document.getElementById('modalPDF').classList.add('active');
 }
 
 function renderLinks(rows){
@@ -1222,26 +1361,16 @@ function renderLinksContent(rows){
   wrap.innerHTML = html;
 }
 
-function openWIPDF(nama, url){
-  document.getElementById('pdfTitle').textContent = nama || 'Dokumen'; document.getElementById('pdfFrame').src = url || 'about:blank';
-  const btnOpen = document.getElementById('btnOpenOriginal'); let openUrl = url; let btnLabel = '↗ Buka di tab baru';
-  if(url.includes('docs.google.com/document')){ openUrl = url.replace('/preview', '/edit').replace('/view', '/edit'); btnLabel = '✏️ Edit di Google Docs'; }
-  else if(url.includes('docs.google.com/spreadsheets')){ openUrl = url.replace('/preview', '/edit').replace('/view', '/edit'); btnLabel = '✏️ Edit di Google Sheets'; }
-  else if(url.includes('/preview')){ openUrl = url.replace('/preview', '/view'); }
-  btnOpen.href = openUrl; btnOpen.textContent = btnLabel; document.getElementById('modalPDF').classList.add('active');
-}
-
 function closeModal(id){
   document.getElementById(id).classList.remove('active');
-  if(id === 'modalPDF') document.getElementById('pdfFrame').src = 'about:blank';
   if(id === 'modalGaji') { document.getElementById('gajiBody').innerHTML = ''; window._gajiResult = null; }
 }
 
 document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener('click', e => { if(e.target === el) closeModal(el.id); }); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('modalPDF'); closeModal('modalWifi'); closeModal('modalGaji'); closeModal('modalFormLembur'); closeModal('modalRekapLembur'); } });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('modalPDF'); closeModal('modalGaji'); closeModal('modalFormLembur'); closeModal('modalRekapLembur'); } });
 
 /* ============================================================
-   LOGIKA KALKULATOR GAJI (LENGKAP)
+   LOGIKA KALKULATOR GAJI (DENGAN BEDA HARI)
    ============================================================ */
 let gajiHariCounter = 0;
 function formatRupiah(n){ return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
@@ -1259,10 +1388,10 @@ function openGajiCalculator() {
     </div>
 
     <div class="gaji-section">
-      <div class="gaji-section-title">⏰ Lembur (Jam Mulai - Selesai)</div>
+      <div class="gaji-section-title">⏰ Lembur (Mulai - Selesai)</div>
       <div class="gaji-hint" style="margin-bottom:10px;">
         Setiap <b>kelipatan 5 jam</b> dipotong <b>1 jam</b> untuk istirahat.
-        Contoh: 17:00-24:00 = 7 jam → 6 jam efektif.
+        Contoh: 6 jam total → 5 jam efektif. 12 jam total → 10 jam efektif.
       </div>
       <div id="gajiHariList"></div>
       <button class="gaji-add-btn" onclick="addGajiHari()">+ Tambah Hari</button>
@@ -1287,8 +1416,8 @@ function addGajiHari(){
   row.setAttribute('data-id', id);
   row.innerHTML = `
     <div>
-      <label>Hari</label>
-      <select class="gaji-hari-select">
+      <label>Hari Mulai</label>
+      <select class="gaji-hari-select-mulai">
         <option value="senin">Senin</option>
         <option value="selasa">Selasa</option>
         <option value="rabu">Rabu</option>
@@ -1299,11 +1428,23 @@ function addGajiHari(){
       </select>
     </div>
     <div>
-      <label>Mulai</label>
+      <label>Jam Mulai</label>
       <input type="time" class="gaji-jam-mulai" value="17:00">
     </div>
     <div>
-      <label>Selesai</label>
+      <label>Hari Selesai</label>
+      <select class="gaji-hari-select-selesai">
+        <option value="senin">Senin</option>
+        <option value="selasa">Selasa</option>
+        <option value="rabu">Rabu</option>
+        <option value="kamis">Kamis</option>
+        <option value="jumat">Jumat</option>
+        <option value="sabtu">Sabtu</option>
+        <option value="minggu">Minggu</option>
+      </select>
+    </div>
+    <div>
+      <label>Jam Selesai</label>
       <input type="time" class="gaji-jam-selesai" value="20:00">
     </div>
     <button class="gaji-hapus-btn" onclick="hapusGajiHari(this)" title="Hapus">✕</button>
@@ -1317,15 +1458,31 @@ function hapusGajiHari(btn){
   btn.closest('.gaji-hari-row').remove();
 }
 
-function hitungJamLembur(mulai, selesai){
+// Logika hitung durasi dengan deteksi beda hari
+function hitungJamLembur(mulai, selesai, hariMulai, hariSelesai){
   const [h1, m1] = mulai.split(':').map(Number);
   const [h2, m2] = selesai.split(':').map(Number);
+  
   let totalMenit = (h2 * 60 + m2) - (h1 * 60 + m1);
-  if(totalMenit < 0) totalMenit += 24 * 60;
+  let isBedaHari = false;
+  
+  // Kalau hari mulai != hari selesai, atau jam selesai < jam mulai
+  if(hariMulai !== hariSelesai) {
+    isBedaHari = true;
+    totalMenit += 24 * 60; 
+  } else if(totalMenit < 0) {
+    isBedaHari = true;
+    totalMenit += 24 * 60;
+  }
+  
   const totalJam = totalMenit / 60;
-  const istirahat = Math.floor(totalJam / 5);
+  
+  // LOGIKA KETENAGAKERJAAN: Setiap kelipatan 5 jam potong 1 jam
+  // Contoh: 6 jam → 1 potongan. 12 jam → 2 potongan.
+  const istirahat = Math.floor(totalJam / 5); 
   const efektif = totalJam - istirahat;
-  return { totalJam, istirahat, efektif };
+  
+  return { totalJam, istirahat, efektif, isBedaHari };
 }
 
 function hitungLemburWeekday(jamEfektif, upahPerJam){
@@ -1361,22 +1518,42 @@ function hitungGaji() {
   let perHari = [];
 
   rows.forEach(row => {
-    const hari = row.querySelector('.gaji-hari-select').value;
+    const hariMulai = row.querySelector('.gaji-hari-select-mulai').value;
     const mulai = row.querySelector('.gaji-jam-mulai').value;
+    const hariSelesai = row.querySelector('.gaji-hari-select-selesai').value;
     const selesai = row.querySelector('.gaji-jam-selesai').value;
     if(!mulai || !selesai) return;
 
-    const { totalJam, istirahat, efektif } = hitungJamLembur(mulai, selesai);
-    const isWeekend = (hari === 'sabtu' || hari === 'minggu');
-    const lembur = isWeekend
-      ? hitungLemburWeekend(efektif, upahPerJam)
-      : hitungLemburWeekday(efektif, upahPerJam);
+    const { totalJam, istirahat, efektif, isBedaHari } = hitungJamLembur(mulai, selesai, hariMulai, hariSelesai);
+    
+    // Logic Tarif: Kita bagi berdasarkan hari berapa jam di masing2 hari
+    let lembur = { total: 0, detail: [] };
+    
+    if(isBedaHari) {
+       // Jika beda hari, hitung porsi tiap hari (agak ribet, kita sederhanakan: anggap semua hari mulai)
+       // Tapi kita bedakan Weekday / Weekend
+       const isWeekendMulai = (hariMulai === 'sabtu' || hariMulai === 'minggu');
+       const isWeekendSelesai = (hariSelesai === 'sabtu' || hariSelesai === 'minggu');
+       
+       // Simpel: kalau salah satu weekend, kita anggap weekend (rate 2x semua)
+       if(isWeekendMulai || isWeekendSelesai) {
+           lembur = hitungLemburWeekend(efektif, upahPerJam);
+       } else {
+           lembur = hitungLemburWeekday(efektif, upahPerJam);
+       }
+    } else {
+       const isWeekend = (hariMulai === 'sabtu' || hariMulai === 'minggu');
+       lembur = isWeekend
+        ? hitungLemburWeekend(efektif, upahPerJam)
+        : hitungLemburWeekday(efektif, upahPerJam);
+    }
 
     totalLembur += lembur.total;
     perHari.push({
-      hari, mulai, selesai,
+      hariMulai, mulai, hariSelesai, selesai,
       totalJam, istirahat, efektif,
-      isWeekend, detail: lembur.detail,
+      isWeekend: (hariMulai === 'sabtu' || hariMulai === 'minggu' || hariSelesai === 'sabtu' || hariSelesai === 'minggu'),
+      detail: lembur.detail,
       total: lembur.total
     });
   });
@@ -1409,11 +1586,12 @@ function hitungGaji() {
 
   html += `<div class="gaji-result"><div class="gaji-result-title">⏰ Detail Lembur</div>`;
   perHari.forEach(h => {
-    const hariNama = h.hari.charAt(0).toUpperCase() + h.hari.slice(1);
-    const tipe = h.isWeekend ? 'Weekend (2×)' : 'Weekday (1.5× & 2×)';
+    const hariNamaMulai = h.hariMulai.charAt(0).toUpperCase() + h.hariMulai.slice(1);
+    const hariNamaSelesai = h.hariSelesai.charAt(0).toUpperCase() + h.hariSelesai.slice(1);
+    const tipe = h.isWeekend ? 'Weekend/Weekday Mix (Dihitung 2×)' : 'Weekday (1.5× & 2×)';
     html += `
       <div class="gaji-hari-item">
-        <div class="gaji-hari-item-title">${hariNama} • ${h.mulai}-${h.selesai} • ${tipe}</div>
+        <div class="gaji-hari-item-title">${hariNamaMulai} ${h.mulai} - ${hariNamaSelesai} ${h.selesai} • ${tipe}</div>
         <div class="gaji-result-row"><span class="label">Durasi total</span><span class="value">${h.totalJam} jam</span></div>
         <div class="gaji-result-row"><span class="label">Istirahat (per 5 jam)</span><span class="value">-${h.istirahat} jam</span></div>
         <div class="gaji-result-row"><span class="label">Jam efektif</span><span class="value">${h.efektif} jam</span></div>
@@ -1462,16 +1640,16 @@ function downloadGajiCSV(){
   csv += `THP (Take Home Pay)${sep}${Math.round(r.thp)}${nl}${nl}`;
 
   csv += `DETAIL LEMBUR PER HARI${nl}`;
-  csv += `Hari${sep}Mulai${sep}Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
+  csv += `Hari Mulai${sep}Jam Mulai${sep}Hari Selesai${sep}Jam Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
   r.perHari.forEach(h => {
-    csv += `${h.hari}${sep}${h.mulai}${sep}${h.selesai}${sep}${h.isWeekend ? 'Weekend' : 'Weekday'}${sep}${h.totalJam}${sep}${h.istirahat}${sep}${h.efektif}${sep}${Math.round(h.total)}${nl}`;
+    csv += `${h.hariMulai}${sep}${h.mulai}${sep}${h.hariSelesai}${sep}${h.selesai}${sep}${h.isWeekend ? 'Weekend' : 'Weekday'}${sep}${h.totalJam}${sep}${h.istirahat}${sep}${h.efektif}${sep}${Math.round(h.total)}${nl}`;
   });
   csv += nl;
 
   csv += `DETAIL PER JAM LEMBUR${nl}`;
   r.perHari.forEach(h => {
     csv += nl;
-    csv += `${h.hari.toUpperCase()} - ${h.mulai} sampai ${h.selesai}${nl}`;
+    csv += `${h.hariMulai.toUpperCase()} - ${h.hariSelesai.toUpperCase()} (${h.mulai} s/d ${h.selesai})${nl}`;
     csv += `Jam ke${sep}Rate${sep}Jumlah (Rp)${nl}`;
     h.detail.forEach(d => { csv += `${d.jam}${sep}${d.rate}x${sep}${Math.round(d.jumlah)}${nl}`; });
     csv += `Subtotal${sep}${sep}${Math.round(h.total)}${nl}`;
@@ -1544,12 +1722,11 @@ async function submitLembur(e) {
 async function loadAll(){
   const now = new Date();
   try {
-    const [r1, r2, r3, r4, r5] = await Promise.all([
+    const [r1, r2, r3, r4] = await Promise.all([
       fetch(apiUrl('JadwalBulanan')).then(r => r.json()), 
       fetch(apiUrl('kegiatan')).then(r => r.json()),
       fetch(apiUrl('Links')).then(r => r.json()), 
-      fetch(apiUrl('WI')).then(r => r.json()), 
-      fetch(apiUrl('WifiGuest')).then(r => r.json())
+      fetch(apiUrl('WI')).then(r => r.json())
     ]);
     
     rawLokasi = r1; 
@@ -1557,7 +1734,6 @@ async function loadAll(){
     rawKegiatan = Array.isArray(r2) ? r2 : []; 
     rawLinks = Array.isArray(r3) ? r3 : []; 
     rawWI = Array.isArray(r4) ? r4 : []; 
-    rawWifi = Array.isArray(r5) ? r5 : []; 
 
     // RESET FILTER KE DEFAULT (HANYA HARI INI)
     const chkOnlyToday = document.getElementById('onlyToday');
@@ -1571,7 +1747,6 @@ async function loadAll(){
     isiDropdownTanggal(rawLokasi);
     renderKegiatan(rawKegiatan); 
     renderUpcoming(rawKegiatan); 
-    renderWifi(rawWifi); 
     renderWISection(rawWI); 
     renderLinks(rawLinks);
     renderJadwalMingguan(rawJadwal); 
@@ -1589,7 +1764,6 @@ tickClock(); setInterval(tickClock, 1000);
 document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi)); 
 document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
 document.getElementById('filterTanggal').addEventListener('change', () => renderLokasi(rawLokasi));
-document.getElementById('wifiSearch').addEventListener('input', () => renderWifi(rawWifi)); document.getElementById('wifiFilter').addEventListener('change', () => renderWifi(rawWifi));
 renderMarquee(); loadAll(); setInterval(loadAll, 30000);
 </script>
 </body>
