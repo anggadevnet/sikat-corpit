@@ -86,6 +86,10 @@ tr:hover td{background:#f8fafc}
 .kegiatan-item:hover .btn-save-item {opacity: 1;}
 .btn-save-item:hover {background: #f0f9ff; border-color: #0284c7; transform: scale(1.1);}
 
+/* Anti-Kedip Loading */
+#wrapJadwalMingguan, #wrapLokasi, #wrapKegiatan, #wrapUpcoming { position: relative; }
+.loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0284c7; z-index: 10; backdrop-filter: blur(2px); border-radius: 12px; }
+
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(15,23,42,.4);z-index:99999;opacity:0;transition:all .3s;pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .wi-accordion{display:flex;flex-direction:column;gap:10px}
@@ -271,7 +275,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
     </button>
   </div>
   <div style="background:#fff; border-radius:12px; padding:18px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04);">
-    <div id="wrapJadwalMingguan"><div class="loading">⏳ Memuat jadwal mingguan...</div></div>
+    <div id="wrapJadwalMingguan"></div>
   </div>
 </section>
 
@@ -303,7 +307,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
     </select>
 
   </div>
-  <div id="wrapLokasi"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+  <div id="wrapLokasi"></div>
 </section>
 
 <!-- CURRENT EVENT -->
@@ -312,13 +316,13 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
     <h2 style="margin: 0;">📋 Current Event <span class="count" id="cntKegiatan">0</span></h2>
     <!-- Tombol Save Current Event DIHAPUS -->
   </div>
-  <div id="wrapKegiatan"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+  <div id="wrapKegiatan"></div>
 </section>
 
 <!-- UPCOMING EVENT -->
 <section>
   <h2>🚀 Upcoming Event <span class="count" id="cntUpcoming">0</span></h2>
-  <div id="wrapUpcoming"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+  <div id="wrapUpcoming"></div>
 </section>
 
 <!-- GRAFIK LEMBUR -->
@@ -344,13 +348,13 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 <!-- WI -->
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
-  <div id="wrapWISection"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+  <div id="wrapWISection"></div>
 </section>
 
 <!-- LINK -->
 <section>
   <h2>🔗 Link Penting & Akses</h2>
-  <div id="wrapLinks"><div class="loading">⏳ Memuat data dari Google Sheets...</div></div>
+  <div id="wrapLinks"></div>
 </section>
 
 <footer>SIKAT-TI • by acg</footer>
@@ -458,7 +462,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
    KONFIGURASI & VARIABEL GLOBAL
    ============================================================ */
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
-const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi hari ini','Ya Allah, jauhkanlah hamba dari user yang hobi bilang: 'Tadi bisa, kok sekarang enggak ya?','Jangan lupa ngopi, biar tshoot gak bikin emosi','Keep corporate, stay overtime, and accept the breakdown'];
+const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi hari ini','Jangan lupa ngopi, biar tshoot gak bikin emosi','Keep corporate, stay overtime, and accept the breakdown'];
 let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
 let filterRekapStatus = 'all'; // Variabel buat filter
@@ -1721,6 +1725,19 @@ async function submitLembur(e) {
    ============================================================ */
 async function loadAll(){
   const now = new Date();
+  
+  // 1. Kasih Overlay Loading di atas tabel yang udah ada (tanpa hapus tabel)
+  const wraps = ['wrapJadwalMingguan', 'wrapLokasi', 'wrapKegiatan', 'wrapUpcoming'];
+  wraps.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && !el.querySelector('.loading-overlay')) {
+       const overlay = document.createElement('div');
+       overlay.className = 'loading-overlay';
+       overlay.innerHTML = '⏳ Memuat...';
+       el.appendChild(overlay);
+    }
+  });
+
   try {
     const [r1, r2, r3, r4] = await Promise.all([
       fetch(apiUrl('JadwalBulanan')).then(r => r.json()), 
@@ -1742,7 +1759,7 @@ async function loadAll(){
     selectTanggal.value = '';
     selectTanggal.style.display = 'none';
 
-    // Render semua data yang diperlukan
+    // 2. Render Data (Hapus overlay loading setelah render)
     renderLokasi(rawLokasi); 
     isiDropdownTanggal(rawLokasi);
     renderKegiatan(rawKegiatan); 
@@ -1752,9 +1769,13 @@ async function loadAll(){
     renderJadwalMingguan(rawJadwal); 
     renderGrafikLembur(); 
     
+    // Hapus semua overlay loading
+    document.querySelectorAll('.loading-overlay').forEach(el => el.remove());
+
     document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
   } catch(err) { 
     console.error(err); 
+    document.querySelectorAll('.loading-overlay').forEach(el => el.remove());
     document.getElementById('wrapLokasi').innerHTML = '<div class="empty">❌ Gagal memuat. Cek Console (F12).</div>'; 
   }
 }
