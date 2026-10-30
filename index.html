@@ -357,7 +357,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"></div>
 </section>
 
-<footer>SIKAT-TI • by acg</footer>
+<footer>SIKAT-TI • acg</footer>
 
 <!-- MODAL PDF (Walaupun namanya PDF, ini bakal jadi modal pesan redirect) -->
 <div class="modal-overlay" id="modalPDF">
@@ -1562,15 +1562,16 @@ function hitungGaji() {
     });
   });
 
+  const bpjsKes = gajiPokok * 0.01;
   const jht = gajiPokok * 0.02;
   const jp = gajiPokok * 0.01;
-  const totalPotongan = jht + jp;
+  const totalPotongan = bpjsKes + jht + jp;
   const gajiKotor = gajiPokok + totalLembur;
   const thp = gajiKotor - totalPotongan;
 
   window._gajiResult = {
     gajiPokok, upahPerJam, totalLembur, perHari,
-    jht, jp, totalPotongan, gajiKotor, thp
+    bpjsKes, jht, jp, totalPotongan, gajiKotor, thp
   };
 
   const hasil = document.getElementById('gajiHasil');
@@ -1610,8 +1611,9 @@ function hitungGaji() {
       <div class="gaji-result-title">💰 Total Perhitungan</div>
       <div class="gaji-result-row"><span class="label">Total Lembur</span><span class="value">${formatRupiah(totalLembur)}</span></div>
       <div class="gaji-result-row big"><span class="label">GAJI KOTOR</span><span class="value">${formatRupiah(gajiKotor)}</span></div>
-      <div class="gaji-result-row" style="margin-top:12px;"><span class="label">JHT (2%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jht)}</span></div>
-      <div class="gaji-result-row"><span class="label">JP (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jp)}</span></div>
+           <div class="gaji-result-row" style="margin-top:12px;"><span class="label">BPJS Kesehatan Karyawan (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(bpjsKes)}</span></div>
+      <div class="gaji-result-row"><span class="label">JHT Karyawan (2%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jht)}</span></div>
+      <div class="gaji-result-row"><span class="label">JP Employee (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jp)}</span></div>
       <div class="gaji-result-row"><span class="label">Total Potongan</span><span class="value" style="color:#dc2626;">-${formatRupiah(totalPotongan)}</span></div>
       <div class="gaji-result-row total"><span class="label">THP (Take Home Pay)</span><span class="value">${formatRupiah(thp)}</span></div>
       <button class="gaji-download-btn" onclick="downloadGajiCSV()">📥 Download Detail (.csv)</button>
@@ -1639,8 +1641,10 @@ function downloadGajiCSV(){
   csv += `Upah/jam (÷173)${sep}${Math.round(r.upahPerJam)}${nl}`;
   csv += `Total Lembur${sep}${Math.round(r.totalLembur)}${nl}`;
   csv += `GAJI KOTOR${sep}${Math.round(r.gajiKotor)}${nl}`;
-  csv += `JHT 2%${sep}-${Math.round(r.jht)}${nl}`;
-  csv += `JP 1%${sep}-${Math.round(r.jp)}${nl}`;
+  csv += `BPJS Kesehatan Karyawan 1%${sep}-${Math.round(r.bpjsKes)}${nl}`;
+  csv += `JHT Karyawan 2%${sep}-${Math.round(r.jht)}${nl}`;
+  csv += `JP Employee 1%${sep}-${Math.round(r.jp)}${nl}`;
+  csv += `Total Potongan${sep}-${Math.round(r.totalPotongan)}${nl}`;
   csv += `THP (Take Home Pay)${sep}${Math.round(r.thp)}${nl}${nl}`;
 
   csv += `DETAIL LEMBUR PER HARI${nl}`;
@@ -1664,7 +1668,7 @@ function downloadGajiCSV(){
   csv += `- Lembur weekday: jam ke-1 = 1.5x, jam ke-2 dst = 2x${nl}`;
   csv += `- Lembur weekend: semua jam = 2x${nl}`;
   csv += `- Setiap kelipatan 5 jam lembur dipotong 1 jam istirahat${nl}`;
-  csv += `- Potongan BPJS Ketenagakerjaan: JHT 2% + JP 1% = 3%${nl}`;
+  csv += `- Potongan karyawan: BPJS Kesehatan 1% + JHT 2% + JP 1% = 4%${nl}`;
 
   const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
