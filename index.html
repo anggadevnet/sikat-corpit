@@ -167,8 +167,10 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .form-submit-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;transition:all .2s;width:100%;box-shadow:0 4px 12px rgba(2,132,199,.3);margin-top:10px}
 .form-submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(2,132,199,.4)}
 .form-submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.gaji-body{padding:24px 26px;overflow-y:auto;max-height:calc(92vh - 70px)}
-.gaji-section{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin-bottom:16px}
+
+/* --- STYLE BARU UNTUK KALKULATOR GAJI --- */
+.gaji-body{padding:24px 26px;overflow-y:auto;max-height:calc(92vh - 70px);background:#f8fafc;}
+.gaji-section{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.02);}
 .gaji-section-title{font-size:12px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .gaji-field{margin-bottom:12px}
 .gaji-field:last-child{margin-bottom:0}
@@ -176,18 +178,28 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-input{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:border .2s;background:#fff}
 .gaji-input:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.15)}
 .gaji-hint{font-size:11px;color:#94a3b8;margin-top:4px}
-.gaji-hari-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:12px;padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px}
-.gaji-hari-row select,.gaji-hari-row input{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff}
-.gaji-hari-row select:focus,.gaji-hari-row input:focus{border-color:#0284c7;box-shadow:0 0 0 2px rgba(2,132,199,.15)}
-.gaji-hari-row label{font-size:11px;color:#64748b;font-weight:600;display:block;margin-bottom:4px}
-.gaji-hapus-btn{background:#fee2e2;border:none;width:36px;height:36px;border-radius:8px;color:#dc2626;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0}
-.gaji-hapus-btn:hover{background:#fecaca}
-.gaji-add-btn{background:#fff;border:1px dashed #cbd5e1;color:#0284c7;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;transition:all .2s}
-.gaji-add-btn:hover{background:#f0f9ff;border-color:#38bdf8}
-.gaji-calc-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:700;cursor:pointer;font-size:15px;font-family:inherit;width:100%;transition:all .2s;box-shadow:0 4px 12px rgba(2,132,199,.3)}
-.gaji-calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(2,132,199,.4)}
-.gaji-result{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:16px}
-.gaji-result-title{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* Row Input Lembur (Date & Time) */
+.gaji-hari-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;padding:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;position:relative;box-shadow:0 1px 4px rgba(0,0,0,0.02);}
+.gaji-hari-row input[type="date"], .gaji-hari-row input[type="time"]{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#f8fafc;color:#0f172a;transition:all .2s;}
+.gaji-hari-row input[type="date"]:focus, .gaji-hari-row input[type="time"]:focus{border-color:#0284c7;background:#fff;box-shadow:0 0 0 3px rgba(2,132,199,.15);}
+.gaji-hari-row label{font-size:11px;color:#64748b;font-weight:700;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.gaji-hari-row .input-wrap{display:flex;flex-direction:column;}
+.gaji-hapus-btn{position:absolute;top:-10px;right:-10px;background:#fee2e2;border:1px solid #fecaca;width:28px;height:28px;border-radius:50%;color:#dc2626;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(220,38,38,0.2);}
+.gaji-hapus-btn:hover{background:#dc2626;color:#fff;}
+
+/* Info Box Live Kalkulasi */
+.live-info-box{grid-column: span 3; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; margin-top:4px;}
+.live-info-text{font-size:12px; color:#1e40af; font-weight:500;}
+.live-info-text b{color:#1d4ed8;}
+.live-info-badge{background:#dbeafe; color:#1e40af; font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; white-space:nowrap;}
+
+.gaji-add-btn{background:#fff;border:1px dashed #94a3b8;color:#475569;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.gaji-add-btn:hover{background:#f1f5f9;border-color:#64748b;color:#0f172a;}
+.gaji-calc-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:16px 24px;border-radius:12px;font-weight:800;cursor:pointer;font-size:15px;font-family:inherit;width:100%;transition:all .2s;box-shadow:0 6px 16px rgba(2,132,199,.3);display:flex;align-items:center;justify-content:center;gap:8px;}
+.gaji-calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(2,132,199,.4);}
+.gaji-result{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-top:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+.gaji-result-title{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .gaji-result-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px;gap:12px}
 .gaji-result-row:last-child{border-bottom:none}
 .gaji-result-row .label{color:#64748b}
@@ -196,10 +208,10 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-result-row.total .label{color:#0f172a;font-weight:800}
 .gaji-result-row.total .value{color:#0284c7;font-size:18px;font-weight:800}
 .gaji-result-row.big{font-size:15px;padding:12px 0}
-.gaji-hari-item{background:#f8fafc;border-left:3px solid #0284c7;border-radius:8px;padding:12px 14px;margin-bottom:8px}
-.gaji-hari-item-title{font-size:12px;font-weight:800;color:#0284c7;text-transform:uppercase;margin-bottom:8px}
+.gaji-hari-item{background:#f8fafc;border-left:4px solid #0284c7;border-radius:8px;padding:14px 16px;margin-bottom:10px;border-top:1px solid #e2e8f0;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;}
+.gaji-hari-item-title{font-size:12px;font-weight:800;color:#0284c7;text-transform:uppercase;margin-bottom:8px;display:flex;flex-wrap:wrap;gap:8px;}
 .gaji-hari-item .gaji-result-row{font-size:12px;padding:4px 0}
-.gaji-download-btn{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit;width:100%;margin-top:16px;transition:all .2s;box-shadow:0 4px 12px rgba(22,163,74,.3)}
+.gaji-download-btn{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff;border:none;padding:14px 20px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;width:100%;margin-top:16px;transition:all .2s;box-shadow:0 4px 12px rgba(22,163,74,.3)}
 .gaji-download-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(22,163,74,.4)}
 
 /* Mobile Responsive */
@@ -214,12 +226,12 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   
   /* HP Tampilan Kalkulator */
   .gaji-body{padding:16px}
-  .gaji-hari-row { grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px; position: relative; padding-bottom: 40px; }
-  .gaji-hari-row > div:nth-child(1) { grid-column: span 2; } /* Hari Mulai full width */
-  .gaji-hari-row > div:nth-child(2) { grid-column: span 1; } /* Jam Mulai setengah */
-  .gaji-hari-row > div:nth-child(3) { grid-column: span 2; } /* Hari Selesai full width */
-  .gaji-hari-row > div:nth-child(4) { grid-column: span 1; } /* Jam Selesai setengah */
-  .gaji-hapus-btn { position: absolute; bottom: 10px; right: 10px; width: 100%; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 14px; }
+  .gaji-hari-row { grid-template-columns: 1fr 1fr; padding-top:20px; }
+  .gaji-hari-row .input-wrap:nth-child(1) { grid-column: span 2; } /* Tanggal Mulai full width */
+  .gaji-hari-row .input-wrap:nth-child(2) { grid-column: span 1; } /* Jam Mulai setengah */
+  .gaji-hari-row .input-wrap:nth-child(3) { grid-column: span 2; } /* Tanggal Selesai full width */
+  .gaji-hari-row .input-wrap:nth-child(4) { grid-column: span 1; } /* Jam Selesai setengah */
+  .live-info-box { grid-column: span 2; flex-direction: column; align-items: flex-start; gap:6px; }
   .gaji-add-btn { padding: 14px; font-size: 14px; }
   .gaji-calc-btn { padding: 16px; font-size: 16px; }
   .gaji-result-row { font-size: 12px; }
@@ -357,7 +369,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapLinks"></div>
 </section>
 
-<footer>SIKAT-TI • acg</footer>
+<footer>SIKAT-TI • 主幹 </footer>
 
 <!-- MODAL PDF (Walaupun namanya PDF, ini bakal jadi modal pesan redirect) -->
 <div class="modal-overlay" id="modalPDF">
@@ -461,6 +473,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 /* ============================================================
    KONFIGURASI & VARIABEL GLOBAL
    ============================================================ */
+// GANTI DENGAN URL WEB APP KAMU YANG SUDAH DI-DEPLOY ULANG (VERSI BARU)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
 const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi hari ini','Jangan lupa ngopi, biar tshoot gak bikin emosi','Keep corporate, stay overtime, and accept the breakdown'];
 let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
@@ -544,7 +557,6 @@ function formatTanggalLengkap(date){
   const tgl = date.getDate().toString().padStart(2,'0'); 
   const bln = (date.getMonth()+1).toString().padStart(2,'0'); 
   const thn = date.getFullYear(); 
-  // Format dd/mm/YYYY
   return `${hari}, ${tgl}/${bln}/${thn}`; 
 }
 function parseTanggalValid(str){ const date = parseTanggalID(str); if(!date) return null; const hariDitulis = detectHariDitulis(str); if(hariDitulis){ const hariAsli = HARI_ID[date.getDay()]; if(hariDitulis.toLowerCase() !== hariAsli.toLowerCase()) return null; } return date; }
@@ -1374,10 +1386,16 @@ document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener(
 document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('modalPDF'); closeModal('modalGaji'); closeModal('modalFormLembur'); closeModal('modalRekapLembur'); } });
 
 /* ============================================================
-   LOGIKA KALKULATOR GAJI (DENGAN BEDA HARI)
+   LOGIKA KALKULATOR GAJI (DENGAN DATE PICKER & LIVE CALC)
    ============================================================ */
 let gajiHariCounter = 0;
 function formatRupiah(n){ return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+function formatTanggalShort(dateStr) {
+  if(!dateStr) return '';
+  const d = new Date(dateStr);
+  if(isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 function openGajiCalculator() {
   const body = document.getElementById('gajiBody');
@@ -1393,9 +1411,8 @@ function openGajiCalculator() {
 
     <div class="gaji-section">
       <div class="gaji-section-title">⏰ Lembur (Mulai - Selesai)</div>
-      <div class="gaji-hint" style="margin-bottom:10px;">
-        Setiap <b>kelipatan 5 jam</b> dipotong <b>1 jam</b> untuk istirahat.
-        Contoh: 6 jam total → 5 jam efektif. 12 jam total → 10 jam efektif.
+      <div class="gaji-hint" style="margin-bottom:16px; line-height:1.5;">
+        Setiap <b>kelipatan 5 jam</b> dipotong <b>1 jam</b> untuk istirahat. Tarif menyesuaikan hari mulai/selesai secara otomatis.
       </div>
       <div id="gajiHariList"></div>
       <button class="gaji-add-btn" onclick="addGajiHari()">+ Tambah Hari</button>
@@ -1418,42 +1435,37 @@ function addGajiHari(){
   const row = document.createElement('div');
   row.className = 'gaji-hari-row';
   row.setAttribute('data-id', id);
+  
+  const today = new Date().toISOString().split('T')[0];
+
   row.innerHTML = `
-    <div>
-      <label>Hari Mulai</label>
-      <select class="gaji-hari-select-mulai">
-        <option value="senin">Senin</option>
-        <option value="selasa">Selasa</option>
-        <option value="rabu">Rabu</option>
-        <option value="kamis">Kamis</option>
-        <option value="jumat">Jumat</option>
-        <option value="sabtu">Sabtu</option>
-        <option value="minggu">Minggu</option>
-      </select>
+    <div class="input-wrap">
+      <label>Tanggal Mulai</label>
+      <input type="date" class="gaji-date-mulai" value="${today}" onchange="updateLiveInfo(this)">
     </div>
-    <div>
+    <div class="input-wrap">
       <label>Jam Mulai</label>
-      <input type="time" class="gaji-jam-mulai" value="17:00">
+      <input type="time" class="gaji-jam-mulai" value="17:00" onchange="updateLiveInfo(this)">
     </div>
-    <div>
-      <label>Hari Selesai</label>
-      <select class="gaji-hari-select-selesai">
-        <option value="senin">Senin</option>
-        <option value="selasa">Selasa</option>
-        <option value="rabu">Rabu</option>
-        <option value="kamis">Kamis</option>
-        <option value="jumat">Jumat</option>
-        <option value="sabtu">Sabtu</option>
-        <option value="minggu">Minggu</option>
-      </select>
+    <div class="input-wrap">
+      <label>Tanggal Selesai</label>
+      <input type="date" class="gaji-date-selesai" value="${today}" onchange="updateLiveInfo(this)">
     </div>
-    <div>
+    <div class="input-wrap">
       <label>Jam Selesai</label>
-      <input type="time" class="gaji-jam-selesai" value="20:00">
+      <input type="time" class="gaji-jam-selesai" value="20:00" onchange="updateLiveInfo(this)">
     </div>
+    
+    <div class="live-info-box">
+      <span class="live-info-text" id="live-info-text-${id}">Menunggu input...</span>
+      <span class="live-info-badge" id="live-info-badge-${id}">0 Jam Efektif</span>
+    </div>
+
     <button class="gaji-hapus-btn" onclick="hapusGajiHari(this)" title="Hapus">✕</button>
   `;
   list.appendChild(row);
+  
+  setTimeout(() => updateLiveInfo(row.querySelector('.gaji-date-mulai')), 100);
 }
 
 function hapusGajiHari(btn){
@@ -1462,36 +1474,80 @@ function hapusGajiHari(btn){
   btn.closest('.gaji-hari-row').remove();
 }
 
-// Logika hitung durasi dengan deteksi beda hari
-function hitungJamLembur(mulai, selesai, hariMulai, hariSelesai){
-  const [h1, m1] = mulai.split(':').map(Number);
-  const [h2, m2] = selesai.split(':').map(Number);
+// Fungsi kalkulasi internal (dipakai untuk live info & hitung gaji final)
+function hitungJamLembur(mulai, selesai, dateMulaiStr, dateSelesaiStr){
+  if(!dateMulaiStr || !dateSelesaiStr || !mulai || !selesai) return null;
+
+  const start = new Date(`${dateMulaiStr}T${mulai}:00`);
+  const end = new Date(`${dateSelesaiStr}T${selesai}:00`);
   
-  let totalMenit = (h2 * 60 + m2) - (h1 * 60 + m1);
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+
+  let diffMs = end - start;
   let isBedaHari = false;
   
-  // Kalau hari mulai != hari selesai, atau jam selesai < jam mulai
-  if(hariMulai !== hariSelesai) {
+  if (diffMs < 0) {
+    // Kalau tanggal selesai lebih kecil dari tanggal mulai, atau jam selesai lebih kecil di hari yang sama
     isBedaHari = true;
-    totalMenit += 24 * 60; 
-  } else if(totalMenit < 0) {
-    isBedaHari = true;
-    totalMenit += 24 * 60;
+    // Jika user salah input tanggal selesai (lebih kecil), kita asumsikan keesokan harinya
+    if (end < start && dateMulaiStr === dateSelesaiStr) {
+        diffMs += 24 * 60 * 60 * 1000;
+    } else if (end < start) {
+        // Kalau beda tanggal tapi end < start (misal input manual aneh), anggap error
+        return null;
+    }
+  } else if (dateMulaiStr !== dateSelesaiStr) {
+      isBedaHari = true;
   }
   
-  const totalJam = totalMenit / 60;
-  
-  // LOGIKA KETENAGAKERJAAN: Setiap kelipatan 5 jam potong 1 jam
-  // Contoh: 6 jam → 1 potongan. 12 jam → 2 potongan.
+  const totalJam = diffMs / (1000 * 60 * 60);
   const istirahat = Math.floor(totalJam / 5); 
   const efektif = totalJam - istirahat;
   
-  return { totalJam, istirahat, efektif, isBedaHari };
+  const isWeekendMulai = (start.getDay() === 0 || start.getDay() === 6);
+  const isWeekendSelesai = (end.getDay() === 0 || end.getDay() === 6);
+  const isWeekend = isWeekendMulai || isWeekendSelesai;
+
+  return { totalJam, istirahat, efektif, isBedaHari, isWeekend, start, end };
+}
+
+// Fungsi untuk update kotak info live di bawah input tanggal
+function updateLiveInfo(el) {
+  const row = el.closest('.gaji-hari-row');
+  const id = row.getAttribute('data-id');
+  const dateMulai = row.querySelector('.gaji-date-mulai').value;
+  const jamMulai = row.querySelector('.gaji-jam-mulai').value;
+  const dateSelesai = row.querySelector('.gaji-date-selesai').value;
+  const jamSelesai = row.querySelector('.gaji-jam-selesai').value;
+  
+  const infoText = document.getElementById(`live-info-text-${id}`);
+  const infoBadge = document.getElementById(`live-info-badge-${id}`);
+
+  const calc = hitungJamLembur(jamMulai, jamSelesai, dateMulai, dateSelesai);
+  
+  if (!calc) {
+    infoText.innerHTML = "Lengkapi tanggal dan jam.";
+    infoBadge.textContent = "0 Jam Efektif";
+    return;
+  }
+
+  const hariMulai = formatTanggalShort(dateMulai).split(',')[0];
+  const hariSelesai = formatTanggalShort(dateSelesai).split(',')[0];
+  
+  let text = `Durasi: <b>${calc.totalJam} Jam</b>`;
+  if (calc.istirahat > 0) text += ` | Istirahat: <b>-${calc.istirahat} Jam</b>`;
+  if (calc.isBedaHari) text += ` (Beda Hari)`;
+  text += `. Tipe: <b>${calc.isWeekend ? 'Weekend (2x/3x/4x)' : 'Weekday (1.5x/2x)'}</b>`;
+  
+  infoText.innerHTML = text;
+  infoBadge.textContent = `${calc.efektif} Jam Efektif`;
+  infoBadge.style.background = calc.efektif > 0 ? '#dbeafe' : '#f1f5f9';
 }
 
 function hitungLemburWeekday(jamEfektif, upahPerJam){
   let total = 0, detail = [];
   for(let i = 1; i <= jamEfektif; i++){
+    // Aturan Weekday: Jam ke-1 = 1.5x, Jam ke-2 dst = 2x
     const rate = (i === 1) ? 1.5 : 2;
     const jumlah = rate * upahPerJam;
     total += jumlah;
@@ -1502,8 +1558,21 @@ function hitungLemburWeekday(jamEfektif, upahPerJam){
 
 function hitungLemburWeekend(jamEfektif, upahPerJam){
   let total = 0, detail = [];
+  
   for(let i = 1; i <= jamEfektif; i++){
-    const rate = 2;
+    let rate = 2; // Default 2x
+    
+    // Aturan PP 35/2021 untuk Hari Libur (Weekend)
+    if (i === 8) {
+        rate = 3;
+    } else if (i >= 9 && i <= 11) {
+        rate = 4;
+    } else if (i === 12) {
+        rate = 3;
+    } else if (i > 12) {
+        rate = 2; // Kalau lebih dari 12 jam, balik ke 2x
+    }
+    
     const jumlah = rate * upahPerJam;
     total += jumlah;
     detail.push({ jam: i, rate, jumlah });
@@ -1522,41 +1591,33 @@ function hitungGaji() {
   let perHari = [];
 
   rows.forEach(row => {
-    const hariMulai = row.querySelector('.gaji-hari-select-mulai').value;
+    const dateMulai = row.querySelector('.gaji-date-mulai').value;
     const mulai = row.querySelector('.gaji-jam-mulai').value;
-    const hariSelesai = row.querySelector('.gaji-hari-select-selesai').value;
+    const dateSelesai = row.querySelector('.gaji-date-selesai').value;
     const selesai = row.querySelector('.gaji-jam-selesai').value;
-    if(!mulai || !selesai) return;
+    
+    if(!dateMulai || !mulai || !dateSelesai || !selesai) return;
 
-    const { totalJam, istirahat, efektif, isBedaHari } = hitungJamLembur(mulai, selesai, hariMulai, hariSelesai);
-    
-    // Logic Tarif: Kita bagi berdasarkan hari berapa jam di masing2 hari
+    const calc = hitungJamLembur(mulai, selesai, dateMulai, dateSelesai);
+    if (!calc) return;
+
     let lembur = { total: 0, detail: [] };
-    
-    if(isBedaHari) {
-       // Jika beda hari, hitung porsi tiap hari (agak ribet, kita sederhanakan: anggap semua hari mulai)
-       // Tapi kita bedakan Weekday / Weekend
-       const isWeekendMulai = (hariMulai === 'sabtu' || hariMulai === 'minggu');
-       const isWeekendSelesai = (hariSelesai === 'sabtu' || hariSelesai === 'minggu');
-       
-       // Simpel: kalau salah satu weekend, kita anggap weekend (rate 2x semua)
-       if(isWeekendMulai || isWeekendSelesai) {
-           lembur = hitungLemburWeekend(efektif, upahPerJam);
-       } else {
-           lembur = hitungLemburWeekday(efektif, upahPerJam);
-       }
+    if(calc.isWeekend) {
+        lembur = hitungLemburWeekend(calc.efektif, upahPerJam);
     } else {
-       const isWeekend = (hariMulai === 'sabtu' || hariMulai === 'minggu');
-       lembur = isWeekend
-        ? hitungLemburWeekend(efektif, upahPerJam)
-        : hitungLemburWeekday(efektif, upahPerJam);
+        lembur = hitungLemburWeekday(calc.efektif, upahPerJam);
     }
 
     totalLembur += lembur.total;
     perHari.push({
-      hariMulai, mulai, hariSelesai, selesai,
-      totalJam, istirahat, efektif,
-      isWeekend: (hariMulai === 'sabtu' || hariMulai === 'minggu' || hariSelesai === 'sabtu' || hariSelesai === 'minggu'),
+      hariMulai: formatTanggalShort(dateMulai), 
+      mulai: mulai, 
+      hariSelesai: formatTanggalShort(dateSelesai), 
+      selesai: selesai,
+      totalJam: calc.totalJam, 
+      istirahat: calc.istirahat, 
+      efektif: calc.efektif,
+      isWeekend: calc.isWeekend,
       detail: lembur.detail,
       total: lembur.total
     });
@@ -1591,15 +1652,14 @@ function hitungGaji() {
 
   html += `<div class="gaji-result"><div class="gaji-result-title">⏰ Detail Lembur</div>`;
   perHari.forEach(h => {
-    const hariNamaMulai = h.hariMulai.charAt(0).toUpperCase() + h.hariMulai.slice(1);
-    const hariNamaSelesai = h.hariSelesai.charAt(0).toUpperCase() + h.hariSelesai.slice(1);
-    const tipe = h.isWeekend ? 'Weekend/Weekday Mix (Dihitung 2×)' : 'Weekday (1.5× & 2×)';
+    const tipe = h.isWeekend ? 'Weekend (2x/3x/4x)' : 'Weekday (1.5x/2x)';
     html += `
       <div class="gaji-hari-item">
-        <div class="gaji-hari-item-title">${hariNamaMulai} ${h.mulai} - ${hariNamaSelesai} ${h.selesai} • ${tipe}</div>
+        <div class="gaji-hari-item-title">📅 ${h.hariMulai} ${h.mulai} s/d ${h.hariSelesai} ${h.selesai}</div>
         <div class="gaji-result-row"><span class="label">Durasi total</span><span class="value">${h.totalJam} jam</span></div>
         <div class="gaji-result-row"><span class="label">Istirahat (per 5 jam)</span><span class="value">-${h.istirahat} jam</span></div>
         <div class="gaji-result-row"><span class="label">Jam efektif</span><span class="value">${h.efektif} jam</span></div>
+        <div class="gaji-result-row"><span class="label">Tipe Tarif</span><span class="value" style="color:#b45309;">${tipe}</span></div>
         <div class="gaji-result-row big"><span class="label">Subtotal lembur</span><span class="value">${formatRupiah(h.total)}</span></div>
       </div>
     `;
@@ -1611,7 +1671,7 @@ function hitungGaji() {
       <div class="gaji-result-title">💰 Total Perhitungan</div>
       <div class="gaji-result-row"><span class="label">Total Lembur</span><span class="value">${formatRupiah(totalLembur)}</span></div>
       <div class="gaji-result-row big"><span class="label">GAJI KOTOR</span><span class="value">${formatRupiah(gajiKotor)}</span></div>
-           <div class="gaji-result-row" style="margin-top:12px;"><span class="label">BPJS Kesehatan Karyawan (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(bpjsKes)}</span></div>
+      <div class="gaji-result-row" style="margin-top:12px;"><span class="label">BPJS Kesehatan Karyawan (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(bpjsKes)}</span></div>
       <div class="gaji-result-row"><span class="label">JHT Karyawan (2%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jht)}</span></div>
       <div class="gaji-result-row"><span class="label">JP Employee (1%)</span><span class="value" style="color:#dc2626;">-${formatRupiah(jp)}</span></div>
       <div class="gaji-result-row"><span class="label">Total Potongan</span><span class="value" style="color:#dc2626;">-${formatRupiah(totalPotongan)}</span></div>
@@ -1648,7 +1708,7 @@ function downloadGajiCSV(){
   csv += `THP (Take Home Pay)${sep}${Math.round(r.thp)}${nl}${nl}`;
 
   csv += `DETAIL LEMBUR PER HARI${nl}`;
-  csv += `Hari Mulai${sep}Jam Mulai${sep}Hari Selesai${sep}Jam Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
+  csv += `Tanggal Mulai${sep}Jam Mulai${sep}Tanggal Selesai${sep}Jam Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
   r.perHari.forEach(h => {
     csv += `${h.hariMulai}${sep}${h.mulai}${sep}${h.hariSelesai}${sep}${h.selesai}${sep}${h.isWeekend ? 'Weekend' : 'Weekday'}${sep}${h.totalJam}${sep}${h.istirahat}${sep}${h.efektif}${sep}${Math.round(h.total)}${nl}`;
   });
@@ -1657,7 +1717,7 @@ function downloadGajiCSV(){
   csv += `DETAIL PER JAM LEMBUR${nl}`;
   r.perHari.forEach(h => {
     csv += nl;
-    csv += `${h.hariMulai.toUpperCase()} - ${h.hariSelesai.toUpperCase()} (${h.mulai} s/d ${h.selesai})${nl}`;
+    csv += `${h.hariMulai} s/d ${h.hariSelesai} (${h.mulai} - ${h.selesai})${nl}`;
     csv += `Jam ke${sep}Rate${sep}Jumlah (Rp)${nl}`;
     h.detail.forEach(d => { csv += `${d.jam}${sep}${d.rate}x${sep}${Math.round(d.jumlah)}${nl}`; });
     csv += `Subtotal${sep}${sep}${Math.round(h.total)}${nl}`;
@@ -1666,7 +1726,7 @@ function downloadGajiCSV(){
   csv += `${nl}Catatan:${nl}`;
   csv += `- Upah per jam = Gaji Pokok / 173 (PP 35/2021)${nl}`;
   csv += `- Lembur weekday: jam ke-1 = 1.5x, jam ke-2 dst = 2x${nl}`;
-  csv += `- Lembur weekend: semua jam = 2x${nl}`;
+  csv += `- Lembur weekend: jam 1-7 = 2x, jam 8 = 3x, jam 9-11 = 4x, jam 12 = 3x, >12 = 2x${nl}`;
   csv += `- Setiap kelipatan 5 jam lembur dipotong 1 jam istirahat${nl}`;
   csv += `- Potongan karyawan: BPJS Kesehatan 1% + JHT 2% + JP 1% = 4%${nl}`;
 
@@ -1743,12 +1803,36 @@ async function loadAll(){
   });
 
   try {
-    const [r1, r2, r3, r4] = await Promise.all([
-      fetch(apiUrl('JadwalBulanan')).then(r => r.json()), 
-      fetch(apiUrl('kegiatan')).then(r => r.json()),
-      fetch(apiUrl('Links')).then(r => r.json()), 
-      fetch(apiUrl('WI')).then(r => r.json())
+    // Gunakan Promise.allSettled agar jika satu request gagal, yang lain tetap jalan
+    const results = await Promise.allSettled([
+      fetch(apiUrl('JadwalBulanan')).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      }), 
+      fetch(apiUrl('kegiatan')).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      }),
+      fetch(apiUrl('Links')).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      }), 
+      fetch(apiUrl('WI')).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
     ]);
+    
+    // Ambil hasilnya, jika gagal isi dengan array kosong
+    const r1 = results[0].status === 'fulfilled' ? results[0].value : [];
+    const r2 = results[1].status === 'fulfilled' ? results[1].value : [];
+    const r3 = results[2].status === 'fulfilled' ? results[2].value : [];
+    const r4 = results[3].status === 'fulfilled' ? results[3].value : [];
+
+    // Cek jika salah satu gagal, beri peringatan di console
+    results.forEach((res, i) => {
+      if (res.status === 'rejected') console.error(`Gagal load sheet ke-${i+1}:`, res.reason);
+    });
     
     rawLokasi = r1; 
     rawJadwal = r1; 
