@@ -475,7 +475,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
    ============================================================ */
 // GANTI DENGAN URL WEB APP KAMU YANG SUDAH DI-DEPLOY ULANG (VERSI BARU)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
-const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi hari ini','Jangan lupa ngopi, biar tshoot gak bikin emosi','Keep corporate, stay overtime, and accept the breakdown'];
+const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi hari ini','Jangan lupa ngopi','Keep corporate, stay overtime, and accept the breakdown'];
 let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
 let filterRekapStatus = 'all'; // Variabel buat filter
@@ -1790,17 +1790,21 @@ async function submitLembur(e) {
 async function loadAll(){
   const now = new Date();
   
-  // 1. Kasih Overlay Loading di atas tabel yang udah ada (tanpa hapus tabel)
-  const wraps = ['wrapJadwalMingguan', 'wrapLokasi', 'wrapKegiatan', 'wrapUpcoming'];
-  wraps.forEach(id => {
-    const el = document.getElementById(id);
-    if(el && !el.querySelector('.loading-overlay')) {
-       const overlay = document.createElement('div');
-       overlay.className = 'loading-overlay';
-       overlay.innerHTML = '⏳ Memuat...';
-       el.appendChild(overlay);
-    }
-  });
+  // 1. Kasih Overlay Loading HANYA saat pertama kali buka web (bukan saat auto-refresh)
+  const isFirstLoad = document.getElementById('lastUpdate').textContent === 'Memuat...';
+  
+  if (isFirstLoad) {
+    const wraps = ['wrapJadwalMingguan', 'wrapLokasi', 'wrapKegiatan', 'wrapUpcoming'];
+    wraps.forEach(id => {
+      const el = document.getElementById(id);
+      if(el && !el.querySelector('.loading-overlay')) {
+         const overlay = document.createElement('div');
+         overlay.className = 'loading-overlay';
+         overlay.innerHTML = '⏳ Memuat...';
+         el.appendChild(overlay);
+      }
+    });
+  }
 
   try {
     // Gunakan Promise.allSettled agar jika satu request gagal, yang lain tetap jalan
