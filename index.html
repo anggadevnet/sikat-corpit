@@ -66,28 +66,31 @@ tr:hover td{background:#f8fafc}
 .badge.sick{background:#f3e8ff;color:#7e22ce}
 .badge.onleave{background:#e0e7ff;color:#4338ca}
 .badge.unknown{background:#f1f5f9;color:#475569}
-.kegiatan-list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.kegiatan-item{background:#fff;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(15,23,42,.04);transition:transform .2s,border-color .2s,box-shadow .2s}
-.kegiatan-item:hover{transform:translateX(4px);border-left-color:#9333ea;box-shadow:0 6px 16px rgba(99,102,241,.12)}
-.kegiatan-item .k-date{font-size:11.5px;color:#6366f1;text-transform:capitalize;letter-spacing:.3px;font-weight:700}
-.kegiatan-item .k-name{font-size:14px;color:#0f172a;font-weight:700;margin:6px 0 8px}
-.kegiatan-item .k-lokasi{font-size:12px;color:#7c3aed;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.kegiatan-item .k-lokasi::before{content:'📍';font-size:12px}
-.kegiatan-item .k-tech{font-size:12px;color:#0284c7;display:flex;align-items:center;gap:6px;font-weight:600}
-.kegiatan-item .k-tech::before{content:'👤';font-size:12px}
-.kegiatan-item.upcoming-item{border-left-color:#f59e0b;background:linear-gradient(135deg,#fffbf0 0%,#fff 100%)}
-.kegiatan-item.upcoming-item:hover{border-left-color:#ea580c;box-shadow:0 6px 16px rgba(245,158,11,.18)}
-.kegiatan-item.upcoming-item .k-date{color:#d97706}
-.kegiatan-item.upcoming-item .k-lokasi{color:#b45309}
-.kegiatan-item.upcoming-item .k-tech{color:#b45309}
+
+/* --- STYLE DETAIL KEGIATAN BERDASARKAN TANGGAL --- */
+.kegiatan-group { margin-bottom: 24px; }
+.kegiatan-group-date { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #cbd5e1; display: flex; align-items: center; gap: 8px; }
+.kegiatan-group-date span { background: #0284c7; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+
+/* Card Kegiatan Baru */
+.kegiatan-detail-card { background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #6366f1; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(15,23,42,.04); transition: all .2s; }
+.kegiatan-detail-card:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(99,102,241,.1); }
+.kegiatan-detail-card .k-name { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px; line-height: 1.4; }
+.kegiatan-detail-card .k-meta { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: #475569; font-weight: 600; margin-bottom: 10px; }
+.kegiatan-detail-card .k-meta span { display: flex; align-items: center; gap: 6px; }
+.kegiatan-detail-card .k-tech-list { font-size: 12.5px; color: #0284c7; font-weight: 600; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px dashed #e2e8f0; }
+.kegiatan-detail-card .k-tech-badge { background: #e0f2fe; padding: 3px 10px; border-radius: 6px; color: #0369a1; border: 1px solid #bae6fd; }
 
 /* Tombol Save Per Item */
 .btn-save-item {position: absolute; top: 12px; right: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px 8px; font-size: 14px; cursor: pointer; opacity: 0; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
-.kegiatan-item:hover .btn-save-item {opacity: 1;}
+.kegiatan-detail-card:hover .btn-save-item {opacity: 1;}
 .btn-save-item:hover {background: #f0f9ff; border-color: #0284c7; transform: scale(1.1);}
 
+/* PERBAIKAN TABEL JADWAL: ANTI TURUN KE BAWAH */
+.badge-jadwal { display: inline-block; padding: 6px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 1px 2px rgba(0,0,0,0.02); white-space: nowrap !important; }
+
 /* Anti-Kedip Loading */
-#wrapJadwalMingguan, #wrapLokasi, #wrapKegiatan, #wrapUpcoming { position: relative; }
+#wrapJadwalMingguan, #wrapLokasi, #wrapKegiatan, #wrapUpcoming, #wrapRingkasan { position: relative; }
 .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0284c7; z-index: 10; backdrop-filter: blur(2px); border-radius: 12px; }
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#0f172a;color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 12px 30px rgba(15,23,42,.4);z-index:99999;opacity:0;transition:all .3s;pointer-events:none}
@@ -178,8 +181,6 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-input{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:border .2s;background:#fff}
 .gaji-input:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.15)}
 .gaji-hint{font-size:11px;color:#94a3b8;margin-top:4px}
-
-/* Row Input Lembur (Date & Time) */
 .gaji-hari-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;padding:16px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;position:relative;box-shadow:0 1px 4px rgba(0,0,0,0.02);}
 .gaji-hari-row input[type="date"], .gaji-hari-row input[type="time"]{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#f8fafc;color:#0f172a;transition:all .2s;}
 .gaji-hari-row input[type="date"]:focus, .gaji-hari-row input[type="time"]:focus{border-color:#0284c7;background:#fff;box-shadow:0 0 0 3px rgba(2,132,199,.15);}
@@ -187,13 +188,10 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 .gaji-hari-row .input-wrap{display:flex;flex-direction:column;}
 .gaji-hapus-btn{position:absolute;top:-10px;right:-10px;background:#fee2e2;border:1px solid #fecaca;width:28px;height:28px;border-radius:50%;color:#dc2626;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(220,38,38,0.2);}
 .gaji-hapus-btn:hover{background:#dc2626;color:#fff;}
-
-/* Info Box Live Kalkulasi */
 .live-info-box{grid-column: span 3; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; margin-top:4px;}
 .live-info-text{font-size:12px; color:#1e40af; font-weight:500;}
 .live-info-text b{color:#1d4ed8;}
 .live-info-badge{background:#dbeafe; color:#1e40af; font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; white-space:nowrap;}
-
 .gaji-add-btn{background:#fff;border:1px dashed #94a3b8;color:#475569;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
 .gaji-add-btn:hover{background:#f1f5f9;border-color:#64748b;color:#0f172a;}
 .gaji-calc-btn{background:linear-gradient(90deg,#0284c7,#4f46e5);color:#fff;border:none;padding:16px 24px;border-radius:12px;font-weight:800;cursor:pointer;font-size:15px;font-family:inherit;width:100%;transition:all .2s;box-shadow:0 6px 16px rgba(2,132,199,.3);display:flex;align-items:center;justify-content:center;gap:8px;}
@@ -223,14 +221,12 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   .modal-box{max-height:95vh}
   .marquee{font-size:12px}
   .marquee-icon{width:26px;height:26px;font-size:14px;left:10px}
-  
-  /* HP Tampilan Kalkulator */
   .gaji-body{padding:16px}
   .gaji-hari-row { grid-template-columns: 1fr 1fr; padding-top:20px; }
-  .gaji-hari-row .input-wrap:nth-child(1) { grid-column: span 2; } /* Tanggal Mulai full width */
-  .gaji-hari-row .input-wrap:nth-child(2) { grid-column: span 1; } /* Jam Mulai setengah */
-  .gaji-hari-row .input-wrap:nth-child(3) { grid-column: span 2; } /* Tanggal Selesai full width */
-  .gaji-hari-row .input-wrap:nth-child(4) { grid-column: span 1; } /* Jam Selesai setengah */
+  .gaji-hari-row .input-wrap:nth-child(1) { grid-column: span 2; } 
+  .gaji-hari-row .input-wrap:nth-child(2) { grid-column: span 1; } 
+  .gaji-hari-row .input-wrap:nth-child(3) { grid-column: span 2; } 
+  .gaji-hari-row .input-wrap:nth-child(4) { grid-column: span 1; } 
   .live-info-box { grid-column: span 2; flex-direction: column; align-items: flex-start; gap:6px; }
   .gaji-add-btn { padding: 14px; font-size: 14px; }
   .gaji-calc-btn { padding: 16px; font-size: 16px; }
@@ -238,20 +234,8 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   .gaji-result-row.total .value { font-size: 16px; }
 }
 
-/* Style Fullscreen buat Chart */
-#chartContainer:fullscreen {
-  padding: 20px !important;
-  background: #fff !important;
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  width: 100vw !important;
-  height: 100vh !important;
-}
-#chartContainer:fullscreen #canvasWrapper {
-  height: 100% !important;
-  width: 100% !important;
-}
+#chartContainer:fullscreen { padding: 20px !important; background: #fff !important; display: flex !important; flex-direction: column; justify-content: center; width: 100vw !important; height: 100vh !important; }
+#chartContainer:fullscreen #canvasWrapper { height: 100% !important; width: 100% !important; }
 </style>
 </head>
 <body>
@@ -278,20 +262,36 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="marquee" id="marqueeText"></div>
 </div>
 
-<!-- JADWAL MINGGUAN (Dibaca dari sheet Bulanan) -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-    <h2 style="margin: 0;">📅 Jadwal BULANAN</h2>
-    <button onclick="downloadGambar('wrapJadwalMingguan', 'Jadwal_Mingguan')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
-      📸 Save Gambar
-    </button>
+    <h2 style="margin: 0;">📅 Jadwal & Detail Aktivitas</h2>
+    <div style="display: flex; gap: 8px;">
+      <button onclick="copyFormasi()" style="background:#16a34a; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(22,163,74,.3);">
+        📋 Copy Teks
+      </button>
+      <button onclick="downloadGambar('wrapJadwalMingguan', 'Jadwal_Bulanan')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.3);">
+        📸 Save Gambar
+      </button>
+    </div>
   </div>
-  <div style="background:#fff; border-radius:12px; padding:18px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04);">
+
+  <div style="background:#fff; border-radius:12px; padding:18px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04); margin-bottom: 20px;">
     <div id="wrapJadwalMingguan"></div>
+  </div>
+
+  <div style="background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-size:16px; color:#0f172a; margin:0;">📋 Detail Kegiatan</h3>
+      <div class="toolbar" style="margin:0;">
+        <input type="text" id="searchKegiatan" placeholder="🔍 Cari kegiatan/teknisi..." style="padding:8px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:13px;">
+      </div>
+    </div>
+    
+    <div id="wrapKegiatan"></div>
+    <div id="wrapUpcoming" style="margin-top: 16px; display:none;"></div>
   </div>
 </section>
 
-<!-- LOKASI STANDBY HARIAN (Dibaca dari sheet Bulanan) -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
     <h2 style="margin: 0;">📍 Lokasi Standby Harian</h2>
@@ -306,49 +306,32 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   </div>
   <div class="toolbar">
     <input type="text" id="searchInput" placeholder="🔍 Cari nama teknisi atau lokasi...">
-    
-    <!-- FILTER HANYA HARI INI -->
     <label class="toggle-label">
       <input type="checkbox" id="onlyToday" checked onchange="toggleFilterTanggal()"> Hanya hari ini
     </label>
-
-    <!-- DROPDOWN PILIH TANGGAL (MUNCUL KALAU ONLY TODAY DIMATIKAN) -->
     <select id="filterTanggal" style="display:none; min-width:200px;" onchange="renderLokasi(rawLokasi)">
       <option value="">Pilih Tanggal...</option>
-      <!-- Bakal diisi otomatis sama JS -->
     </select>
-
   </div>
   <div id="wrapLokasi"></div>
 </section>
 
-<!-- CURRENT EVENT -->
+<!-- MENU RINGKASAN BARU -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-    <h2 style="margin: 0;">📋 Current Event <span class="count" id="cntKegiatan">0</span></h2>
-    <!-- Tombol Save Current Event DIHAPUS -->
+    <h2 style="margin: 0;">📝 Ringkasan Harian (Kegiatan & Standby)</h2>
   </div>
-  <div id="wrapKegiatan"></div>
+  <div id="wrapRingkasan" style="background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04);"></div>
 </section>
 
-<!-- UPCOMING EVENT -->
-<section>
-  <h2>🚀 Upcoming Event <span class="count" id="cntUpcoming">0</span></h2>
-  <div id="wrapUpcoming"></div>
-</section>
-
-<!-- GRAFIK LEMBUR -->
 <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
     <h2 style="margin: 0;">📊 Grafik Lembur Teknisi</h2>
-    <!-- Tombol Fullscreen -->
     <button onclick="toggleFullScreenChart()" style="background:#fff; color:#0284c7; border:1px solid #bae6fd; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.1);">
       ⛶ Fullscreen
     </button>
   </div>
-  <!-- Container Chart (Id chartContainer buat Fullscreen) -->
   <div id="chartContainer" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); transition: all .3s; position:relative;">
-    <!-- Wrapper buat Scroll (khusus mobile) -->
     <div style="overflow-x: hidden; width: 100%;">
       <div id="canvasWrapper" style="width: 100%; height: 350px;">
         <canvas id="chartLembur"></canvas>
@@ -357,21 +340,18 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   </div>
 </section>
 
-<!-- WI -->
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
   <div id="wrapWISection"></div>
 </section>
 
-<!-- LINK -->
 <section>
   <h2>🔗 Link Penting & Akses</h2>
   <div id="wrapLinks"></div>
 </section>
 
-<footer>SIKAT-TI • 主幹 </footer>
+<footer>SIKAT-TI • アンガ </footer>
 
-<!-- MODAL PDF (Walaupun namanya PDF, ini bakal jadi modal pesan redirect) -->
 <div class="modal-overlay" id="modalPDF">
   <div class="modal-box modal-wide">
     <div class="modal-header">
@@ -379,16 +359,12 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
       <a id="btnOpenOriginal" class="modal-open-btn" href="#" target="_blank" rel="noopener" style="background:linear-gradient(90deg,#0284c7,#4f46e5); color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:all .2s; box-shadow:0 4px 12px rgba(2,132,199,.3);">🔗 Buka Dokumen</a>
       <button class="modal-close" onclick="closeModal('modalPDF')">✕</button>
     </div>
-    <div class="modal-pdf-body" id="pdfBodyMessage">
-      <!-- Tempat naruh pesan login 365 -->
-    </div>
+    <div class="modal-pdf-body" id="pdfBodyMessage"></div>
   </div>
 </div>
 
-<!-- MODAL GAJI -->
 <div class="modal-overlay" id="modalGaji"><div class="modal-box modal-wide"><div class="modal-header"><h3>🧮 Kalkulator Gaji & Lembur</h3><button class="modal-close" onclick="closeModal('modalGaji')">✕</button></div><div class="gaji-body" id="gajiBody"></div></div></div>
 
-<!-- MODAL FORM LEMBUR -->
 <div class="modal-overlay" id="modalFormLembur">
   <div class="modal-box modal-wide">
     <div class="modal-header"><h3>📝 Input Form Lembur</h3><button class="modal-close" onclick="closeModal('modalFormLembur')">✕</button></div>
@@ -421,7 +397,6 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   </div>
 </div>
 
-<!-- MODAL REKAP LEMBUR -->
 <div class="modal-overlay" id="modalRekapLembur">
   <div class="modal-box modal-wide">
     <div class="modal-header">
@@ -430,24 +405,19 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
     </div>
     <div class="gaji-body" style="padding:0; display:flex; flex-direction:column;">
       <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; display: flex; flex-direction: column; gap: 10px;">
-        
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <input type="text" id="searchRekap" class="form-input" placeholder="🔍 Cari kegiatan, teknisi, atau engineer..." style="flex:1; min-width: 200px;">
           <button onclick="downloadRekapCSV()" class="form-submit-btn" style="display: none;width:auto; margin-top:0; padding: 0 20px; background: linear-gradient(90deg,#16a34a,#22c55e); align-items:center; gap:8px;">
             📥 Download CSV
           </button>
         </div>
-
-        <!-- Tambahan Tombol Filter Status -->
         <div style="display:flex; gap:8px; flex-wrap: wrap;">
           <button id="btnFilterAll" onclick="setFilterRekap('all')" style="background:#0284c7; color:#fff; border:none; padding:6px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; transition:all .2s;">Tampilkan Semua</button>
           <button id="btnFilterPending" onclick="setFilterRekap('pending')" style="background:#fff; color:#b45309; border:1px solid #fcd34d; padding:6px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; transition:all .2s;">🟡 Pending</button>
           <button id="btnFilterConfirmed" onclick="setFilterRekap('confirmed')" style="background:#fff; color:#15803d; border:1px solid #bbf7d0; padding:6px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; transition:all .2s;">🟢 Confirmed</button>
         </div>
       </div>
-
       <div style="overflow-y: auto; flex:1;">
-        <!-- Hapus min-width agar tidak perlu scroll horizontal di HP -->
         <table style="width: 100%; border-collapse: collapse;">
           <thead style="position: sticky; top: 0; background: #fff; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
             <tr>
@@ -470,24 +440,17 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 <div class="toast" id="toast">✅ Copied!</div>
 
 <script>
-/* ============================================================
-   KONFIGURASI & VARIABEL GLOBAL
-   ============================================================ */
-// GANTI DENGAN URL WEB APP KAMU YANG SUDAH DI-DEPLOY ULANG (VERSI BARU)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
-const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi hari ini','Jangan lupa ngopi','Keep corporate, stay overtime, and accept the breakdown'];
+const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi','Jangan lupa ngopi','Keep corporate, stay overtime, and accept the breakdown','صَدَقَ اللهُ الْعَظِيمُ'];
 let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
-let filterRekapStatus = 'all'; // Variabel buat filter
+let filterRekapStatus = 'all';
 
 const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
 const BLACKLIST_HARIAN = ['nadine', 'nafira', 'imola'];
 
 function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`; }
 
-/* ============================================================
-   KAMUS WARNA JADWAL
-   ============================================================ */
 const ATURAN_WARNA = [
   { keywords: ['CT', 'CUTI'], bg: '#f3e8ff', text: '#7e22ce' },
   { keywords: ['TBS'], bg: '#cffafe', text: '#0e7490' },
@@ -511,9 +474,6 @@ function dapatkanWarna(val) {
   return { bg: '#f1f5f9', text: '#334155' };
 }
 
-/* ============================================================
-   HELPER FUNCTIONS
-   ============================================================ */
 function getFlex(obj, keys){ if(!obj) return '-'; for(const k of keys){ if(obj[k] !== undefined && obj[k] !== '' && obj[k] !== null) return obj[k]; } const objKeys = Object.keys(obj); for(const k of keys){ const target = k.toLowerCase().replace(/[\s\/\[\]]/g,''); for(const ok of objKeys){ const normalized = ok.toLowerCase().replace(/[\s\/\[\]]/g,''); if(normalized === target || normalized.includes(target) || target.includes(normalized)){ if(obj[ok] !== undefined && obj[ok] !== '' && obj[ok] !== null) return obj[ok]; } } } return '-'; }
 
 const NAMA_BULAN_ID = {'januari':0, 'februari':1, 'maret':2, 'april':3, 'mei':4, 'juni':5, 'juli':6, 'agustus':7, 'september':8, 'oktober':9, 'november':10, 'desember':11, 'jan':0, 'feb':1, 'mar':2, 'apr':3, 'jun':5, 'jul':6, 'agu':7, 'ags':7, 'sep':8, 'okt':9, 'nov':10, 'des':11};
@@ -522,15 +482,12 @@ const HARI_ID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 function parseTanggalID(str){ 
   if(!str || str === '-') return null; 
   let s = str.toString().toLowerCase().trim(); 
-  
   if (s.includes('-') && s.match(/\d/)) {
     const parts = s.split('-');
     if(parts.length > 1 && parts[0].trim()) { s = parts[0].trim(); }
   }
-
   const matchYMD = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if(matchYMD){ return new Date(parseInt(matchYMD[1]), parseInt(matchYMD[2])-1, parseInt(matchYMD[3])); }
-  
   const matchAngka = s.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/); 
   if(matchAngka){ 
     const tgl = parseInt(matchAngka[1]); const bln = parseInt(matchAngka[2]) - 1; 
@@ -538,7 +495,6 @@ function parseTanggalID(str){
     if(thn < 100) thn += 2000; 
     if(tgl >= 1 && tgl <= 31 && bln >= 0 && bln <= 11) return new Date(thn, bln, tgl); 
   } 
-  
   const matchNama = s.match(/(\d{1,2})\s+([a-z]+)(?:\s+(\d{4}))?/); 
   if(matchNama){ 
     const tgl = parseInt(matchNama[1]); const bln = NAMA_BULAN_ID[matchNama[2]]; 
@@ -566,9 +522,6 @@ function isFuture(dateStr){ const d = parseTanggalValid(dateStr); if(!d) return 
 let toastTimer = null;
 function showToast(msg){ const t = document.getElementById('toast'); t.textContent = msg || '✅ Copied!'; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2500); }
 
-/* ============================================================
-   FUNGSI FULLSCREEN CHART
-   ============================================================ */
 function toggleFullScreenChart() {
   const el = document.getElementById('chartContainer');
   if (!document.fullscreenElement) {
@@ -584,9 +537,6 @@ document.addEventListener('fullscreenchange', () => {
   if (chartInstance) setTimeout(() => chartInstance.resize(), 200);
 });
 
-/* ============================================================
-   FUNGSI DOWNLOAD GAMBAR (html2canvas) - ALL / TABLE
-   ============================================================ */
 function downloadGambar(elementId, namaFile) {
   const element = document.getElementById(elementId);
   if (!element) return;
@@ -598,7 +548,7 @@ function downloadGambar(elementId, namaFile) {
   element.style.maxWidth = 'none';
   element.style.overflow = 'visible'; 
   const originalBg = element.style.background;
-  if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi') {
+  if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi' || elementId === 'wrapRingkasan') {
     element.style.background = '#fff'; 
     element.style.padding = '16px';
     element.style.borderRadius = '12px';
@@ -614,7 +564,7 @@ function downloadGambar(elementId, namaFile) {
       element.style.maxWidth = originalMaxWidth;
       element.style.overflow = originalOverflow;
       element.style.background = originalBg;
-      if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi') {
+      if (elementId === 'wrapKegiatan' || elementId === 'wrapLokasi' || elementId === 'wrapRingkasan') {
         element.style.padding = '0';
         element.style.borderRadius = '0';
       }
@@ -635,7 +585,6 @@ function downloadGambar(elementId, namaFile) {
   }, 300);
 }
 
-/* FUNGSI DOWNLOAD PER ITEM / EVENT */
 function downloadItem(elementId, namaFile) {
   const element = document.getElementById(elementId);
   if (!element) return;
@@ -664,9 +613,6 @@ function downloadItem(elementId, namaFile) {
   });
 }
 
-/* ============================================================
-   FUNGSI FILTER TANGGAL
-   ============================================================ */
 function toggleFilterTanggal() {
   const onlyToday = document.getElementById('onlyToday').checked;
   const filterTanggal = document.getElementById('filterTanggal');
@@ -678,12 +624,8 @@ function toggleFilterTanggal() {
   }
 }
 
-/* ============================================================
-   RENDER FUNCTIONS
-   ============================================================ */
 function renderMarquee(){ const txt = document.getElementById('marqueeText'); const wrap = document.getElementById('marqueeWrap'); if(!PENGUMUMAN.length){ wrap.style.display = 'none'; return; } const sep = ' <span class="sep">•</span> '; const combined = PENGUMUMAN.join(sep); txt.innerHTML = combined + sep + combined + sep; const duration = Math.max(20, Math.min(80, PENGUMUMAN.length * 8)); txt.style.animationDuration = duration + 's'; wrap.style.display = 'block'; }
 
-// === PARSING DATA SHEET BULANAN (Menerima object {bulan, tahun, rows}) ===
 function parseDataBulanan(data) {
   const rows = (data && data.rows) ? data.rows : (Array.isArray(data) ? data : []);
   const bulan = (data && data.bulan) ? data.bulan : (new Date().getMonth() + 1);
@@ -749,9 +691,8 @@ function renderJadwalMingguan(data) {
   for(let j = 2; j < headerRow.length; j++) {
     let hari = headerRow[j] || '-';
     let tgl = rowTanggal[j] || '-';
-    
-    html += `<th style="padding:10px; font-weight:700; color:#475569; border-right:1px solid #cbd5e1; text-align:center; text-transform:uppercase; line-height:1.4;">
-      ${hari}<br><span style="font-size:12px; color:#b45309;">${tgl}</span>
+    html += `<th style="padding:10px; font-weight:700; color:#475569; border-right:1px solid #cbd5e1; text-align:center; text-transform:uppercase; white-space:nowrap;">
+      ${hari} <span style="font-size:12px; color:#b45309;">${tgl}</span>
     </th>`;
   }
   html += '</tr></thead><tbody>';
@@ -768,9 +709,8 @@ function renderJadwalMingguan(data) {
     for(let j = 2; j < row.length; j++) {
       const val = row[j] || '-';
       const warna = dapatkanWarna(val);
-
       html += `<td style="padding:12px; border-right:1px solid #e2e8f0; text-align:center;">
-        <span style="display:inline-block; padding:6px 14px; border-radius:8px; font-weight:700; font-size:12px; background:${warna.bg}; color:${warna.text}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${val}</span>
+        <span class="badge-jadwal" style="background:${warna.bg}; color:${warna.text};">${val}</span>
       </td>`;
     }
     html += '</tr>';
@@ -821,7 +761,7 @@ function renderLokasi(data){
     const dateObj = parseTanggalValid(dateStr);
     const dateDisplay = dateObj ? formatTanggalLengkap(dateObj) : dateStr;
 
-    html += `<tr><td>${dateDisplay}</td><td><strong>${r.nama}</strong></td><td><span style="display:inline-block; padding:4px 12px; border-radius:8px; font-weight:700; font-size:12px; background:${warna.bg}; color:${warna.text}; border:1px solid rgba(0,0,0,0.05); box-shadow:0 1px 2px rgba(0,0,0,0.02);">${raw}</span></td></tr>`; 
+    html += `<tr><td>${dateDisplay}</td><td><strong>${r.nama}</strong></td><td><span class="badge-jadwal" style="background:${warna.bg}; color:${warna.text};">${raw}</span></td></tr>`; 
   });
   wrap.innerHTML = html + '</tbody></table></div>';
 }
@@ -854,9 +794,6 @@ function isiDropdownTanggal(data) {
   select.innerHTML = html;
 }
 
-/* ============================================================
-   FUNGSI COPY FORMASI
-   ============================================================ */
 function copyFormasi() {
   const keyword = (document.getElementById('searchInput').value || '').toLowerCase(); 
   const onlyToday = document.getElementById('onlyToday').checked;
@@ -974,64 +911,318 @@ function copyFormasi() {
   });
 }
 
-function renderKegiatan(rows){
-  const wrap = document.getElementById('wrapKegiatan'); 
-  const current = rows.filter(r => isToday(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
-  document.getElementById('cntKegiatan').textContent = current.length; 
-  if(!current.length){ wrap.innerHTML = '<div class="empty">Belum ada kegiatan hari ini</div>'; return; }
-  
-  let html = '<div class="kegiatan-list">';
-  current.forEach((r, idx)=>{ 
-    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); 
-    const dateObj = parseTanggalValid(dateRaw); 
-    const isRentang = dateRaw.includes('-') && dateRaw.match(/\d/);
-    const dateDisplay = isRentang ? dateRaw : (dateObj ? formatTanggalLengkap(dateObj) : dateRaw); 
-    
-    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); 
-    const lokasi = getFlex(r,['lokasi']); 
-    const tech = getFlex(r,['teknisi','nama teknisi','nama']); 
-    
-    html += `
-      <div class="kegiatan-item" style="position:relative;" id="kegiatan-item-${idx}">
-        <button class="btn-save-item" onclick="downloadItem('kegiatan-item-${idx}', 'Event_${dateDisplay.replace(/[\/\s,]/g, '_')}_${name}')" title="Save Gambar">📸</button>
-        <div class="k-date">📅 ${dateDisplay}</div>
-        <div class="k-name">${name}</div>
-        ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
-        <div class="k-tech">${tech}</div>
-      </div>`; 
-  });
-  wrap.innerHTML = html + '</div>';
+/* ============================================================
+   PERBAIKAN TOTAL LOGIKA JAM (ANTI FORMAT FORMAT)
+   ============================================================ */
+function parseRentangTanggal(str) {
+  if (!str) return { start: null, end: null };
+  let parts = str.split('-');
+  if (parts.length === 1) {
+    let d = parseTanggalID(parts[0].trim());
+    return { start: d, end: d };
+  } else if (parts.length >= 2) {
+    if (str.match(/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}$/)) {
+       let d = parseTanggalID(str);
+       return { start: d, end: d };
+    }
+    let d1 = parseTanggalID(parts[0].trim());
+    let d2 = parseTanggalID(parts[1].trim());
+    return { start: d1, end: d2 || d1 };
+  }
+  return { start: null, end: null };
 }
 
-function renderUpcoming(rows){
-  const wrap = document.getElementById('wrapUpcoming'); 
-  const upcoming = rows.filter(r => isFuture(getFlex(r,['hari/tanggal','tanggal','tanggal / hari'])));
-  document.getElementById('cntUpcoming').textContent = upcoming.length; 
-  if(!upcoming.length){ wrap.innerHTML = '<div class="empty">Belum ada event mendatang</div>'; return; }
+function cleanStr(str) {
+    if (!str) return '';
+    return String(str).replace(/[\n\r\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function renderDetailKegiatan() {
+  const wrap = document.getElementById('wrapKegiatan');
+  const wrapUpcoming = document.getElementById('wrapUpcoming');
+  const keyword = (document.getElementById('searchKegiatan').value || '').toLowerCase();
   
-  upcoming.sort((a, b) => { const da = parseTanggalValid(getFlex(a,['hari/tanggal','tanggal'])); const db = parseTanggalValid(getFlex(b,['hari/tanggal','tanggal'])); if(!da) return 1; if(!db) return -1; return da - db; });
-  
-  let html = '<div class="kegiatan-list">';
-  upcoming.forEach((r, idx)=>{ 
-    const dateRaw = getFlex(r,['hari/tanggal','tanggal','tanggal / hari']); 
-    const dateObj = parseTanggalValid(dateRaw); 
-    const isRentang = dateRaw.includes('-') && dateRaw.match(/\d/);
-    const dateDisplay = isRentang ? dateRaw : (dateObj ? formatTanggalLengkap(dateObj) : dateRaw); 
+  let allEvents = rawKegiatan.map((r, index) => {
+    const dateRaw = cleanStr(getFlex(r,['hari/tanggal','tanggal','tanggal / hari']));
+    const range = parseRentangTanggal(dateRaw);
     
-    const name = getFlex(r,['kegiatan','kegiatan / event','kegiatan/event','event','nama kegiatan','kegiatan [standby] meeting','kegiatan standby meeting']); 
-    const lokasi = getFlex(r,['lokasi']); 
-    const tech = getFlex(r,['teknisi','nama teknisi','nama']); 
-    
-    html += `
-      <div class="kegiatan-item upcoming-item" style="position:relative;" id="upcoming-item-${idx}">
-        <button class="btn-save-item" onclick="downloadItem('upcoming-item-${idx}', 'Upcoming_${dateDisplay.replace(/[\/\s,]/g, '_')}_${name}')" title="Save Gambar">📸</button>
-        <div class="k-date">📅 ${dateDisplay}</div>
-        <div class="k-name">${name}</div>
-        ${lokasi !== '-' ? `<div class="k-lokasi">${lokasi}</div>` : ''}
-        <div class="k-tech">${tech}</div>
-      </div>`; 
+    // AMBIL NAMA KEGIATAN (KOLOM B / 'kegiatan')
+    let namaBersih = cleanStr(getFlex(r, ['kegiatan']));
+    if (namaBersih === '-') namaBersih = '';
+
+    // AMBIL JAM (KOLOM C / 'jam')
+    let jamDisplay = cleanStr(getFlex(r, ['jam']));
+    if (jamDisplay === '-') jamDisplay = '';
+
+    let dateHeaderStr = '';
+    if (range.start && range.end && range.start.getTime() !== range.end.getTime()) {
+        const fmtStart = range.start.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
+        const fmtEnd = range.end.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
+        dateHeaderStr = `${fmtStart} - ${fmtEnd}`;
+    } else if (range.start) {
+        dateHeaderStr = range.start.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    } else {
+        dateHeaderStr = dateRaw;
+    }
+
+    return {
+      data: r,
+      rawDate: dateRaw,
+      start: range.start,
+      end: range.end,
+      name: namaBersih,
+      lokasi: cleanStr(getFlex(r,['lokasi'])),
+      jam: jamDisplay,
+      tech: cleanStr(getFlex(r,['teknisi','nama teknisi','nama'])),
+      originalIndex: index,
+      dateHeaderStr: dateHeaderStr
+    };
   });
-  wrap.innerHTML = html + '</div>';
+
+  allEvents = allEvents.filter(e => {
+    return !keyword || e.name.toLowerCase().includes(keyword) || e.tech.toLowerCase().includes(keyword);
+  });
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  let todayEvents = [];
+  let upcomingEvents = [];
+
+  allEvents.forEach(e => {
+    if (!e.start) return;
+    let start = new Date(e.start); start.setHours(0,0,0,0);
+    let end = new Date(e.end || e.start); end.setHours(0,0,0,0);
+
+    if (start.getTime() === today.getTime()) {
+      todayEvents.push(e);
+    } else if (today > start && today <= end) {
+      todayEvents.push(e); 
+    } else if (start > today) {
+      upcomingEvents.push(e);
+    }
+  });
+
+  todayEvents.sort((a,b) => a.originalIndex - b.originalIndex);
+  upcomingEvents.sort((a,b) => a.start - b.start);
+
+  const buildCardHTML = (e, isUpcoming) => {
+    let techBadges = '';
+    if (e.tech !== '-' && e.tech !== '') {
+      techBadges = e.tech.split(',').map(t => `<span class="k-tech-badge">${t.trim()}</span>`).join('');
+    }
+    const uniqueId = `evt-${isUpcoming ? 'up' : 'cur'}-${e.originalIndex}`;
+    
+    // LOGIKA: Tampilkan NAMA || JAM
+    return `
+      <div class="kegiatan-detail-card" style="position:relative;" id="${uniqueId}">
+        <button class="btn-save-item" onclick="downloadItem('${uniqueId}', 'Event_${e.name}')" style="top: 10px; right: 10px;">📸</button>
+        
+        <div class="k-name">${e.name} || <span style="font-weight:600; color:#475569;">${e.jam}</span></div>
+        
+        <div class="k-meta">
+          <span>📍 ${e.lokasi}</span>
+        </div>
+        
+        <div class="k-tech-list">
+          <span style="color:#64748b; font-size:12px; font-weight:600;">👤 Teknisi:</span> 
+          ${techBadges}
+        </div>
+      </div>
+    `;
+  };
+
+  let finalHtml = '';
+  
+  if(todayEvents.length > 0) {
+    finalHtml += `<div class="kegiatan-group"><div class="kegiatan-group-date"><span>Hari Ini</span></div>`;
+    let currentDateHeader = '';
+    todayEvents.forEach(e => {
+      if (e.dateHeaderStr !== currentDateHeader) {
+        if(currentDateHeader !== '') finalHtml += `</div>`; 
+        finalHtml += `<div style="margin-bottom: 16px;"><div style="font-size:13px; font-weight:700; color:#b45309; margin-bottom:8px; display:flex; align-items:center; gap:6px;"><span style="background:#fef3c7; padding:4px 10px; border-radius:6px;">📅 ${e.dateHeaderStr}</span></div>`;
+        currentDateHeader = e.dateHeaderStr;
+      }
+      finalHtml += buildCardHTML(e, false);
+    });
+    finalHtml += `</div></div>`;
+  } else {
+    finalHtml += `<div class="empty" style="margin-bottom:16px;">Tidak ada kegiatan hari ini</div>`;
+  }
+
+  if(upcomingEvents.length > 0) {
+    finalHtml += `<div class="kegiatan-group" style="margin-top:24px;"><div class="kegiatan-group-date"><span>Mendatang (Upcoming)</span></div>`;
+    let currentDateHeader = '';
+    upcomingEvents.forEach(e => {
+      if (e.dateHeaderStr !== currentDateHeader) {
+        if(currentDateHeader !== '') finalHtml += `</div>`; 
+        finalHtml += `<div style="margin-bottom: 16px;"><div style="font-size:13px; font-weight:700; color:#b45309; margin-bottom:8px; display:flex; align-items:center; gap:6px;"><span style="background:#fef3c7; padding:4px 10px; border-radius:6px;">📅 ${e.dateHeaderStr}</span></div>`;
+        currentDateHeader = e.dateHeaderStr;
+      }
+      finalHtml += buildCardHTML(e, true);
+    });
+    finalHtml += `</div></div>`;
+  }
+
+  wrap.innerHTML = finalHtml;
+  wrapUpcoming.style.display = 'none'; 
+}
+
+/* ============================================================
+   FUNGSI BARU: RINGKASAN HARIAN (DENGAN WARNA TEKNISI)
+   ============================================================ */
+function renderRingkasan() {
+  const wrap = document.getElementById('wrapRingkasan');
+  if (!rawLokasi || !rawLokasi.rows) {
+    wrap.innerHTML = '<div class="empty">Data belum siap...</div>';
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const dataHarian = parseDataBulanan(rawLokasi);
+  const jadwalMap = {};
+  dataHarian.forEach(r => {
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+    if(dateObj) {
+      dateObj.setHours(0,0,0,0);
+      const key = dateObj.getTime();
+      if (!jadwalMap[key]) jadwalMap[key] = [];
+      jadwalMap[key].push(r);
+    }
+  });
+
+  let allEvents = rawKegiatan.map((r, index) => {
+    const dateRaw = cleanStr(getFlex(r,['hari/tanggal','tanggal','tanggal / hari']));
+    const range = parseRentangTanggal(dateRaw);
+    
+    // AMBIL NAMA KEGIATAN (KOLOM B / 'kegiatan')
+    let namaBersih = cleanStr(getFlex(r, ['kegiatan']));
+    if (namaBersih === '-') namaBersih = '';
+
+    // AMBIL JAM (KOLOM C / 'jam')
+    let jamDisplay = cleanStr(getFlex(r, ['jam']));
+    if (jamDisplay === '-') jamDisplay = '';
+
+    return {
+      rawDate: dateRaw,
+      start: range.start,
+      end: range.end,
+      name: namaBersih,
+      lokasi: cleanStr(getFlex(r,['lokasi'])),
+      jam: jamDisplay,
+      tech: cleanStr(getFlex(r,['teknisi','nama teknisi','nama'])),
+      originalIndex: index
+    };
+  });
+
+  const getEventsForDate = (dateObj) => {
+    return allEvents.filter(e => {
+      if (!e.start) return false;
+      let start = new Date(e.start); start.setHours(0,0,0,0);
+      let end = new Date(e.end || e.start); end.setHours(0,0,0,0);
+      return (dateObj >= start && dateObj <= end);
+    });
+  };
+
+  const getTeknisiForDate = (dateObj) => {
+    const key = dateObj.getTime();
+    const list = jadwalMap[key] || [];
+    return list.filter(r => !BLACKLIST_HARIAN.some(bl => r.nama.toLowerCase().includes(bl)));
+  };
+
+  const buildRingkasanBlock = (title, dateObj, isUpcoming) => {
+    const events = getEventsForDate(dateObj);
+    const teknisi = getTeknisiForDate(dateObj);
+
+    if (events.length === 0 && teknisi.length === 0) return '';
+
+    let html = `<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin-bottom:16px;">
+      <div style="font-size:16px; font-weight:800; color:#0f172a; margin-bottom:12px; border-bottom:2px solid #cbd5e1; padding-bottom:8px;">
+        ${title} <span style="font-size:13px; font-weight:600; color:#b45309;">(${dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })})</span>
+      </div>
+    `;
+
+    // Bagian Kegiatan
+    if (events.length > 0) {
+      html += `<div style="margin-bottom:16px;">
+        <div style="font-size:13px; font-weight:700; color:#0284c7; margin-bottom:8px;">📋 Kegiatan:</div>
+        <ul style="list-style-type:none; padding-left:0; margin:0;">`;
+      events.forEach(e => {
+        let techBadges = '';
+        if (e.tech !== '-' && e.tech !== '') {
+          techBadges = e.tech.split(',').map(t => {
+             const warna = dapatkanWarna(t.trim()); 
+             return `<span style="display:inline-block; background:${warna.bg}; color:${warna.text}; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; margin-right:4px; border:1px solid rgba(0,0,0,0.05);">${t.trim()}</span>`;
+          }).join('');
+        }
+        
+        let labelJam = '';
+        if (e.jam && e.jam !== '') {
+            labelJam = ` || <span style="color:#64748b;">${e.jam}</span>`;
+        }
+
+        html += `<li style="font-size:13px; margin-bottom:6px; background:#fff; padding:8px 12px; border-radius:6px; border-left:3px solid #6366f1; color:#334155;">
+          <strong>${e.name}</strong> ${labelJam}<br>
+          <span style="font-size:12px; color:#475569;">📍 ${e.lokasi}</span><br>
+          <div style="margin-top:4px;">Teknisi: ${techBadges}</div>
+        </li>`;
+      });
+      html += `</ul></div>`;
+    } else {
+      html += `<div style="margin-bottom:16px; font-size:13px; color:#94a3b8;">📋 Tidak ada kegiatan khusus.</div>`;
+    }
+
+    // Bagian Standby
+    if (teknisi.length > 0) {
+      html += `<div>
+        <div style="font-size:13px; font-weight:700; color:#0284c7; margin-bottom:8px;">📍 Lokasi Standby:</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">`;
+      teknisi.forEach(t => {
+        const warna = dapatkanWarna(t.lokasi); 
+        html += `<div style="font-size:12px; background:#fff; border:1px solid #e2e8f0; border-radius:6px; padding:6px 10px;">
+          <strong>${t.nama}</strong>: <span style="background:${warna.bg}; color:${warna.text}; padding:2px 6px; border-radius:4px; font-weight:700;">${t.lokasi}</span>
+        </div>`;
+      });
+      html += `</div></div>`;
+    } else {
+      html += `<div style="font-size:13px; color:#94a3b8;">📍 Tidak ada jadwal standby.</div>`;
+    }
+
+    html += `</div>`;
+    return html;
+  };
+
+  let finalHtml = '';
+
+  // 1. Render Hari Ini
+  finalHtml += buildRingkasanBlock('Hari Ini', today, false);
+
+  // 2. Render Upcoming
+  let futureDates = new Set();
+  allEvents.forEach(e => {
+    if (e.start && e.start > today) futureDates.add(e.start.getTime());
+  });
+  dataHarian.forEach(r => {
+    const dateStr = `${r.hari}, ${r.tanggal.toString().padStart(2,'0')}/${r.bulan.toString().padStart(2,'0')}/${r.tahun}`;
+    const dateObj = parseTanggalValid(dateStr);
+    if (dateObj && dateObj > today) futureDates.add(dateObj.getTime());
+  });
+
+  const sortedFutureDates = Array.from(futureDates).sort((a,b) => a - b).slice(0, 3); 
+
+  sortedFutureDates.forEach(ts => {
+    const d = new Date(ts);
+    finalHtml += buildRingkasanBlock('Mendatang', d, true);
+  });
+
+  if (!finalHtml) {
+    finalHtml = '<div class="empty">Tidak ada data ringkasan untuk hari ini atau mendatang.</div>';
+  }
+
+  wrap.innerHTML = finalHtml;
 }
 
 async function renderGrafikLembur() {
@@ -1047,7 +1238,6 @@ async function renderGrafikLembur() {
     data.forEach(row => {
       const teknisiStr = getFlex(row, ['teknisi']);
       let totalJam = parseFloat((getFlex(row, ['total jam']) || '0').replace(',', '.')) || 0;
-      
       if (teknisiStr && teknisiStr !== '-') {
         const names = teknisiStr.split(',').map(s => s.trim());
         names.forEach(n => {
@@ -1110,21 +1300,16 @@ function openRekapLembur() {
 
 function setFilterRekap(status) {
   filterRekapStatus = status;
-  
-  // Reset semua button style
   document.getElementById('btnFilterAll').style.background = '#fff';
   document.getElementById('btnFilterAll').style.color = '#475569';
   document.getElementById('btnFilterAll').style.border = '1px solid #cbd5e1';
-  
   document.getElementById('btnFilterPending').style.background = '#fff';
   document.getElementById('btnFilterPending').style.color = '#b45309';
   document.getElementById('btnFilterPending').style.border = '1px solid #fcd34d';
-  
   document.getElementById('btnFilterConfirmed').style.background = '#fff';
   document.getElementById('btnFilterConfirmed').style.color = '#15803d';
   document.getElementById('btnFilterConfirmed').style.border = '1px solid #bbf7d0';
 
-  // Set active style
   if(status === 'all') {
     document.getElementById('btnFilterAll').style.background = '#0284c7';
     document.getElementById('btnFilterAll').style.color = '#fff';
@@ -1138,7 +1323,6 @@ function setFilterRekap(status) {
     document.getElementById('btnFilterConfirmed').style.color = '#15803d';
     document.getElementById('btnFilterConfirmed').style.border = '1px solid #bbf7d0';
   }
-
   renderTabelRekap(rawLembur);
 }
 
@@ -1146,7 +1330,6 @@ function renderTabelRekap(data) {
   const tbody = document.getElementById('tbodyRekap'); 
   const kw = (document.getElementById('searchRekap').value || '').toLowerCase();
   
-  // 1. Filter Keyword
   let filtered = data.filter(r => { 
     const keg = (getFlex(r, ['kegiatan']) || '').toLowerCase(); 
     const tek = (getFlex(r, ['teknisi']) || '').toLowerCase(); 
@@ -1154,7 +1337,6 @@ function renderTabelRekap(data) {
     return !kw || keg.includes(kw) || tek.includes(kw) || eng.includes(kw); 
   });
 
-  // 2. Filter Status (Kuning / Hijau)
   if (filterRekapStatus === 'pending') {
     filtered = filtered.filter(r => {
       const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
@@ -1167,16 +1349,10 @@ function renderTabelRekap(data) {
     });
   }
 
-  // 3. URUTKAN BERDASARKAN TANGGAL (Terbaru ke Terlama)
   filtered.sort((a,b) => { 
     const da = parseTanggalValid(getFlex(a,['tanggal'])); 
     const db = parseTanggalValid(getFlex(b,['tanggal'])); 
-    
-    // Kalau tanggal beda, urutkan dari yang paling baru
-    if (da && db && da.getTime() !== db.getTime()) {
-      return db.getTime() - da.getTime(); 
-    }
-    // Kalau tanggal sama, urutkan berdasarkan Kegiatan (biar stabil)
+    if (da && db && da.getTime() !== db.getTime()) { return db.getTime() - da.getTime(); }
     const kegA = (getFlex(a,['kegiatan']) || '').toLowerCase();
     const kegB = (getFlex(b,['kegiatan']) || '').toLowerCase();
     return kegA.localeCompare(kegB);
@@ -1200,19 +1376,10 @@ function renderTabelRekap(data) {
     const tek = getFlex(r, ['teknisi']); 
     const jam = getFlex(r, ['total jam']); 
     const tiket = getFlex(r, ['no tiket']);
-    
     const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
     
-    // Logic Warna: Kalau isinya 'v', 'done', berarti hijau. Selain itu kuning.
-    let bgColor = '#fef3c7'; // Kuning
-    let textColor = '#b45309';
-    let badgeBg = '#fde68a';
-    
-    if (statusRaw === 'v' || statusRaw === 'done') {
-      bgColor = '#dcfce7'; // Hijau
-      textColor = '#15803d';
-      badgeBg = '#bbf7d0';
-    }
+    let bgColor = '#fef3c7'; let textColor = '#b45309'; let badgeBg = '#fde68a';
+    if (statusRaw === 'v' || statusRaw === 'done') { bgColor = '#dcfce7'; textColor = '#15803d'; badgeBg = '#bbf7d0'; }
 
     let jamStr = `${jMulai} - ${jAkhir}`;
     if (tglAkhir !== '-' && tglAkhir) { 
@@ -1220,7 +1387,6 @@ function renderTabelRekap(data) {
       if (tglAkhirObj && tglObj && tglAkhirObj.getTime() !== tglObj.getTime()) { jamStr += `<br><small>(Beda Hari)</small>`; } 
     }
     
-    // Baris <tr> kita kasih style background color
     html += `<tr style="background-color:${bgColor}; transition: background-color 0.3s; font-size: 12px;">
       <td style="white-space:normal; color:${textColor}; font-weight:600; padding:8px;">${tgl}</td>
       <td style="white-space:normal; color:${textColor}; padding:8px;">${jamStr}</td>
@@ -1243,8 +1409,6 @@ function downloadRekapCSV() {
     const eng = (getFlex(r, ['engineer']) || '').toLowerCase(); 
     return !kw || keg.includes(kw) || tek.includes(kw) || eng.includes(kw); 
   });
-  
-  // Filter status juga kalau lagi nge-download
   if (filterRekapStatus === 'pending') {
     filtered = filtered.filter(r => {
       const statusRaw = (getFlex(r, ['status']) || '').toLowerCase().trim();
@@ -1290,7 +1454,6 @@ function renderWISection(rows){
       const escapedNama = nama.replace(/'/g, "\\'").replace(/"/g, '&quot;'); 
       const escapedUrl = url.replace(/'/g, "\\'"); 
       if(!nama || !url) return; 
-      
       html += `<div class="wi-cat-item" onclick="openWIPDF('${escapedNama}', '${escapedUrl}')"><span class="wi-cat-name">${nama}</span><span class="link-arrow">→</span></div>`; 
     });
     html += `</div></div></div>`;
@@ -1308,7 +1471,6 @@ function toggleWIAccordion(headerEl){
 function openWIPDF(nama, url){
   document.getElementById('pdfTitle').textContent = nama || 'Dokumen';
   const btnOpen = document.getElementById('btnOpenOriginal');
-  
   btnOpen.href = url; 
   btnOpen.textContent = '🔗 Buka Dokumen (Login 365)'; 
   
@@ -1321,7 +1483,6 @@ function openWIPDF(nama, url){
       </p>
     </div>
   `;
-  
   document.getElementById('modalPDF').classList.add('active');
 }
 
@@ -1329,7 +1490,7 @@ function renderLinks(rows){
   rawLinksCache = rows; const wrap = document.getElementById('wrapLinks');
   if(!linksUnlocked){
     if(document.getElementById('lockInput')) return;
-    wrap.innerHTML = `<div class="lock-box"><div class="lock-icon">🔒</div><div class="lock-title">Konten Terkunci</div><div class="lock-desc">Masukkan password untuk membuka akses</div><div class="lock-input-wrap"><input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off"><button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button></div><div class="lock-error" id="lockError"></div><div class="lock-note">🔐 Akses hanya untuk Teknisi</div></div>`;
+    wrap.innerHTML = `<div class="lock-box"><div class="lock-icon">🔒</div><div class="lock-title">Sss...ttt Terkunci</div><div class="lock-desc">Masukkan password untuk membuka akses</div><div class="lock-input-wrap"><input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off"><button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button></div><div class="lock-error" id="lockError"></div><div class="lock-note">🔐 Akses hanya untuk Teknisi</div></div>`;
     lockRealValue = '';
     setTimeout(() => { const inp = document.getElementById('lockInput'); if(!inp) return; inp.focus(); inp.addEventListener('input', () => { const val = inp.value; const realLen = lockRealValue.length; const currentLen = val.length; if(currentLen > realLen){ lockRealValue += val.slice(-(currentLen - realLen)); } else if(currentLen < realLen){ lockRealValue = lockRealValue.slice(0, currentLen); } inp.value = '•'.repeat(lockRealValue.length); }); inp.addEventListener('keypress', e => { if(e.key === 'Enter') unlockLinks(); }); }, 50); return;
   }
@@ -1385,9 +1546,6 @@ function closeModal(id){
 document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener('click', e => { if(e.target === el) closeModal(el.id); }); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeModal('modalPDF'); closeModal('modalGaji'); closeModal('modalFormLembur'); closeModal('modalRekapLembur'); } });
 
-/* ============================================================
-   LOGIKA KALKULATOR GAJI (DENGAN DATE PICKER & LIVE CALC)
-   ============================================================ */
 let gajiHariCounter = 0;
 function formatRupiah(n){ return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
 function formatTanggalShort(dateStr) {
@@ -1408,7 +1566,6 @@ function openGajiCalculator() {
         <div class="gaji-hint">Upah/jam otomatis = Gaji Pokok ÷ 173 (PP 35/2021)</div>
       </div>
     </div>
-
     <div class="gaji-section">
       <div class="gaji-section-title">⏰ Lembur (Mulai - Selesai)</div>
       <div class="gaji-hint" style="margin-bottom:16px; line-height:1.5;">
@@ -1417,12 +1574,9 @@ function openGajiCalculator() {
       <div id="gajiHariList"></div>
       <button class="gaji-add-btn" onclick="addGajiHari()">+ Tambah Hari</button>
     </div>
-
     <button class="gaji-calc-btn" onclick="hitungGaji()">🧮 Hitung Gaji & Lembur</button>
-
     <div id="gajiHasil"></div>
   `;
-
   gajiHariCounter = 0;
   addGajiHari();
   document.getElementById('modalGaji').classList.add('active');
@@ -1435,9 +1589,7 @@ function addGajiHari(){
   const row = document.createElement('div');
   row.className = 'gaji-hari-row';
   row.setAttribute('data-id', id);
-  
   const today = new Date().toISOString().split('T')[0];
-
   row.innerHTML = `
     <div class="input-wrap">
       <label>Tanggal Mulai</label>
@@ -1455,16 +1607,13 @@ function addGajiHari(){
       <label>Jam Selesai</label>
       <input type="time" class="gaji-jam-selesai" value="20:00" onchange="updateLiveInfo(this)">
     </div>
-    
     <div class="live-info-box">
       <span class="live-info-text" id="live-info-text-${id}">Menunggu input...</span>
       <span class="live-info-badge" id="live-info-badge-${id}">0 Jam Efektif</span>
     </div>
-
     <button class="gaji-hapus-btn" onclick="hapusGajiHari(this)" title="Hapus">✕</button>
   `;
   list.appendChild(row);
-  
   setTimeout(() => updateLiveInfo(row.querySelector('.gaji-date-mulai')), 100);
 }
 
@@ -1474,31 +1623,19 @@ function hapusGajiHari(btn){
   btn.closest('.gaji-hari-row').remove();
 }
 
-// Fungsi kalkulasi internal (dipakai untuk live info & hitung gaji final)
 function hitungJamLembur(mulai, selesai, dateMulaiStr, dateSelesaiStr){
   if(!dateMulaiStr || !dateSelesaiStr || !mulai || !selesai) return null;
-
   const start = new Date(`${dateMulaiStr}T${mulai}:00`);
   const end = new Date(`${dateSelesaiStr}T${selesai}:00`);
-  
   if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
 
   let diffMs = end - start;
   let isBedaHari = false;
-  
   if (diffMs < 0) {
-    // Kalau tanggal selesai lebih kecil dari tanggal mulai, atau jam selesai lebih kecil di hari yang sama
     isBedaHari = true;
-    // Jika user salah input tanggal selesai (lebih kecil), kita asumsikan keesokan harinya
-    if (end < start && dateMulaiStr === dateSelesaiStr) {
-        diffMs += 24 * 60 * 60 * 1000;
-    } else if (end < start) {
-        // Kalau beda tanggal tapi end < start (misal input manual aneh), anggap error
-        return null;
-    }
-  } else if (dateMulaiStr !== dateSelesaiStr) {
-      isBedaHari = true;
-  }
+    if (end < start && dateMulaiStr === dateSelesaiStr) { diffMs += 24 * 60 * 60 * 1000; } 
+    else if (end < start) { return null; }
+  } else if (dateMulaiStr !== dateSelesaiStr) { isBedaHari = true; }
   
   const totalJam = diffMs / (1000 * 60 * 60);
   const istirahat = Math.floor(totalJam / 5); 
@@ -1511,7 +1648,6 @@ function hitungJamLembur(mulai, selesai, dateMulaiStr, dateSelesaiStr){
   return { totalJam, istirahat, efektif, isBedaHari, isWeekend, start, end };
 }
 
-// Fungsi untuk update kotak info live di bawah input tanggal
 function updateLiveInfo(el) {
   const row = el.closest('.gaji-hari-row');
   const id = row.getAttribute('data-id');
@@ -1519,10 +1655,8 @@ function updateLiveInfo(el) {
   const jamMulai = row.querySelector('.gaji-jam-mulai').value;
   const dateSelesai = row.querySelector('.gaji-date-selesai').value;
   const jamSelesai = row.querySelector('.gaji-jam-selesai').value;
-  
   const infoText = document.getElementById(`live-info-text-${id}`);
   const infoBadge = document.getElementById(`live-info-badge-${id}`);
-
   const calc = hitungJamLembur(jamMulai, jamSelesai, dateMulai, dateSelesai);
   
   if (!calc) {
@@ -1530,15 +1664,12 @@ function updateLiveInfo(el) {
     infoBadge.textContent = "0 Jam Efektif";
     return;
   }
-
   const hariMulai = formatTanggalShort(dateMulai).split(',')[0];
   const hariSelesai = formatTanggalShort(dateSelesai).split(',')[0];
-  
   let text = `Durasi: <b>${calc.totalJam} Jam</b>`;
   if (calc.istirahat > 0) text += ` | Istirahat: <b>-${calc.istirahat} Jam</b>`;
   if (calc.isBedaHari) text += ` (Beda Hari)`;
   text += `. Tipe: <b>${calc.isWeekend ? 'Weekend (2x/3x/4x)' : 'Weekday (1.5x/2x)'}</b>`;
-  
   infoText.innerHTML = text;
   infoBadge.textContent = `${calc.efektif} Jam Efektif`;
   infoBadge.style.background = calc.efektif > 0 ? '#dbeafe' : '#f1f5f9';
@@ -1547,7 +1678,6 @@ function updateLiveInfo(el) {
 function hitungLemburWeekday(jamEfektif, upahPerJam){
   let total = 0, detail = [];
   for(let i = 1; i <= jamEfektif; i++){
-    // Aturan Weekday: Jam ke-1 = 1.5x, Jam ke-2 dst = 2x
     const rate = (i === 1) ? 1.5 : 2;
     const jumlah = rate * upahPerJam;
     total += jumlah;
@@ -1558,21 +1688,12 @@ function hitungLemburWeekday(jamEfektif, upahPerJam){
 
 function hitungLemburWeekend(jamEfektif, upahPerJam){
   let total = 0, detail = [];
-  
   for(let i = 1; i <= jamEfektif; i++){
-    let rate = 2; // Default 2x
-    
-    // Aturan PP 35/2021 untuk Hari Libur (Weekend)
-    if (i === 8) {
-        rate = 3;
-    } else if (i >= 9 && i <= 11) {
-        rate = 4;
-    } else if (i === 12) {
-        rate = 3;
-    } else if (i > 12) {
-        rate = 2; // Kalau lebih dari 12 jam, balik ke 2x
-    }
-    
+    let rate = 2; 
+    if (i === 8) { rate = 3; } 
+    else if (i >= 9 && i <= 11) { rate = 4; } 
+    else if (i === 12) { rate = 3; } 
+    else if (i > 12) { rate = 2; }
     const jumlah = rate * upahPerJam;
     total += jumlah;
     detail.push({ jam: i, rate, jumlah });
@@ -1586,70 +1707,42 @@ function hitungGaji() {
 
   const upahPerJam = gajiPokok / 173;
   const rows = document.querySelectorAll('#gajiHariList .gaji-hari-row');
-
-  let totalLembur = 0;
-  let perHari = [];
+  let totalLembur = 0; let perHari = [];
 
   rows.forEach(row => {
     const dateMulai = row.querySelector('.gaji-date-mulai').value;
     const mulai = row.querySelector('.gaji-jam-mulai').value;
     const dateSelesai = row.querySelector('.gaji-date-selesai').value;
     const selesai = row.querySelector('.gaji-jam-selesai').value;
-    
     if(!dateMulai || !mulai || !dateSelesai || !selesai) return;
 
     const calc = hitungJamLembur(mulai, selesai, dateMulai, dateSelesai);
     if (!calc) return;
 
     let lembur = { total: 0, detail: [] };
-    if(calc.isWeekend) {
-        lembur = hitungLemburWeekend(calc.efektif, upahPerJam);
-    } else {
-        lembur = hitungLemburWeekday(calc.efektif, upahPerJam);
-    }
+    if(calc.isWeekend) { lembur = hitungLemburWeekend(calc.efektif, upahPerJam); } 
+    else { lembur = hitungLemburWeekday(calc.efektif, upahPerJam); }
 
     totalLembur += lembur.total;
     perHari.push({
-      hariMulai: formatTanggalShort(dateMulai), 
-      mulai: mulai, 
-      hariSelesai: formatTanggalShort(dateSelesai), 
-      selesai: selesai,
-      totalJam: calc.totalJam, 
-      istirahat: calc.istirahat, 
-      efektif: calc.efektif,
-      isWeekend: calc.isWeekend,
-      detail: lembur.detail,
-      total: lembur.total
+      hariMulai: formatTanggalShort(dateMulai), mulai: mulai, hariSelesai: formatTanggalShort(dateSelesai), selesai: selesai,
+      totalJam: calc.totalJam, istirahat: calc.istirahat, efektif: calc.efektif, isWeekend: calc.isWeekend, detail: lembur.detail, total: lembur.total
     });
   });
 
-  const bpjsKes = gajiPokok * 0.01;
-  const jht = gajiPokok * 0.02;
-  const jp = gajiPokok * 0.01;
-  const totalPotongan = bpjsKes + jht + jp;
-  const gajiKotor = gajiPokok + totalLembur;
-  const thp = gajiKotor - totalPotongan;
+  const bpjsKes = gajiPokok * 0.01; const jht = gajiPokok * 0.02; const jp = gajiPokok * 0.01;
+  const totalPotongan = bpjsKes + jht + jp; const gajiKotor = gajiPokok + totalLembur; const thp = gajiKotor - totalPotongan;
 
-  window._gajiResult = {
-    gajiPokok, upahPerJam, totalLembur, perHari,
-    bpjsKes, jht, jp, totalPotongan, gajiKotor, thp
-  };
+  window._gajiResult = { gajiPokok, upahPerJam, totalLembur, perHari, bpjsKes, jht, jp, totalPotongan, gajiKotor, thp };
 
   const hasil = document.getElementById('gajiHasil');
   let html = `
     <div class="gaji-result">
       <div class="gaji-result-title">📊 Hasil Perhitungan</div>
-      <div class="gaji-result-row">
-        <span class="label">Gaji Pokok</span>
-        <span class="value">${formatRupiah(gajiPokok)}</span>
-      </div>
-      <div class="gaji-result-row">
-        <span class="label">Upah/jam (÷ 173)</span>
-        <span class="value">${formatRupiah(upahPerJam)}</span>
-      </div>
+      <div class="gaji-result-row"><span class="label">Gaji Pokok</span><span class="value">${formatRupiah(gajiPokok)}</span></div>
+      <div class="gaji-result-row"><span class="label">Upah/jam (÷ 173)</span><span class="value">${formatRupiah(upahPerJam)}</span></div>
     </div>
   `;
-
   html += `<div class="gaji-result"><div class="gaji-result-title">⏰ Detail Lembur</div>`;
   perHari.forEach(h => {
     const tipe = h.isWeekend ? 'Weekend (2x/3x/4x)' : 'Weekday (1.5x/2x)';
@@ -1679,7 +1772,6 @@ function hitungGaji() {
       <button class="gaji-download-btn" onclick="downloadGajiCSV()">📥 Download Detail (.csv)</button>
     </div>
   `;
-
   hasil.innerHTML = html;
   setTimeout(() => hasil.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
@@ -1687,14 +1779,9 @@ function hitungGaji() {
 function downloadGajiCSV(){
   const r = window._gajiResult;
   if(!r){ alert('Hitung dulu bro'); return; }
-
-  let csv = '';
-  const sep = ';';
-  const nl = '\n';
-
+  let csv = ''; const sep = ';'; const nl = '\n';
   csv += `KALKULATOR GAJI & LEMBUR${nl}`;
   csv += `Tanggal cetak${sep}${new Date().toLocaleString('id-ID')}${nl}${nl}`;
-
   csv += `RINGKASAN GAJI${nl}`;
   csv += `Komponen${sep}Jumlah (Rp)${nl}`;
   csv += `Gaji Pokok${sep}${Math.round(r.gajiPokok)}${nl}`;
@@ -1706,14 +1793,12 @@ function downloadGajiCSV(){
   csv += `JP Employee 1%${sep}-${Math.round(r.jp)}${nl}`;
   csv += `Total Potongan${sep}-${Math.round(r.totalPotongan)}${nl}`;
   csv += `THP (Take Home Pay)${sep}${Math.round(r.thp)}${nl}${nl}`;
-
   csv += `DETAIL LEMBUR PER HARI${nl}`;
   csv += `Tanggal Mulai${sep}Jam Mulai${sep}Tanggal Selesai${sep}Jam Selesai${sep}Tipe${sep}Total Jam${sep}Istirahat${sep}Jam Efektif${sep}Subtotal (Rp)${nl}`;
   r.perHari.forEach(h => {
     csv += `${h.hariMulai}${sep}${h.mulai}${sep}${h.hariSelesai}${sep}${h.selesai}${sep}${h.isWeekend ? 'Weekend' : 'Weekday'}${sep}${h.totalJam}${sep}${h.istirahat}${sep}${h.efektif}${sep}${Math.round(h.total)}${nl}`;
   });
   csv += nl;
-
   csv += `DETAIL PER JAM LEMBUR${nl}`;
   r.perHari.forEach(h => {
     csv += nl;
@@ -1722,14 +1807,6 @@ function downloadGajiCSV(){
     h.detail.forEach(d => { csv += `${d.jam}${sep}${d.rate}x${sep}${Math.round(d.jumlah)}${nl}`; });
     csv += `Subtotal${sep}${sep}${Math.round(h.total)}${nl}`;
   });
-
-  csv += `${nl}Catatan:${nl}`;
-  csv += `- Upah per jam = Gaji Pokok / 173 (PP 35/2021)${nl}`;
-  csv += `- Lembur weekday: jam ke-1 = 1.5x, jam ke-2 dst = 2x${nl}`;
-  csv += `- Lembur weekend: jam 1-7 = 2x, jam 8 = 3x, jam 9-11 = 4x, jam 12 = 3x, >12 = 2x${nl}`;
-  csv += `- Setiap kelipatan 5 jam lembur dipotong 1 jam istirahat${nl}`;
-  csv += `- Potongan karyawan: BPJS Kesehatan 1% + JHT 2% + JP 1% = 4%${nl}`;
-
   const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1739,13 +1816,9 @@ function downloadGajiCSV(){
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-
   showToast('📥 File CSV berhasil didownload!');
 }
 
-/* ============================================================
-   LOGIKA FORM LEMBUR
-   ============================================================ */
 function openFormLembur() {
   const wrap = document.getElementById('inpTeknisiList'); wrap.innerHTML = '';
   DAFTAR_TEKNISI.forEach(t => { wrap.innerHTML += `<label class="form-checkbox-label"><input type="checkbox" name="teknisi" value="${t}"> ${t}</label>`; });
@@ -1776,7 +1849,6 @@ async function submitLembur(e) {
   const data = {
     tanggal: document.getElementById('inpTanggal').value, tanggalAkhir: document.getElementById('inpTanggalAkhir').value, kegiatan: document.getElementById('inpKegiatan').value, engineer: document.getElementById('inpEngineer').value, jamMulai: document.getElementById('inpJamMulai').value, jamAkhir: document.getElementById('inpJamAkhir').value, totalJam: totalJamStr, teknisi: teknisiArr.join(', '), noTiket: document.getElementById('inpNoTiket').value
   };
-
   try {
     const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(data) });
     const result = await res.json();
@@ -1784,17 +1856,11 @@ async function submitLembur(e) {
   } catch(err) { console.error(err); showToast('❌ Gagal terhubung ke server'); } finally { btn.disabled = false; btn.textContent = originalText; }
 }
 
-/* ============================================================
-   UPDATE CARDS & LOAD ALL
-   ============================================================ */
 async function loadAll(){
   const now = new Date();
-  
-  // 1. Kasih Overlay Loading HANYA saat pertama kali buka web (bukan saat auto-refresh)
   const isFirstLoad = document.getElementById('lastUpdate').textContent === 'Memuat...';
-  
   if (isFirstLoad) {
-    const wraps = ['wrapJadwalMingguan', 'wrapLokasi', 'wrapKegiatan', 'wrapUpcoming'];
+    const wraps = ['wrapJadwalMingguan', 'wrapLokasi', 'wrapKegiatan', 'wrapUpcoming', 'wrapRingkasan'];
     wraps.forEach(id => {
       const el = document.getElementById(id);
       if(el && !el.querySelector('.loading-overlay')) {
@@ -1807,33 +1873,18 @@ async function loadAll(){
   }
 
   try {
-    // Gunakan Promise.allSettled agar jika satu request gagal, yang lain tetap jalan
     const results = await Promise.allSettled([
-      fetch(apiUrl('JadwalBulanan')).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      }), 
-      fetch(apiUrl('kegiatan')).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      }),
-      fetch(apiUrl('Links')).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      }), 
-      fetch(apiUrl('WI')).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
+      fetch(apiUrl('JadwalBulanan')).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }), 
+      fetch(apiUrl('kegiatan')).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
+      fetch(apiUrl('Links')).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }), 
+      fetch(apiUrl('WI')).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
     ]);
     
-    // Ambil hasilnya, jika gagal isi dengan array kosong
     const r1 = results[0].status === 'fulfilled' ? results[0].value : [];
     const r2 = results[1].status === 'fulfilled' ? results[1].value : [];
     const r3 = results[2].status === 'fulfilled' ? results[2].value : [];
     const r4 = results[3].status === 'fulfilled' ? results[3].value : [];
 
-    // Cek jika salah satu gagal, beri peringatan di console
     results.forEach((res, i) => {
       if (res.status === 'rejected') console.error(`Gagal load sheet ke-${i+1}:`, res.reason);
     });
@@ -1844,26 +1895,22 @@ async function loadAll(){
     rawLinks = Array.isArray(r3) ? r3 : []; 
     rawWI = Array.isArray(r4) ? r4 : []; 
 
-    // RESET FILTER KE DEFAULT (HANYA HARI INI)
     const chkOnlyToday = document.getElementById('onlyToday');
     chkOnlyToday.checked = true;
     const selectTanggal = document.getElementById('filterTanggal');
     selectTanggal.value = '';
     selectTanggal.style.display = 'none';
 
-    // 2. Render Data (Hapus overlay loading setelah render)
     renderLokasi(rawLokasi); 
     isiDropdownTanggal(rawLokasi);
-    renderKegiatan(rawKegiatan); 
-    renderUpcoming(rawKegiatan); 
+    renderDetailKegiatan(); 
+    renderRingkasan(); 
     renderWISection(rawWI); 
     renderLinks(rawLinks);
     renderJadwalMingguan(rawJadwal); 
     renderGrafikLembur(); 
     
-    // Hapus semua overlay loading
     document.querySelectorAll('.loading-overlay').forEach(el => el.remove());
-
     document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
   } catch(err) { 
     console.error(err); 
@@ -1877,6 +1924,7 @@ tickClock(); setInterval(tickClock, 1000);
 document.getElementById('searchInput').addEventListener('input', () => renderLokasi(rawLokasi)); 
 document.getElementById('onlyToday').addEventListener('change', () => renderLokasi(rawLokasi));
 document.getElementById('filterTanggal').addEventListener('change', () => renderLokasi(rawLokasi));
+document.getElementById('searchKegiatan').addEventListener('input', renderDetailKegiatan); 
 renderMarquee(); loadAll(); setInterval(loadAll, 30000);
 </script>
 </body>
