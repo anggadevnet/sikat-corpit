@@ -324,7 +324,8 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div id="wrapRingkasan" style="background:#fff; padding:20px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(15,23,42,.04);"></div>
 </section>
 
-<section>
+<!-- SECTION GRAFIK DIPINDAHKAN KE DALAM MENU LINK -->
+<!-- <section>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
     <h2 style="margin: 0;">📊 Grafik Lembur Teknisi</h2>
     <button onclick="toggleFullScreenChart()" style="background:#fff; color:#0284c7; border:1px solid #bae6fd; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.1);">
@@ -338,7 +339,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <section>
   <h2>📚 Work Instruction (WI) <span class="count" id="cntWI">0</span></h2>
@@ -369,7 +370,7 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
   <div class="modal-box modal-wide">
     <div class="modal-header"><h3>📝 Input Form Lembur</h3><button class="modal-close" onclick="closeModal('modalFormLembur')">✕</button></div>
     <div class="gaji-body" style="padding:24px 26px">
-      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, abis lembur → H+1 langsung input ya biar gak lupa 😊<br><i>(اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا)</i></p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:20px">Hallo guys, selesai lembur → H+1 langsung input ya biar gak lupa 😊<br><i>(للَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْجُبْنِ وَالْبُخْلِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ)</i></p>
       <form id="formLembur" onsubmit="submitLembur(event)">
         <div class="form-group"><label class="form-label">1. Nama Kegiatan Lembur <span style="color:red">*</span></label><textarea class="form-textarea" id="inpKegiatan" required placeholder="Contoh: Standby Weekend / Implementasi LogRhythm"></textarea></div>
         <div class="form-group"><label class="form-label">2. Engineer Penanggung Jawab <span style="color:red">*</span></label><select class="form-select" id="inpEngineer" required><option value="">-- Pilih Engineer --</option><option value="MUH. GHOFARUDIN FALAH">MUH. GHOFARUDIN FALAH</option><option value="MUHAMMAD LAZUARDI WILDAN">MUHAMMAD LAZUARDI WILDAN</option><option value="ANDI KURNIAWAN">ANDI KURNIAWAN</option><option value="DARWIN PRASETYA EKA GUNAWAN">DARWIN PRASETYA EKA GUNAWAN</option><option value="ACHMAD FAUZI FERDIANSYAH">ACHMAD FAUZI FERDIANSYAH</option><option value="DEZA NUR QHODBI">DEZA NUR QHODBI</option><option value="YULIANDARI PRATIWI">YULIANDARI PRATIWI</option></select></div>
@@ -390,7 +391,8 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
         </div>
 
         <div class="form-group"><label class="form-label">7. Siapa saja teknisi yang terlibat? <span style="color:red">*</span></label><div class="form-checkbox-group" id="inpTeknisiList"></div></div>
-        <div class="form-group"><label class="form-label">8. No Tiket <span style="color:#94a3b8">(Wajib diisi !,ya rekan. Hub HD jika belum ada ticketnya)</span></label><input type="text" class="form-input" id="inpNoTiket" placeholder="Contoh: 769769"></div>
+        <!-- PERUBAHAN: No tiket diwajibkan (ditambah required) -->
+        <div class="form-group"><label class="form-label">8. No Tiket <span style="color:red">*</span> <span style="color:#94a3b8; font-size:11px; font-weight:normal;">(Wajib diisi, Hub HD jika belum ada)</span></label><input type="text" class="form-input" id="inpNoTiket" required placeholder="Contoh: 769769"></div>
         <button type="submit" class="form-submit-btn" id="btnSubmitLembur">🚀 Kirim Form Lembur</button>
       </form>
     </div>
@@ -441,12 +443,13 @@ footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:40px;padding-to
 
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwR0RW-y8CUzatPL1rJqZVSgS-pulOkFOVMPmYeXHQbnoiYoRlZC0_49w0TkGpL-lNt/exec';
-const PENGUMUMAN = ['بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ','Jangan lupa isi absensi','Jangan lupa ngopi','Keep corporate, stay overtime, and accept the breakdown','صَدَقَ اللهُ الْعَظِيمُ'];
+const PENGUMUMAN = ['اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا', 'Isi absen pagi guys', 'Yuk hadir tepat waktu', 'Sempatkan ngopi dulu', 'Keep professional, enjoy overtime, and embrace the technical issues', 'آَمِيّنْ يَا رَبَّ الْعَالَمِيْن'];
 let rawLokasi = [], rawKegiatan = [], rawLinks = [], rawWI = [], rawLembur = [], rawJadwal = [], linksUnlocked = false, rawLinksCache = [], lockRealValue = '';
 let chartInstance = null;
 let filterRekapStatus = 'all';
 
-const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine'];
+// PERUBAHAN: Nafira ditambahkan
+const DAFTAR_TEKNISI = ['Angga', 'Syaiful', 'Raykhandra', 'Difa', 'Naufal', 'Rizalfa', 'Alif', 'Rivaldy', 'Qhean', 'Diki', 'Azis', 'Mukhlis', 'Imola', 'Nadine', 'Nafira'];
 const BLACKLIST_HARIAN = ['nadine', 'nafira', 'imola'];
 
 function apiUrl(sheetName){ return `${WEB_APP_URL}?sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`; }
@@ -946,11 +949,9 @@ function renderDetailKegiatan() {
     const dateRaw = cleanStr(getFlex(r,['hari/tanggal','tanggal','tanggal / hari']));
     const range = parseRentangTanggal(dateRaw);
     
-    // AMBIL NAMA KEGIATAN (KOLOM B / 'kegiatan')
     let namaBersih = cleanStr(getFlex(r, ['kegiatan']));
     if (namaBersih === '-') namaBersih = '';
 
-    // AMBIL JAM (KOLOM C / 'jam')
     let jamDisplay = cleanStr(getFlex(r, ['jam']));
     if (jamDisplay === '-') jamDisplay = '';
 
@@ -1013,7 +1014,6 @@ function renderDetailKegiatan() {
     }
     const uniqueId = `evt-${isUpcoming ? 'up' : 'cur'}-${e.originalIndex}`;
     
-    // LOGIKA: Tampilkan NAMA || JAM
     return `
       <div class="kegiatan-detail-card" style="position:relative;" id="${uniqueId}">
         <button class="btn-save-item" onclick="downloadItem('${uniqueId}', 'Event_${e.name}')" style="top: 10px; right: 10px;">📸</button>
@@ -1098,11 +1098,9 @@ function renderRingkasan() {
     const dateRaw = cleanStr(getFlex(r,['hari/tanggal','tanggal','tanggal / hari']));
     const range = parseRentangTanggal(dateRaw);
     
-    // AMBIL NAMA KEGIATAN (KOLOM B / 'kegiatan')
     let namaBersih = cleanStr(getFlex(r, ['kegiatan']));
     if (namaBersih === '-') namaBersih = '';
 
-    // AMBIL JAM (KOLOM C / 'jam')
     let jamDisplay = cleanStr(getFlex(r, ['jam']));
     if (jamDisplay === '-') jamDisplay = '';
 
@@ -1490,7 +1488,7 @@ function renderLinks(rows){
   rawLinksCache = rows; const wrap = document.getElementById('wrapLinks');
   if(!linksUnlocked){
     if(document.getElementById('lockInput')) return;
-    wrap.innerHTML = `<div class="lock-box"><div class="lock-icon">🔒</div><div class="lock-title">Sss...ttt Terkunci</div><div class="lock-desc">Masukkan password untuk membuka akses</div><div class="lock-input-wrap"><input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off"><button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button></div><div class="lock-error" id="lockError"></div><div class="lock-note">🔐 Akses hanya untuk Teknisi</div></div>`;
+    wrap.innerHTML = `<div class="lock-box"><div class="lock-icon">🔒</div><div class="lock-title">Whoops! Terkunci 😭</div><div class="lock-desc">Coba tebak password-nya di sini 👇</div><div class="lock-input-wrap"><input type="text" id="lockInput" class="lock-input" placeholder="Password..." autocomplete="off"><button class="lock-btn" id="lockBtn" onclick="unlockLinks()">Buka</button></div><div class="lock-error" id="lockError"></div><div class="lock-note">🔐 Akses hanya untuk Teknisi</div></div>`;
     lockRealValue = '';
     setTimeout(() => { const inp = document.getElementById('lockInput'); if(!inp) return; inp.focus(); inp.addEventListener('input', () => { const val = inp.value; const realLen = lockRealValue.length; const currentLen = val.length; if(currentLen > realLen){ lockRealValue += val.slice(-(currentLen - realLen)); } else if(currentLen < realLen){ lockRealValue = lockRealValue.slice(0, currentLen); } inp.value = '•'.repeat(lockRealValue.length); }); inp.addEventListener('keypress', e => { if(e.key === 'Enter') unlockLinks(); }); }, 50); return;
   }
@@ -1516,9 +1514,26 @@ function renderLinksContent(rows){
   const grouped = {}; rows.forEach(r => { const kat = (r['kategori'] || 'Lainnya').trim(); if(!grouped[kat]) grouped[kat] = []; grouped[kat].push(r); });
   let html = `<div class="lock-header"><span class="lock-status">🔓 Terbuka</span><button class="lock-logout" onclick="lockLinks()">🔒 Kunci Lagi</button></div>`;
   
+  // PERUBAHAN: Tombol Form, Rekap, dan Grafik ditaruh di sini
   html += `<div style="margin-bottom:20px; display: flex; gap: 10px; flex-wrap: wrap;">
     <button onclick="openFormLembur()" class="form-submit-btn" style="width:auto; padding:10px 20px; font-size:14px; display:inline-flex; align-items:center; gap:8px;">📝 Input Lembur Baru</button>
     <button onclick="openRekapLembur()" class="form-submit-btn" style="width:auto; padding:10px 20px; font-size:14px; display:inline-flex; align-items:center; gap:8px; background: linear-gradient(90deg,#16a34a,#22c55e);">📋 Lihat Rekap Lembur</button>
+  </div>
+  
+  <div style="margin-bottom:24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+      <h3 style="font-size:16px; margin:0; color:#0f172a; display:flex; align-items:center; gap:8px;"><span style="width:4px; height:18px; border-radius:2px; background:linear-gradient(180deg,#0284c7,#4f46e5);"></span> 📊 Grafik Lembur Teknisi</h3>
+      <button onclick="toggleFullScreenChart()" style="background:#fff; color:#0284c7; border:1px solid #bae6fd; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; box-shadow:0 2px 6px rgba(2,132,199,.1);">
+        ⛶ Fullscreen
+      </button>
+    </div>
+    <div id="chartContainer" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.04); transition: all .3s; position:relative;">
+      <div style="overflow-x: hidden; width: 100%;">
+        <div id="canvasWrapper" style="width: 100%; height: 350px;">
+          <canvas id="chartLembur"></canvas>
+        </div>
+      </div>
+    </div>
   </div>`;
 
   const specialCats = ['reminder', 'footer', 'password', 'config'];
@@ -1536,6 +1551,9 @@ function renderLinksContent(rows){
   if(grouped['Reminder'] || grouped['reminder']){ const rem = grouped['Reminder'] || grouped['reminder']; html += `<div class="reminder-box"><div class="reminder-title">🛠️ Reminder Penting</div><ul class="reminder-list">`; rem.forEach(r => { html += `<li>${(r['label'] || '').trim()}</li>`; }); html += `</ul></div>`; }
   if(grouped['Footer'] || grouped['footer']){ const foot = grouped['Footer'] || grouped['footer']; foot.forEach(r => { html += `<div class="footer-note">${(r['label']||'').trim()}</div>`; }); }
   wrap.innerHTML = html;
+
+  // Panggil render grafik setelah html dimasukkan ke DOM
+  renderGrafikLembur();
 }
 
 function closeModal(id){
@@ -1908,7 +1926,6 @@ async function loadAll(){
     renderWISection(rawWI); 
     renderLinks(rawLinks);
     renderJadwalMingguan(rawJadwal); 
-    renderGrafikLembur(); 
     
     document.querySelectorAll('.loading-overlay').forEach(el => el.remove());
     document.getElementById('lastUpdate').textContent = 'Sync: ' + now.toLocaleTimeString('id-ID');
